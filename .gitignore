@@ -9,3 +9,5 @@
 /vendor/
 js/*hot-update.*
 node_modules/
+# might have to add those again for release
+js
