@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<info xmlns:xsi= "http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="https://apps.nextcloud.com/schema/apps/info.xsd">
+    <!--
+    SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
+    SPDX-License-Identifier: CC0-1.0
+    -->
+    <id>deadmanswitch</id>
+    <name>Dead Man Switch</name>
+    <summary>Transfer ownership of your data in the event of your death.</summary>
+    <description><![CDATA[Periodical emails check in whether you are still alive, if left unanswered, your cloud data will become available to the users of your choice.]]></description>
+    <version>0.0.1</version>
+    <licence>agpl</licence>
+    <author mail="marlonqgundelfinger@gmail.com" >Marlon Gundelfinger</author>
+    <namespace>DeadManSwitch</namespace>
+    <category>tools</category>
+    <bugs>http://test.com</bugs>
+    <dependencies>
+        <nextcloud min-version="28" max-version="28"/>
+    </dependencies>
+    <navigations>
+        <navigation>
+            <id>deadmanswitch</id>
+            <name>Dead Man Switch</name>
+            <!-- syntax is APP_ID.CONTROLLER_NAME.METHOD_NAME -->
+            <route>deadmanswitch.page.mainPage</route>
+            <icon>app.svg</icon>
+            <order>8</order>
+        </navigation>
+    </navigations>
+</info>
