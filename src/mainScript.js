@@ -1,3 +1,5 @@
+// SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
 import { generateUrl, imagePath } from '@nextcloud/router'
 import { loadState } from '@nextcloud/initial-state'
 import axios from '@nextcloud/axios'

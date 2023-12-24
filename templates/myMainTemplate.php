@@ -1,4 +1,6 @@
 <?php
+// SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
 use OCP\Util;
 $appId = OCA\DeadManSwitch\AppInfo\Application::APP_ID;
 Util::addScript($appId, $appId . '-mainScript');
