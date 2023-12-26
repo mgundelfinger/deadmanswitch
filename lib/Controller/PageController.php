@@ -136,7 +136,7 @@ class PageController extends Controller {
 		if (in_array($key, self::CONFIG_KEYS, true)) {
 			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
 			// $this->mailService->notify('marlonqgundelfinger@gmail.com');
-			// $this->checkInController->removeJob('marlonqgundelfinger@gmail.com');
+			// $this->checkInController->removeJob('marlonqgundelfinger@gmail.com', CheckInController::INTERVAL_DAILY);
 			$this->checkInController->addJob('marlonqgundelfinger@gmail.com', CheckInController::INTERVAL_DAILY);
 			return new DataResponse([
 				'message' => 'Everything went fine',
