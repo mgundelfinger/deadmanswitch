@@ -26,6 +26,8 @@ use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
+use OCA\DeadManSwitch\Controller\CheckInController;
+use OCA\DeadManSwitch\Cron\CheckInTask;
 use OCA\DeadManSwitch\Service\MailService;
 
 use OCA\DeadManSwitch\AppInfo\Application;
@@ -56,17 +58,25 @@ class PageController extends Controller {
 	 */
 	private $mailService;
 
+	/**
+	 * @var CheckInController
+	 */
+	private $checkInController;
+	
+
 	public function __construct(string $appName,
 								IRequest $request,
 								IInitialState $initialStateService,
 								IConfig $config,
 								?string $userId,
-								MailService $mailService) {
+								MailService $mailService,
+								CheckInController $checkInController) {
 		parent::__construct($appName, $request);
 		$this->initialStateService = $initialStateService;
 		$this->config = $config;
 		$this->userId = $userId;
 		$this->mailService = $mailService;
+		$this->checkInController = $checkInController;
 	}
 
 	/**
@@ -125,7 +135,9 @@ class PageController extends Controller {
 	public function saveConfig(string $key, string $value): DataResponse {
 		if (in_array($key, self::CONFIG_KEYS, true)) {
 			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
-			$this->mailService->notify('marlonqgundelfinger@gmail.com');
+			// $this->mailService->notify('marlonqgundelfinger@gmail.com');
+			// $this->checkInController->removeJob('marlonqgundelfinger@gmail.com');
+			$this->checkInController->addJob('marlonqgundelfinger@gmail.com', CheckInController::INTERVAL_DAILY);
 			return new DataResponse([
 				'message' => 'Everything went fine',
 			]);

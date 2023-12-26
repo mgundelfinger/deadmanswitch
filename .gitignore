@@ -1,7 +1,6 @@
 # SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 *.iml
-.devcontainer
 .idea
 /.php-cs-fixer.cache
 /.php_cs.cache
@@ -9,5 +8,5 @@
 /vendor/
 js/*hot-update.*
 node_modules/
-# might have to add those again for release
+
 js
