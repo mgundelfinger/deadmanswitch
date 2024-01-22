@@ -31,13 +31,17 @@ use OCA\DeadManSwitch\Cron\CheckInTask;
 use OCA\DeadManSwitch\Service\MailService;
 
 use OCA\DeadManSwitch\AppInfo\Application;
+use OCP\IUser;
+use OCP\IUserSession;
 
 class PageController extends Controller {
 
 	public const FIXED_GIF_SIZE_CONFIG_KEY = 'fixed_gif_size';
+	public const CHECK_IN_INTERVAL_CONFIG_KEY = 'check_in_interval';
 
 	public const CONFIG_KEYS = [
 		self::FIXED_GIF_SIZE_CONFIG_KEY,
+		self::CHECK_IN_INTERVAL_CONFIG_KEY,
 	];
 
 	/**
@@ -62,6 +66,11 @@ class PageController extends Controller {
 	 * @var CheckInController
 	 */
 	private $checkInController;
+
+	/**
+	 * @var IUser
+	 */
+	private $currentUser;
 	
 
 	public function __construct(string $appName,
@@ -70,13 +79,15 @@ class PageController extends Controller {
 								IConfig $config,
 								?string $userId,
 								MailService $mailService,
-								CheckInController $checkInController) {
+								CheckInController $checkInController,
+								IUserSession $currentUser) {
 		parent::__construct($appName, $request);
 		$this->initialStateService = $initialStateService;
 		$this->config = $config;
 		$this->userId = $userId;
 		$this->mailService = $mailService;
 		$this->checkInController = $checkInController;
+		$this->currentUser = $currentUser->getUser();
 	}
 
 	/**
@@ -90,11 +101,11 @@ class PageController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function mainPage(): TemplateResponse {
-		$fileNameList = $this->getGifFilenameList();
 		$fixedGifSize = $this->config->getUserValue($this->userId, Application::APP_ID, self::FIXED_GIF_SIZE_CONFIG_KEY);
+		$interval = $this->config->getUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY);
 		$myInitialState = [
-			'file_name_list' => $fileNameList,
 			self::FIXED_GIF_SIZE_CONFIG_KEY => $fixedGifSize,
+			self::CHECK_IN_INTERVAL_CONFIG_KEY => $interval
 		];
 		$this->initialStateService->provideInitialState('tutorial_initial_state', $myInitialState);
 
@@ -109,19 +120,6 @@ class PageController extends Controller {
 	}
 
 	/**
-	 * Get the names of files stored in apps/my_app/img/gifs/
-	 *
-	 * @return array
-	 */
-	private function getGifFilenameList(): array {
-		$path = dirname(__DIR__, 2) . '/img/gifs';
-		$names = array_filter(scandir($path), static function ($name) {
-			return $name !== '.' && $name !== '..';
-		});
-		return array_values($names);
-	}
-
-	/**
 	 * This is an API endpoint to set a user config value
 	 * It returns a simple DataResponse: a message to be displayed
 	 *
@@ -133,13 +131,20 @@ class PageController extends Controller {
 	 * @throws PreConditionNotMetException
 	 */
 	public function saveConfig(string $key, string $value): DataResponse {
+		$userEmail = $this->currentUser->getEMailAddress();
 		if (in_array($key, self::CONFIG_KEYS, true)) {
 			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
-			// $this->mailService->notify('marlonqgundelfinger@gmail.com');
-			// $this->checkInController->removeJob('marlonqgundelfinger@gmail.com', CheckInController::INTERVAL_DAILY);
-			$this->checkInController->addJob('marlonqgundelfinger@gmail.com', CheckInController::INTERVAL_DAILY);
+			// $this->mailService->notify($userEmail, "test");
+			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_WEEKLY);
+			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_DAILY);
+			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_WEEKLY);
+			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_FOUR_WEEKLY);
+			// $this->checkInController->removeJob($userEmail, CheckInController::INTERVAL_DAILY);
+			// $this->checkInController->removeJob($userEmail, CheckInController::INTERVAL_WEEKLY);
+			// $this->checkInController->removeJob($userEmail, CheckInController::INTERVAL_FOUR_WEEKLY);
+
 			return new DataResponse([
-				'message' => 'Everything went fine',
+				'message' => 'your email is ' . $this->currentUser->getEMailAddress(),
 			]);
 		}
 		return new DataResponse([

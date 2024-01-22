@@ -15,11 +15,11 @@ class WeeklyCheckInTask extends TimedJob {
         parent::__construct($time);
         $this->mailService = $mailService;
 
-        $this->setInterval(3600 * 24 * 7);
+        $this->setInterval(600 - 60);
     }
 
     protected function run($arguments) {
-        $this->mailService->notify($arguments['email']);
+        $this->mailService->notify($arguments['email'], $arguments['text']);
     }
 
 }

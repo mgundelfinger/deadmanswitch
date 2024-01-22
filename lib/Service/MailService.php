@@ -13,13 +13,13 @@ class MailService {
         $this->mailer = $mailer;
     }
 
-    public function notify(string $email): void {
+    public function notify(string $email, string $text): void {
         $message = $this->mailer->createMessage();
-        $message->setSubject("Hello from Nextcloud");
-        $message->setPlainBody("This is some text");
-        $message->setHtmlBody(
-            "<!doctype html><html><body>This is some <b>text</b></body></html>"
-        );
+        $message->setSubject($text);
+        $message->setPlainBody("This message is being sent " . $text . ".");
+        // $message->setHtmlBody(
+        //     "<!doctype html><html><body>This is some <b>text</b></body></html>"
+        // );
         $message->setTo([$email]);
         $this->mailer->send($message);
     }

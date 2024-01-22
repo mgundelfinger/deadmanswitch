@@ -18,6 +18,10 @@ class CheckInController extends Controller {
     public const INTERVAL_WEEKLY = 1;
     public const INTERVAL_FOUR_WEEKLY = 2;
 
+    public const SUBJECT_DAILY = 'every 5 minutes';
+    public const SUBJECT_WEEKLY = 'every 10 minutes';
+    public const SUBJECT_FOUR_WEEKLY = 'every 15 minutes';
+
     public function __construct(string $appName, IRequest $request, IJobList $jobList) {
         parent::__construct($appName, $request);
 
@@ -27,22 +31,40 @@ class CheckInController extends Controller {
     public function addJob(string $email, int $interval) {
         switch($interval) {
             case self::INTERVAL_DAILY:
-                $this->jobList->add(DailyCheckInTask::class, ['email' => $email]);
+                $job = DailyCheckInTask::class;
+                $text = self::SUBJECT_DAILY;
+                break;
             case self::INTERVAL_WEEKLY:
-                $this->jobList->add(WeeklyCheckInTask::class, ['email' => $email]);
+                $job = WeeklyCheckInTask::class;
+                $text = self::SUBJECT_WEEKLY;
+                break;
             case self::INTERVAL_FOUR_WEEKLY:
-                $this->jobList->add(FourWeeklyCheckInTask::class, ['email' => $email]);
+                $job = FourWeeklyCheckInTask::class;
+                $text = self::SUBJECT_FOUR_WEEKLY;
+                break;
+            default:
+                return 0;
         }
+        $this->jobList->add($job, ['email' => $email, 'text' => $text]);
     }
 
     public function removeJob(string $email, int $interval) {
         switch($interval) {
             case self::INTERVAL_DAILY:
-                $this->jobList->remove(DailyCheckInTask::class, ['email' => $email]);
-            case self::INTERVAL_DAILY:
-                $this->jobList->remove(WeeklyCheckInTask::class, ['email' => $email]);
-            case self::INTERVAL_DAILY:
-                $this->jobList->remove(FourWeeklyCheckInTask::class, ['email' => $email]);
+                $job = DailyCheckInTask::class;
+                $text = self::SUBJECT_DAILY;
+                break;
+            case self::INTERVAL_WEEKLY:
+                $job = WeeklyCheckInTask::class;
+                $text = self::SUBJECT_WEEKLY;
+                break;
+            case self::INTERVAL_FOUR_WEEKLY:
+                $job = FourWeeklyCheckInTask::class;
+                $text = self::SUBJECT_FOUR_WEEKLY;
+                break;
+            default:
+                return 0;
         }
+        $this->jobList->remove($job, ['email' => $email, 'text' => $text]);
     }
 }
