@@ -14,12 +14,21 @@ if ($_['app_version']) {
     echo '<h3>Dead Man Switch app version: ' . $_['app_version'] . '</h3>';
 }
 ?>
-    <div id="intervalSelection">
-        <select id="intervalSelector">
+    
+    <form>
+    <div>
+        <input id="onOffSwitch" type="checkbox">Dead Man Switch</input>
+    </div>
+    <div id="config">
+        <select id="intervalSelector" disabled>
             <option value=0>Daily</option>
             <option value=1>Weekly</option>
             <option value=2>Every Four Weeks</option>
         </select>
-        <button id="saveInterval">Save</button>
     </div>
+    <div>
+        <button id="saveButton" disabled>Save</button>
+        <button id="cancelButton" disabled>Cancel</button>
+    </div>
+    </form>
 </div>

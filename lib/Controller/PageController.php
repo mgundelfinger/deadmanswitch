@@ -36,11 +36,11 @@ use OCP\IUserSession;
 
 class PageController extends Controller {
 
-	public const FIXED_GIF_SIZE_CONFIG_KEY = 'fixed_gif_size';
+	public const ACTIVE_CONFIG_KEY = 'active';
 	public const CHECK_IN_INTERVAL_CONFIG_KEY = 'check_in_interval';
 
 	public const CONFIG_KEYS = [
-		self::FIXED_GIF_SIZE_CONFIG_KEY,
+		self::ACTIVE_CONFIG_KEY,
 		self::CHECK_IN_INTERVAL_CONFIG_KEY,
 	];
 
@@ -101,13 +101,13 @@ class PageController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function mainPage(): TemplateResponse {
-		$fixedGifSize = $this->config->getUserValue($this->userId, Application::APP_ID, self::FIXED_GIF_SIZE_CONFIG_KEY);
+		$active = $this->config->getUserValue($this->userId, Application::APP_ID, self::ACTIVE_CONFIG_KEY);
 		$interval = $this->config->getUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY);
-		$myInitialState = [
-			self::FIXED_GIF_SIZE_CONFIG_KEY => $fixedGifSize,
+		$initialState = [
+			self::ACTIVE_CONFIG_KEY => $active,
 			self::CHECK_IN_INTERVAL_CONFIG_KEY => $interval
 		];
-		$this->initialStateService->provideInitialState('tutorial_initial_state', $myInitialState);
+		$this->initialStateService->provideInitialState('initial_state', $initialState);
 
 		$appVersion = $this->config->getAppValue(Application::APP_ID, 'installed_version');
 		return new TemplateResponse(
@@ -125,15 +125,15 @@ class PageController extends Controller {
 	 *
 	 * @NoAdminRequired
 	 *
-	 * @param string $key
-	 * @param string $value
+	 * @param string $interval
+	 * @param bool $active
 	 * @return DataResponse
 	 * @throws PreConditionNotMetException
 	 */
-	public function saveConfig(string $key, string $value): DataResponse {
+	public function saveConfig(string $interval, bool $active): DataResponse {
 		$userEmail = $this->currentUser->getEMailAddress();
-		if (in_array($key, self::CONFIG_KEYS, true)) {
-			$this->config->setUserValue($this->userId, Application::APP_ID, $key, $value);
+			$this->config->setUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, $interval);
+			$this->config->setUserValue($this->userId, Application::APP_ID, self::ACTIVE_CONFIG_KEY, (string) $active);
 			// $this->mailService->notify($userEmail, "test");
 			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_WEEKLY);
 			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_DAILY);
@@ -146,9 +146,5 @@ class PageController extends Controller {
 			return new DataResponse([
 				'message' => 'your email is ' . $this->currentUser->getEMailAddress(),
 			]);
-		}
-		return new DataResponse([
-			'error_message' => 'Invalid config key',
-		], Http::STATUS_FORBIDDEN);
 	}
 }
