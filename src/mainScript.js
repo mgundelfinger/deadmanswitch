@@ -5,6 +5,9 @@ import { loadState } from '@nextcloud/initial-state'
 import axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
 
+/**
+ *
+ */
 function main() {
 	// we get the data injected via the Initial State mechanism
 	const state = loadState('deadmanswitch', 'initial_state')
@@ -20,6 +23,10 @@ function main() {
 	addFormListener(state)
 }
 
+/**
+ *
+ * @param {any} state Initial State
+ */
 function setSaveAction(state) {
 	const saveButton = document.getElementById('saveButton')
 	const activeToggle = document.getElementById('onOffSwitch')
@@ -41,6 +48,10 @@ function setSaveAction(state) {
 	})
 }
 
+/**
+ *
+ * @param {any} state Initial State
+ */
 function setCancelAction(state) {
 	const cancelButton = document.getElementById('cancelButton')
 	const activeToggle = document.getElementById('onOffSwitch')
@@ -51,6 +62,10 @@ function setCancelAction(state) {
 	})
 }
 
+/**
+ *
+ * @param {any} state Initial State
+ */
 function setActiveAction(state) {
 	const activeToggle = document.getElementById('onOffSwitch')
 	const config = document.getElementById('config')
@@ -67,6 +82,10 @@ function setActiveAction(state) {
 	})
 }
 
+/**
+ *
+ * @param {any} state Initial State
+ */
 function addFormListener(state) {
 	const config = document.getElementById('config')
 	for (const element of config.querySelectorAll('*[id]')) {
@@ -76,6 +95,10 @@ function addFormListener(state) {
 	}
 }
 
+/**
+ *
+ * @param {any} state Initial State
+ */
 function toggleFormElements(state) {
 	const isActive = document.getElementById('onOffSwitch').checked
 	const config = document.getElementById('config')
@@ -84,6 +107,10 @@ function toggleFormElements(state) {
 	}
 }
 
+/**
+ *
+ * @param {any} state Initial State
+ */
 function toggleSave(state) {
 	const activeToggle = document.getElementById('onOffSwitch')
 	const intervalSelector = document.getElementById('intervalSelector')
