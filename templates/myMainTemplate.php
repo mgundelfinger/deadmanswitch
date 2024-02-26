@@ -21,9 +21,9 @@ if ($_['app_version']) {
     </div>
     <div id="config">
         <select id="intervalSelector" disabled>
-            <option value=0>Daily</option>
-            <option value=1>Weekly</option>
-            <option value=2>Every Four Weeks</option>
+            <option value=1>Daily</option>
+            <option value=7>Weekly</option>
+            <option value=28>Every Four Weeks</option>
         </select>
     </div>
     <div>

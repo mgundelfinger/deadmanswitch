@@ -3,33 +3,16 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Controller;
 
-use Exception;
-use OCP\App\IAppManager;
-use OCP\AppFramework\Http;
-use OCP\AppFramework\Http\Response;
+use DateTime;
 use OCP\AppFramework\Services\IInitialState;
-use OCP\Constants;
-use OCP\Files\IRootFolder;
-use OCP\Files\NotFoundException;
 use OCP\IConfig;
-use OCP\IL10N;
-use OCP\IServerContainer;
-use OCP\IURLGenerator;
 use OCP\PreConditionNotMetException;
-use Psr\Log\LoggerInterface;
-use Throwable;
-use OCA\DeadManSwitch\Service\ImageService;
 use OCP\AppFramework\Controller;
-use OCP\AppFramework\Http\ContentSecurityPolicy;
-use OCP\AppFramework\Http\DataDownloadResponse;
 use OCP\AppFramework\Http\DataResponse;
-use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCA\DeadManSwitch\Controller\CheckInController;
-use OCA\DeadManSwitch\Cron\CheckInTask;
 use OCA\DeadManSwitch\Service\MailService;
-
 use OCA\DeadManSwitch\AppInfo\Application;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -38,10 +21,12 @@ class PageController extends Controller {
 
 	public const ACTIVE_CONFIG_KEY = 'active';
 	public const CHECK_IN_INTERVAL_CONFIG_KEY = 'check_in_interval';
+	public const LAST_CHECK_IN_CONFIG_KEY = 'last_check_in';
 
 	public const CONFIG_KEYS = [
 		self::ACTIVE_CONFIG_KEY,
 		self::CHECK_IN_INTERVAL_CONFIG_KEY,
+		self::LAST_CHECK_IN_CONFIG_KEY
 	];
 
 	/**
@@ -101,8 +86,8 @@ class PageController extends Controller {
 	 * @return TemplateResponse
 	 */
 	public function mainPage(): TemplateResponse {
-		$active = $this->config->getUserValue($this->userId, Application::APP_ID, self::ACTIVE_CONFIG_KEY);
-		$interval = $this->config->getUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY);
+		$active = $this->config->getUserValue($this->userId, Application::APP_ID, self::ACTIVE_CONFIG_KEY, false);
+		$interval = $this->config->getUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, 1);
 		$initialState = [
 			self::ACTIVE_CONFIG_KEY => $active,
 			self::CHECK_IN_INTERVAL_CONFIG_KEY => $interval
@@ -132,19 +117,20 @@ class PageController extends Controller {
 	 */
 	public function saveConfig(string $interval, bool $active): DataResponse {
 		$userEmail = $this->currentUser->getEMailAddress();
-			$this->config->setUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, $interval);
-			$this->config->setUserValue($this->userId, Application::APP_ID, self::ACTIVE_CONFIG_KEY, (string) $active);
-			// $this->mailService->notify($userEmail, "test");
-			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_WEEKLY);
-			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_DAILY);
-			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_WEEKLY);
-			// $this->checkInController->addJob($userEmail, CheckInController::INTERVAL_FOUR_WEEKLY);
-			// $this->checkInController->removeJob($userEmail, CheckInController::INTERVAL_DAILY);
-			// $this->checkInController->removeJob($userEmail, CheckInController::INTERVAL_WEEKLY);
-			// $this->checkInController->removeJob($userEmail, CheckInController::INTERVAL_FOUR_WEEKLY);
+		$uid = $this->currentUser->getUID();
+		$this->config->setUserValue($uid, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, $interval);
+		$this->config->setUserValue($uid, Application::APP_ID, self::ACTIVE_CONFIG_KEY, (string) $active);
+		$this->config->setUserValue($uid, Application::APP_ID, self::LAST_CHECK_IN_CONFIG_KEY, date_format(new DateTime(), 'Ymd'));
 
-			return new DataResponse([
-				'message' => 'your email is ' . $this->currentUser->getEMailAddress(),
-			]);
+		$this->mailService->notify($userEmail, $active ? 'enabled' : 'disabled');
+		if ($active) {
+			$this->checkInController->addJob($userEmail, $uid);
+		} else {
+			$this->checkInController->removeJob($userEmail, $uid);
+		}
+
+		return new DataResponse([
+			'message' => 'your email is ' . $this->currentUser->getEMailAddress(),
+		]);
 	}
 }

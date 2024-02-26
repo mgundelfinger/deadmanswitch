@@ -34,7 +34,6 @@ function setSaveAction(state) {
 	saveButton.addEventListener('click', (e) => {
 		const url = generateUrl('/apps/deadmanswitch/config')
 		const params = {
-		  key: 'check_in_interval',
 		  interval: intervalSelector.value,
 		  active: activeToggle.checked,
 		}
