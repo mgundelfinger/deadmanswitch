@@ -120,7 +120,7 @@ class PageController extends Controller {
 		$uid = $this->currentUser->getUID();
 		$this->config->setUserValue($uid, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, $interval);
 		$this->config->setUserValue($uid, Application::APP_ID, self::ACTIVE_CONFIG_KEY, (string) $active);
-		$this->config->setUserValue($uid, Application::APP_ID, self::LAST_CHECK_IN_CONFIG_KEY, date_format(new DateTime(), 'Ymd'));
+		$this->config->setUserValue($uid, Application::APP_ID, self::LAST_CHECK_IN_CONFIG_KEY, date_format(new DateTime(), 'Y-m-d'));
 
 		$this->mailService->notify($userEmail, $active ? 'enabled' : 'disabled');
 		if ($active) {

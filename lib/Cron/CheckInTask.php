@@ -37,15 +37,17 @@ class CheckInTask extends TimedJob {
         $email = $arguments['email'];
         $uid = $arguments['uid'];
 
-        $lastCheckIn = $this->config->getUserValue($uid, Application::APP_ID, PageController::LAST_CHECK_IN_CONFIG_KEY);
         $interval = $this->config->getUserValue($uid, Application::APP_ID, PageController::CHECK_IN_INTERVAL_CONFIG_KEY);
-        $now = date_format(new DateTime(), 'Ymd');
+        $lastCheckInString = $this->config->getUserValue($uid, Application::APP_ID, PageController::LAST_CHECK_IN_CONFIG_KEY);
+        $lastCheckIn = new DateTime($lastCheckInString);
+        $now = new DateTime();
+        $daysSinceLastCheckIn = $lastCheckIn->diff($now)->days;
 
-        if ($interval <= $now - $lastCheckIn)
+        if ($interval <= $daysSinceLastCheckIn)
         {
-            $this->mailService->notify($email, "SUCCESS: {$interval} - {$now}, {$lastCheckIn}");
+            $this->mailService->notify($email, "SUCCESS: {$interval} - " . date_format($now, "Y-m-d") . ", {$lastCheckInString}");
         } else {
-            $this->mailService->notify($email, "FAILURE: {$interval} - {$now}, {$lastCheckIn}");
+            $this->mailService->notify($email, "FAILURE: {$interval} - " . date_format($now, "Y-m-d") . ", {$lastCheckInString}");
         }
     }
 
