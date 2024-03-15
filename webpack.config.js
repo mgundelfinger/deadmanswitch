@@ -15,6 +15,7 @@ webpackConfig.stats = {
 const appId = 'deadmanswitch'
 webpackConfig.entry = {
 	main: { import: path.join(__dirname, 'src', 'mainScript.js'), filename: appId + '-mainScript.js' },
+	checkIn: { import: path.join(__dirname, 'src', 'checkInScript.js'), filename: appId + '-checkInScript.js' },
 }
 
 module.exports = webpackConfig

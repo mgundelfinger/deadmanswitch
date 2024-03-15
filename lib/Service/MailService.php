@@ -3,23 +3,36 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Service;
 
+use OCP\IURLGenerator;
 use OCP\Mail\IMailer;
 
 class MailService {
 
     private IMailer $mailer;
 
-    public function __construct(IMailer $mailer) {
+    private IURLGenerator $urlGenerator;
+
+    public function __construct(IMailer $mailer, IURLGenerator $urlGenerator) {
         $this->mailer = $mailer;
+        $this->urlGenerator = $urlGenerator;
     }
 
-    public function notify(string $email, string $text): void {
+    public function sendCheckInEmail(string $email) {
+        $subject = "Nextcloud Dead Man Switch: Check In";
+        $htmlBody = "<doctype html><html><body><div>Bitte klicken Sie hier um ihren Dead Man Switch zurückzusetzen:</div><div><a href='" . $this->urlGenerator->linkToRouteAbsolute('deadmanswitch.page.checkInPage') . "';>Reset</a></div></body></html>";
+        $this->notify($email, $subject, htmlBody:$htmlBody);
+    }
+
+    public function notify(string $email, string $subject, string $body = "", $htmlBody = ""): void {
         $message = $this->mailer->createMessage();
-        $message->setSubject($text);
-        $message->setPlainBody("This message is being sent " . $text . ".");
-        // $message->setHtmlBody(
-        //     "<!doctype html><html><body>This is some <b>text</b></body></html>"
-        // );
+        $message->setSubject($subject);
+        if (!empty($htmlBody)) {
+            $message->setHtmlBody(
+                $htmlBody
+            );
+        } else {
+            $message->setPlainBody($body);
+        }
         $message->setTo([$email]);
         $this->mailer->send($message);
     }

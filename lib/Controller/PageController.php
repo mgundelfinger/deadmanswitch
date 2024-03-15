@@ -76,10 +76,6 @@ class PageController extends Controller {
 	}
 
 	/**
-	 * This returns the template of the main app's page
-	 * It adds some initialState data (file list and fixed_gif_size config value)
-	 * and also provide some data to the template (app version)
-	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 *
@@ -132,5 +128,24 @@ class PageController extends Controller {
 		return new DataResponse([
 			'message' => 'your email is ' . $this->currentUser->getEMailAddress(),
 		]);
+	}
+
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * 
+	 * @return TemplateResponse
+	 */
+	public function checkInPage(): TemplateResponse {
+		$active = $this->config->setUserValue($this->userId, Application::APP_ID, self::LAST_CHECK_IN_CONFIG_KEY, date_format(new DateTime(), 'Y-m-d'));
+
+		$appVersion = $this->config->getAppValue(Application::APP_ID, 'installed_version');
+		return new TemplateResponse(
+			Application::APP_ID,
+			'checkInTemplate',
+			[
+				'app_version' => $appVersion,
+			]
+		);
 	}
 }

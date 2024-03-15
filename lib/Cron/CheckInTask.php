@@ -45,7 +45,7 @@ class CheckInTask extends TimedJob {
 
         if ($interval <= $daysSinceLastCheckIn)
         {
-            $this->mailService->notify($email, "SUCCESS: {$interval} - " . date_format($now, "Y-m-d") . ", {$lastCheckInString}");
+            $this->mailService->sendCheckInEmail($email);
         } else {
             $this->mailService->notify($email, "FAILURE: {$interval} - " . date_format($now, "Y-m-d") . ", {$lastCheckInString}");
         }
