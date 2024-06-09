@@ -23,6 +23,12 @@ class MailService {
         $this->notify($email, $subject, htmlBody:$htmlBody);
     }
 
+    public function sendFinalEmail(string $email, string $originalEmail) {
+        $subject = "Nextcloud Dead Man Switch: Account Transfer";
+        $htmlBody = "<doctype html><html><body><div>Der Nextcloud Account von $originalEmail steht Ihnen jetzt zur Verfügung/div></body></html>";
+        
+    }
+
     public function notify(string $email, string $subject, string $body = "", $htmlBody = ""): void {
         $message = $this->mailer->createMessage();
         $message->setSubject($subject);

@@ -14,6 +14,7 @@ use OCP\IRequest;
 use OCA\DeadManSwitch\Controller\CheckInController;
 use OCA\DeadManSwitch\Service\MailService;
 use OCA\DeadManSwitch\AppInfo\Application;
+use OCA\DeadManSwitch\Cron\CheckInTask;
 use OCP\IUser;
 use OCP\IUserSession;
 
@@ -22,11 +23,15 @@ class PageController extends Controller {
 	public const ACTIVE_CONFIG_KEY = 'active';
 	public const CHECK_IN_INTERVAL_CONFIG_KEY = 'check_in_interval';
 	public const LAST_CHECK_IN_CONFIG_KEY = 'last_check_in';
+	public const SWITCH_ARMED = 'switch_armed';
+	public const TRANSFER_EMAIL = 'transfer_email';
 
 	public const CONFIG_KEYS = [
 		self::ACTIVE_CONFIG_KEY,
 		self::CHECK_IN_INTERVAL_CONFIG_KEY,
-		self::LAST_CHECK_IN_CONFIG_KEY
+		self::LAST_CHECK_IN_CONFIG_KEY,
+		self::SWITCH_ARMED,
+		self::TRANSFER_EMAIL
 	];
 
 	/**
@@ -83,10 +88,13 @@ class PageController extends Controller {
 	 */
 	public function mainPage(): TemplateResponse {
 		$active = $this->config->getUserValue($this->userId, Application::APP_ID, self::ACTIVE_CONFIG_KEY, false);
-		$interval = $this->config->getUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, 1);
+		$interval = $this->config->getUserValue($this->userId, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, CheckInTask::INTERVAL_DAILY);
+		$switchArmed = $this->config->getUserValue($this->userId, Application::APP_ID, self::SWITCH_ARMED, false);
+		$mailList = $this->config->getUserValue($this->userId, Application::APP_ID, self::TRANSFER_EMAIL, null);
 		$initialState = [
 			self::ACTIVE_CONFIG_KEY => $active,
-			self::CHECK_IN_INTERVAL_CONFIG_KEY => $interval
+			self::CHECK_IN_INTERVAL_CONFIG_KEY => $interval,
+			self::SWITCH_ARMED => $switchArmed
 		];
 		$this->initialStateService->provideInitialState('initial_state', $initialState);
 
@@ -117,6 +125,8 @@ class PageController extends Controller {
 		$this->config->setUserValue($uid, Application::APP_ID, self::CHECK_IN_INTERVAL_CONFIG_KEY, $interval);
 		$this->config->setUserValue($uid, Application::APP_ID, self::ACTIVE_CONFIG_KEY, (string) $active);
 		$this->config->setUserValue($uid, Application::APP_ID, self::LAST_CHECK_IN_CONFIG_KEY, date_format(new DateTime(), 'Y-m-d'));
+		$this->config->setUserValue($uid, Application::APP_ID, self::SWITCH_ARMED, false);
+		$this->config->setUserValue($uid, Application::APP_ID, self::TRANSFER_EMAIL, 'test@example.com');
 
 		$this->mailService->notify($userEmail, $active ? 'enabled' : 'disabled');
 		if ($active) {

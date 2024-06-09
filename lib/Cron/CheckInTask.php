@@ -29,7 +29,8 @@ class CheckInTask extends TimedJob {
         $this->mailService = $mailService;
         $this->config = $config;
 
-        $this->setInterval(300 - 60);
+        //run daily
+        $this->setInterval(86400);
     }
 
     protected function run($arguments) {
@@ -39,13 +40,18 @@ class CheckInTask extends TimedJob {
 
         $interval = $this->config->getUserValue($uid, Application::APP_ID, PageController::CHECK_IN_INTERVAL_CONFIG_KEY);
         $lastCheckInString = $this->config->getUserValue($uid, Application::APP_ID, PageController::LAST_CHECK_IN_CONFIG_KEY);
+        $switchArmed = $this->config->getUserValue($uid, Application::APP_ID, PageController::SWITCH_ARMED);
+        $transferEmail = $this->config->getUserValue($uid, Application::APP_ID, PageController::TRANSFER_EMAIL);
         $lastCheckIn = new DateTime($lastCheckInString);
         $now = new DateTime();
         $daysSinceLastCheckIn = $lastCheckIn->diff($now)->days;
 
-        if ($interval <= $daysSinceLastCheckIn)
+        if ($interval <= $daysSinceLastCheckIn and !$switchArmed)
         {
             $this->mailService->sendCheckInEmail($email);
+            $this->config->setUserValue($uid, Application::APP_ID, PageController::SWITCH_ARMED, true);
+        } else if ($interval <= $daysSinceLastCheckIn + 3 and $switchArmed) {
+            $this->mailService->sendFinalEmail($transferEmail, $email);
         } else {
             $this->mailService->notify($email, "FAILURE: {$interval} - " . date_format($now, "Y-m-d") . ", {$lastCheckInString}");
         }
