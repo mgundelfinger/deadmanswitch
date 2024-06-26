@@ -12,15 +12,19 @@ function main() {
 	// we get the data injected via the Initial State mechanism
 	const state = loadState('deadmanswitch', 'initial_state')
 
-	document.getElementById('intervalSelector').value = state.check_in_interval
-	document.getElementById('onOffSwitch').checked = state.active
+	updateForm(state)
 
 	toggleSave(state)
-	toggleFormElements(state)
+	toggleFormElements()
 	setSaveAction(state)
 	setCancelAction(state)
 	setActiveAction(state)
 	addFormListener(state)
+}
+
+function updateForm(state) {
+	document.getElementById('intervalSelector').value = state.check_in_interval
+	document.getElementById('onOffSwitch').checked = !!+state.active
 }
 
 /**
@@ -32,14 +36,14 @@ function setSaveAction(state) {
 	const activeToggle = document.getElementById('onOffSwitch')
 	const intervalSelector = document.getElementById('intervalSelector')
 	saveButton.addEventListener('click', (e) => {
-		const url = generateUrl('/apps/deadmanswitch/config')
-		const params = {
-		  interval: intervalSelector.value,
-		  active: activeToggle.checked,
-		}
-		axios.put(url, params)
+		e.preventDefault()
+		const url = generateUrl('/apps/deadmanswitch/config/' + intervalSelector.value + '/' + (activeToggle.checked ? '1' : '0'))
+		axios.put(url)
 			.then((response) => {
-				showSuccess('Settings saved: ' + response.data.message)
+				state.check_in_interval = intervalSelector.value
+				state.active = (activeToggle.checked ? '1' : '0')
+				updateForm(state)
+				showSuccess(response.data.message)
 			})
 			.catch((error) => {
 				showError('Failed to save settings: ' + error.response.data.error_message)
@@ -53,11 +57,11 @@ function setSaveAction(state) {
  */
 function setCancelAction(state) {
 	const cancelButton = document.getElementById('cancelButton')
-	const activeToggle = document.getElementById('onOffSwitch')
-	const intervalSelector = document.getElementById('intervalSelector')
 	cancelButton.addEventListener('click', (e) => {
-		activeToggle.checked = state.active
-		intervalSelector.value = state.check_in_interval
+		e.preventDefault()
+		updateForm(state)
+		toggleFormElements()
+		toggleSave(state)
 	})
 }
 
@@ -76,7 +80,7 @@ function setActiveAction(state) {
 				element.disabled = true
 			}
 		}
-		toggleFormElements(state)
+		toggleFormElements()
 		toggleSave(state)
 	})
 }
@@ -94,11 +98,7 @@ function addFormListener(state) {
 	}
 }
 
-/**
- *
- * @param {any} state Initial State
- */
-function toggleFormElements(state) {
+function toggleFormElements() {
 	const isActive = document.getElementById('onOffSwitch').checked
 	const config = document.getElementById('config')
 	for (const element of config.querySelectorAll('*[id]')) {
@@ -115,10 +115,10 @@ function toggleSave(state) {
 	const intervalSelector = document.getElementById('intervalSelector')
 	const saveButton = document.getElementById('saveButton')
 	const cancelButton = document.getElementById('cancelButton')
-	if (!activeToggle.checked && !state.active && intervalSelector.value !== state.check_in_interval) {
+	if (!activeToggle.checked && !!!+state.active && intervalSelector.value !== state.check_in_interval) {
 		saveButton.disabled = true
 		cancelButton.disabled = false
-	} else if (activeToggle.checked === Boolean(state.active) && intervalSelector.value === state.check_in_interval) {
+	} else if (activeToggle.checked === !!+state.active && intervalSelector.value === state.check_in_interval) {
 		saveButton.disabled = true
 		cancelButton.disbled = true
 	} else {

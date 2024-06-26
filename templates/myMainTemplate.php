@@ -21,6 +21,9 @@ if ($_['app_version']) {
     </div>
     <div id="config">
         <select id="intervalSelector" disabled>
+            <!-- TODO prototype only /-->
+            <option value=0>Instant</option>
+
             <option value=1>Daily</option>
             <option value=7>Weekly</option>
             <option value=28>Every Four Weeks</option>

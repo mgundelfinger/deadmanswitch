@@ -19,11 +19,14 @@ class CheckInController extends Controller {
     }
 
     public function addJob(string $email, string $uid) {
-
         $this->jobList->add(CheckInTask::class, ['email' => $email, 'uid' => $uid]);
     }
 
     public function removeJob(string $email, string $uid) {
         $this->jobList->remove(CheckInTask::class, ['email' => $email, 'uid' => $uid]);
+    }
+
+    public function hasJob(string $email, string $uid) {
+        return $this->jobList->has(CheckInTask::class, ['email' => $email, 'uid' => $uid]);
     }
 }
