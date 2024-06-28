@@ -14,9 +14,9 @@
     <author mail="marlonqgundelfinger@gmail.com" >Marlon Gundelfinger</author>
     <namespace>DeadManSwitch</namespace>
     <category>tools</category>
-    <bugs>http://test.com</bugs>
+    <bugs>https://github.com/mgundelfinger/deadmanswitch/issues</bugs>
     <dependencies>
-        <nextcloud min-version="29" max-version="29"/>
+        <nextcloud min-version="28" max-version="29"/>
     </dependencies>
     <navigations>
         <navigation>
