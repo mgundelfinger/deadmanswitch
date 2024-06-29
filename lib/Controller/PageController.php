@@ -125,7 +125,7 @@ class PageController extends Controller {
 	 * @return DataResponse
 	 * @throws PreConditionNotMetException
 	 */
-	#[FrontpageRoute(verb: 'PUT', url: '/config/{interval}/{active}')]
+	// #[FrontpageRoute(verb: 'PUT', url: '/config/{interval}/{active}')]
 	public function saveConfig(string $interval, string $active): DataResponse {
 		$userEmail = $this->currentUser->getEMailAddress();
 		$uid = $this->currentUser->getUID();
