@@ -64,7 +64,7 @@ class PageController extends Controller {
 	 * @var IUser
 	 */
 	private $currentUser;
-	
+
 
 	public function __construct(string $appName,
 								IRequest $request,
@@ -115,6 +115,23 @@ class PageController extends Controller {
 	}
 
 	/**
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return TemplateResponse
+	 */
+	#[FrontpageRoute(verb: 'GET', url: '/test')]
+	public function test(): TemplateResponse {
+
+
+		return new TemplateResponse(
+			Application::APP_ID,
+			'test',
+		);
+	}
+
+
+	/**
 	 * This is an API endpoint to set a user config value
 	 * It returns a simple DataResponse: a message to be displayed
 	 *
@@ -153,7 +170,7 @@ class PageController extends Controller {
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
-	 * 
+	 *
 	 * @return TemplateResponse
 	 */
 	public function checkInPage(): TemplateResponse {
