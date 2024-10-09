@@ -64,16 +64,29 @@ class JobMapper extends QBMapper {
 	 * @return Job[]
 	 * @throws Exception
 	 */
-	public function getJobsOfUser(string $userId): array {
+	public function getJobsOfUser(string $userId, $limit = 10, $offset = 0): array {
 		$qb = $this->db->getQueryBuilder();
 
-		$qb->select('*')
+		$qb
+			->select('*')
 			->from($this->getTableName())
 			->where(
 				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-			);
+			)
+			->setFirstResult($offset)
+			->setMaxResults($limit)
+		;
 
 		return $this->findEntities($qb);
+	}
+
+	public function getJobsOfUserTotal(string $userId): int {
+		$qb = $this->db->getQueryBuilder();
+
+		$result = $qb->select($qb->func()->count('*', 'jobs_count'))
+			->from($this->getTableName())
+			->executeQuery();
+		return $result->fetch()['jobs_count'];
 	}
 
 	/**

@@ -5,6 +5,8 @@ use OCP\Util;
 $appId = OCA\DeadManSwitch\AppInfo\Application::APP_ID;
 Util::addScript($appId, $appId . '-checkInScript');
 Util::addStyle($appId, 'main');
+
+
 ?>
 
 <div id="app-content">
