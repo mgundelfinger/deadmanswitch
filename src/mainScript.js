@@ -169,7 +169,7 @@ function toggleSave(state) {
 document.addEventListener('DOMContentLoaded', (event) => {
 	main()
 
-	let table = new DataTable('#myTable', {
+	let table = new DataTable('#jobsTable', {
 		'ajax': 'get-jobs',
 		'processing': true,
 		'serverSide': true,

@@ -860,3 +860,12 @@ dl, ol, ul {
 	/* margin-top: 0; */
 	/* margin-bottom: 1rem; */
 }
+
+.buttons-container {
+	padding: 20px;
+	width: 100%;
+}
+
+.custom-container {
+	margin-top: 20px;
+}

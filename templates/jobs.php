@@ -1,7 +1,14 @@
 <?php require_once  dirname(__FILE__) . "/menu.php" ?>
 
 <div id="app-content">
-	<table id="myTable" class="display">
+
+	<div class="buttons-container">
+		<a type="button" class="btn btn-primary" href="/index.php/apps/deadmanswitch/jobs/create">
+			Add job
+		</a>
+	</div>
+
+	<table id="jobsTable" class="display">
 		<thead>
 		<tr>
 			<th>Name</th>

@@ -121,62 +121,6 @@ class PageController extends Controller {
 	}
 
 	/**
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 * @return TemplateResponse
-	 */
-	#[FrontpageRoute(verb: 'GET', url: '/jobs')]
-	public function jobs(): TemplateResponse {
-		return new TemplateResponse(
-			Application::APP_ID,
-			'jobs',
-			['page' => 'jobs']
-		);
-	}
-
-	/**
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 * @return JsonResponse
-	 */
-	#[FrontpageRoute(verb: 'GET', url: '/get-jobs')]
-	public function getJobs(): JsonResponse {
-		$userId = $this->currentUser->getUID();
-
-		$limit = $this->request->getParam('length');
-		$offset = $this->request->getParam('start');
-		$draw = $this->request->getParam('draw');
-
-		$jobs = $this->jobMapper->getJobsOfUser($userId, $limit, $offset);
-		$data = [];
-		foreach($jobs as $job) {
-			$data[] = [
-				'name' => $job->getName(),
-				'emailSubject' => $job->getEmailSubject(),
-			];
-		}
-
-		$jobsCount = $this->jobMapper->getJobsOfUserTotal($userId);
-
-
-		$data = json_encode([
-			'draw' => $draw,
-			'recordsTotal' => $jobsCount,
-			'recordsFiltered' => $jobsCount,
-			'data' => $data
-		]);
-
-		header('Content-Type: application/json; charset=utf-8');
-		echo $data;
-		die;
-
-
-		return new JsonResponse(array('headers' => 'kjhjkh'));
-	}
-
-	/**
 	 * This is an API endpoint to set a user config value
 	 * It returns a simple DataResponse: a message to be displayed
 	 *
