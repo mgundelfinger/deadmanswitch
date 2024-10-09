@@ -12,10 +12,10 @@ use OCP\AppFramework\Db\Entity;
  * @method void setUserId(?string $userId)
  * @method string getName()
  * @method void setName(string $name)
- * @method string getContent()
- * @method void setContent(string $content)
- * @method int getLastModified()
- * @method void setLastModified(int $lastModified)
+ * @method string getEmailSubject()
+ * @method void setEmailSubject(string $emailSubject)
+ * @method string getEmailBody()
+ * @method void setEmailBody(string $emailBody)
  */
 class Job extends Entity implements \JsonSerializable {
 

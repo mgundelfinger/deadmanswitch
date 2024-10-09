@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use DateTime;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\AppFramework\Db\QBMapper;
 use OCP\DB\Exception;
@@ -13,18 +14,18 @@ use OCP\IDBConnection;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 
-class JobMapper extends QBMapper {
+class ContactMapper extends QBMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'job', Job::class);
+		parent::__construct($db, 'contact', Contact::class);
 	}
 
 	/**
 	 * @param int $id
-	 * @return Job
+	 * @return Contact
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 */
-	public function getJob(int $id): Job {
+	public function getContact(int $id): Contact {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -39,12 +40,12 @@ class JobMapper extends QBMapper {
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return Job
+	 * @return Contact
 	 * @throws DoesNotExistException
 	 * @throws Exception
 	 * @throws MultipleObjectsReturnedException
 	 */
-	public function getJobOfUser(int $id, string $userId): Job {
+	public function getContactOfUser(int $id, string $userId): Contact {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -61,10 +62,10 @@ class JobMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
-	 * @return Job[]
+	 * @return Contact[]
 	 * @throws Exception
 	 */
-	public function getJobsOfUser(string $userId): array {
+	public function getContactsOfUser(string $userId): array {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -78,65 +79,65 @@ class JobMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
-	 * @param string $name
-	 * @param string $emailSubject
-     * @param string $emailBody
-	 * @return Job
+	 * @param string $firstName
+	 * @param string $lastName
+     * @param string $email
+	 * @return Contact
 	 * @throws Exception
 	 */
-	public function createJob(string $userId, string $name, string $emailSubject, string $emailBody): Job {
-		$job = new Job();
-		$job->setUserId($userId);
-		$job->setName($name);
-		$job->setEmailSubject($emailSubject);
-        $job->setEmailBody($emailBody);
-		return $this->insert($job);
+	public function createContact(string $userId, string $firstName, string $lastName, string $email): Contact {
+		$contact = new Contact();
+		$contact->setUserId($userId);
+		$contact->setFirstName($firstName);
+		$contact->setLastName($lastName);
+        $contact->setEmail($email);
+		return $this->insert($contact);
 	}
 
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @param string|null $name
-	 * @param string|null $emailSubject
-     * @param string|null $emailBody
-	 * @return Job|null
+	 * @param string|null $firstName
+	 * @param string|null $lastName
+     * @param string|null $email
+	 * @return Contact|null
 	 * @throws Exception
 	 */
-	public function updateJob(int $id, string $userId, ?string $name = null, ?string $emailSubject = null, ?string $emailBody = null): ?Job {
-		if ($name === null && $emailSubject === null && $emailBody === null) {
+	public function updateContact(int $id, string $userId, ?string $firstName = null, ?string $lastName = null, ?string $email = null): ?Contact {
+		if ($firstName === null && $lastName === null && $email === null) {
 			return null;
 		}
 		try {
-			$job = $this->getJobOfUser($id, $userId);
+			$contact = $this->getContactOfUser($id, $userId);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
-		if ($name !== null) {
-			$job->setName($name);
+		if ($firstName !== null) {
+			$contact->setFirstName($firstName);
 		}
-		if ($emailSubject !== null) {
-			$job->setEmailSubject($emailSubject);
+		if ($lastName !== null) {
+			$contact->setLastName($lastName);
 		}
-        if ($emailBody !== null) {
-			$job->setEmailBody($emailBody);
+        if ($email !== null) {
+			$contact->setEmail($email);
 		}
-		return $this->update($job);
+		return $this->update($contact);
 	}
 
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return Job|null
+	 * @return Contact|null
 	 * @throws Exception
 	 */
-	public function deleteJob(int $id, string $userId): ?Job {
+	public function deleteContact(int $id, string $userId): ?Contact {
 		try {
-			$job = $this->getJobOfUser($id, $userId);
+			$contact = $this->getContactOfUser($id, $userId);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
 
-		return $this->delete($job);
+		return $this->delete($contact);
 	}
 
 	/**
@@ -144,7 +145,7 @@ class JobMapper extends QBMapper {
 	 * @return void
 	 * @throws Exception
 	 */
-	public function deleteJobsOfUser(string $userId): void {
+	public function deleteContactsOfUser(string $userId): void {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->delete($this->getTableName())

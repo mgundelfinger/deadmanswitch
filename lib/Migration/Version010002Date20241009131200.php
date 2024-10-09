@@ -11,7 +11,7 @@ use OCP\DB\Types;
 use OCP\Migration\IOutput;
 use OCP\Migration\SimpleMigrationStep;
 
-class Version010003Date20241009094700 extends SimpleMigrationStep {
+class Version010002Date20241009131200 extends SimpleMigrationStep {
 
 	/**
 	 * @param IOutput $output
@@ -161,6 +161,44 @@ class Version010003Date20241009094700 extends SimpleMigrationStep {
             $table->addForeignKeyConstraint('oc_confirmator', ['confirmator_id'], ['id']);
             $table->addForeignKeyConstraint('oc_confirmators_group', ['confirmators_group_id'], ['id']);
         }
+
+		if (!$schema->hasTable('task')) {
+			$table = $schema->createTable('task');
+			$table->addColumn('id', Types::BIGINT, [
+				'autoincrement' => true,
+				'notnull' => true,
+				'length' => 4,
+			]);
+            $table->addColumn('user_id', Types::STRING, [
+				'notnull' => true,
+				'length' => 64,
+			]);
+            $table->addColumn('name', Types::STRING, [
+				'notnull' => true,
+				'length' => 64,
+			]);
+            $table->addColumn('active', Types::BOOLEAN, [
+				'notnull' => false,
+			]);
+			$table->addColumn('contacts_group_id', Types::BIGINT, [
+				'notnull' => true,
+			]);
+			$table->addColumn('jobs_group_id', Types::BIGINT, [
+				'notnull' => true,
+			]);
+            $table->addColumn('confirmators_group_id', Types::BIGINT, [
+				'notnull' => true,
+			]);
+            $table->addColumn('trigger_id', Types::BIGINT, [
+				'notnull' => true,
+			]);
+			$table->setPrimaryKey(['id']);
+            $table->addIndex(['user_id'], 'task_uid');
+			$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
+            $table->addForeignKeyConstraint('oc_jobs_group', ['jobs_group_id'], ['id']);
+            $table->addForeignKeyConstraint('oc_confirmators_group', ['confirmators_group_id'], ['id']);
+            $table->addForeignKeyConstraint('oc_trigger', ['trigger_id'], ['id']);
+		}
 
 		return $schema;
 	}

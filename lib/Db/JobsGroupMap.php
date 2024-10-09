@@ -7,24 +7,24 @@ namespace OCA\DeadManSwitch\Db;
 
 use OCP\AppFramework\Db\Entity;
 
-/**
- * @method string getName()
- * @method void setName(string $name)
- */
-class AliveStatus extends Entity implements \JsonSerializable {
+class JobsGroupMap extends Entity implements \JsonSerializable {
 
-	/** @var string */
-	protected $name;
+    /** @var int */
+	protected $jobId;
+	/** @var int */
+	protected $jobsGroupId;
 
 	public function __construct() {
-		$this->addType('name', 'string');
+		$this->addType('job_id', 'integer');
+		$this->addType('jobs_group_id', 'integer');
 	}
 
 	#[\ReturnTypeWillChange]
 	public function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
-			'name' => $this->name,
+			'job_id' => $this->jobId,
+			'jobs_group_id' => $this->jobsGroupId,
 		];
 	}
 }

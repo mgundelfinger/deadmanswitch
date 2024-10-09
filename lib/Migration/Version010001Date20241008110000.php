@@ -31,20 +31,26 @@ class Version010001Date20241008110000 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
+		// $table = $schema->getTable('job');
+		// $table->addColumn('email_subject', Types::INTEGER, [
+		// 	'notnull' => true,
+		// ]);
+		// $table->addColumn('email_body', Types::INTEGER, [
+		// 	'notnull' => true,
+		// ]);
+
 		if ($schema->hasTable('job')) {
 			$table = $schema->getTable('job');
-			if($table->getColumn('email_subject')->getType() == Types::INTEGER) {
-				$table->dropColumn('email_subject');
-				$table->dropColumn('email_body');
-				$table->addColumn('email_subject', Types::STRING, [
-					'notnull' => true,
-					'length' => 64,
-				]);
-				$table->addColumn('email_body', Types::STRING, [
-					'notnull' => true,
-					'length' => 512,
-				]);
-			}
+			$table->dropColumn('email_subject');
+			$table->dropColumn('email_body');
+			$table->addColumn('email_subject', Types::STRING, [
+				'notnull' => true,
+				'length' => 64,
+			]);
+			$table->addColumn('email_body', Types::STRING, [
+				'notnull' => true,
+				'length' => 512,
+			]);
 		}
         
         if ($schema->hasTable('trigger')) {

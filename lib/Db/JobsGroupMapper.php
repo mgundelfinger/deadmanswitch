@@ -13,18 +13,18 @@ use OCP\IDBConnection;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 
-class JobMapper extends QBMapper {
+class JobsGroupMapper extends QBMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'job', Job::class);
+		parent::__construct($db, 'jobs_group', JobsGroup::class);
 	}
 
 	/**
 	 * @param int $id
-	 * @return Job
+	 * @return JobsGroup
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 */
-	public function getJob(int $id): Job {
+	public function getJobsGroup(int $id): JobsGroup {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -39,12 +39,12 @@ class JobMapper extends QBMapper {
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return Job
+	 * @return JobsGroup
 	 * @throws DoesNotExistException
 	 * @throws Exception
 	 * @throws MultipleObjectsReturnedException
 	 */
-	public function getJobOfUser(int $id, string $userId): Job {
+	public function getJobsGroupOfUser(int $id, string $userId): JobsGroup {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -61,10 +61,10 @@ class JobMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
-	 * @return Job[]
+	 * @return JobsGroup[]
 	 * @throws Exception
 	 */
-	public function getJobsOfUser(string $userId): array {
+	public function getJobsGroupsOfUser(string $userId): array {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -78,65 +78,47 @@ class JobMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
-	 * @param string $name
-	 * @param string $emailSubject
-     * @param string $emailBody
-	 * @return Job
-	 * @throws Exception
-	 */
-	public function createJob(string $userId, string $name, string $emailSubject, string $emailBody): Job {
-		$job = new Job();
-		$job->setUserId($userId);
-		$job->setName($name);
-		$job->setEmailSubject($emailSubject);
-        $job->setEmailBody($emailBody);
-		return $this->insert($job);
-	}
-
-	/**
-	 * @param int $id
-	 * @param string $userId
 	 * @param string|null $name
-	 * @param string|null $emailSubject
-     * @param string|null $emailBody
-	 * @return Job|null
+	 * @return JobsGroup
 	 * @throws Exception
 	 */
-	public function updateJob(int $id, string $userId, ?string $name = null, ?string $emailSubject = null, ?string $emailBody = null): ?Job {
-		if ($name === null && $emailSubject === null && $emailBody === null) {
-			return null;
-		}
-		try {
-			$job = $this->getJobOfUser($id, $userId);
-		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
-			return null;
-		}
-		if ($name !== null) {
-			$job->setName($name);
-		}
-		if ($emailSubject !== null) {
-			$job->setEmailSubject($emailSubject);
-		}
-        if ($emailBody !== null) {
-			$job->setEmailBody($emailBody);
-		}
-		return $this->update($job);
+	public function createJobsGroup(string $userId, string $name = null): JobsGroup {
+		$jobsGroup = new JobsGroup();
+		$jobsGroup->setUserId($userId);
+		$jobsGroup->setName($name);
+		return $this->insert($jobsGroup);
 	}
 
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return Job|null
+	 * @param string $name
+	 * @return JobsGroup|null
 	 * @throws Exception
 	 */
-	public function deleteJob(int $id, string $userId): ?Job {
+	public function updateJobsGroup(int $id, string $userId, string $name): ?JobsGroup {
 		try {
-			$job = $this->getJobOfUser($id, $userId);
+			$jobsGroup = $this->getJobsGroupOfUser($id, $userId);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
+		$jobsGroup->setName($name);
+		return $this->update($jobsGroup);
+	}
 
-		return $this->delete($job);
+	/**
+	 * @param int $id
+	 * @param string $userId
+	 * @return JobsGroup|null
+	 * @throws Exception
+	 */
+	public function deleteJobsGroup(int $id, string $userId): ?JobsGroup {
+		try {
+			$jobsGroup = $this->getJobsGroupOfUser($id, $userId);
+		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
+			return null;
+		}
+		return $this->delete($jobsGroup);
 	}
 
 	/**
@@ -144,7 +126,7 @@ class JobMapper extends QBMapper {
 	 * @return void
 	 * @throws Exception
 	 */
-	public function deleteJobsOfUser(string $userId): void {
+	public function deleteJobsGroupsOfUser(string $userId): void {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->delete($this->getTableName())

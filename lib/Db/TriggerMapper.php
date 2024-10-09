@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
-use DateTime;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\AppFramework\Db\QBMapper;
 use OCP\DB\Exception;

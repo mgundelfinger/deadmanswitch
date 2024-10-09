@@ -10,24 +10,24 @@ use OCP\AppFramework\Db\Entity;
 /**
  * @method string|null getUserId()
  * @method void setUserId(?string $userId)
- * @method string getName()
- * @method void setName(string $name)
- * @method int getInterval()
- * @method void setInterval(int $interval)
+ * @method int getContactId()
+ * @method void setContactId(int $contactId)
+ * @method int getIntervalId()
+ * @method void setIntervalId(int $intervalId)
  */
-class CheckupInterval extends Entity implements \JsonSerializable {
+class Confirmator extends Entity implements \JsonSerializable {
 
     /** @var string */
 	protected $userId;
-	/** @var string */
-	protected $name;
 	/** @var int */
-	protected $interval;
+	protected $contactId;
+    /** @var int */
+	protected $intervalId;
 
 	public function __construct() {
 		$this->addType('user_id', 'string');
-		$this->addType('name', 'string');
-		$this->addType('interval', 'integer');
+		$this->addType('contact_id', 'integer');
+        $this->addType('interval_id', 'integer');
 	}
 
 	#[\ReturnTypeWillChange]
@@ -35,8 +35,8 @@ class CheckupInterval extends Entity implements \JsonSerializable {
 		return [
 			'id' => $this->id,
 			'user_id' => $this->userId,
-			'name' => $this->name,
-			'interval' => $this->interval,
+			'contact_id' => $this->contactId,
+            'interval_id' => $this->intervalId,
 		];
 	}
 }

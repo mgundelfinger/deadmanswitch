@@ -5,14 +5,9 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
-use DateTime;
-use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\AppFramework\Db\QBMapper;
-use OCP\DB\Exception;
 use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
-
-use OCP\AppFramework\Db\DoesNotExistException;
 
 class AliveStatusMapper extends QBMapper {
 	public function __construct(IDBConnection $db) {

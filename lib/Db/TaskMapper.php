@@ -13,18 +13,18 @@ use OCP\IDBConnection;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 
-class JobMapper extends QBMapper {
+class TaskMapper extends QBMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'job', Job::class);
+		parent::__construct($db, 'task', Task::class);
 	}
 
 	/**
 	 * @param int $id
-	 * @return Job
+	 * @return Task
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 */
-	public function getJob(int $id): Job {
+	public function getTask(int $id): Task {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -39,12 +39,12 @@ class JobMapper extends QBMapper {
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return Job
+	 * @return Task
 	 * @throws DoesNotExistException
 	 * @throws Exception
 	 * @throws MultipleObjectsReturnedException
 	 */
-	public function getJobOfUser(int $id, string $userId): Job {
+	public function getTaskOfUser(int $id, string $userId): Task {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -61,10 +61,10 @@ class JobMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
-	 * @return Job[]
+	 * @return Task[]
 	 * @throws Exception
 	 */
-	public function getJobsOfUser(string $userId): array {
+	public function getTasksOfUser(string $userId): array {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -79,64 +79,40 @@ class JobMapper extends QBMapper {
 	/**
 	 * @param string $userId
 	 * @param string $name
-	 * @param string $emailSubject
-     * @param string $emailBody
-	 * @return Job
+	 * @param int $contactsGroupId
+     * @param int $jobsGroupId
+     * @param int $confirmatorsGroupId
+     * @param int $triggerId
+     * @param bool $active
+	 * @return Task
 	 * @throws Exception
 	 */
-	public function createJob(string $userId, string $name, string $emailSubject, string $emailBody): Job {
-		$job = new Job();
-		$job->setUserId($userId);
-		$job->setName($name);
-		$job->setEmailSubject($emailSubject);
-        $job->setEmailBody($emailBody);
-		return $this->insert($job);
+	public function createTask(string $userId, string $name, int $contactsGroupId, int $jobsGroupId, int $confirmatorsGroupId, int $triggerId, bool $active): Job {
+		$task = new Task();
+		$task->setUserId($userId);
+		$task->setName($name);
+        $task->setContactsGroupId($contactsGroupId);
+        $task->setJobsGroupId($jobsGroupId);
+        $task->setConfirmatorsGroupId($confirmatorsGroupId);
+        $task->setTriggerId($triggerId);
+		$task->setActive($active);
+		return $this->insert($task);
 	}
 
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @param string|null $name
-	 * @param string|null $emailSubject
-     * @param string|null $emailBody
-	 * @return Job|null
+	 * @return Task|null
 	 * @throws Exception
 	 */
-	public function updateJob(int $id, string $userId, ?string $name = null, ?string $emailSubject = null, ?string $emailBody = null): ?Job {
-		if ($name === null && $emailSubject === null && $emailBody === null) {
-			return null;
-		}
+	public function deleteTask(int $id, string $userId): ?Task {
 		try {
-			$job = $this->getJobOfUser($id, $userId);
-		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
-			return null;
-		}
-		if ($name !== null) {
-			$job->setName($name);
-		}
-		if ($emailSubject !== null) {
-			$job->setEmailSubject($emailSubject);
-		}
-        if ($emailBody !== null) {
-			$job->setEmailBody($emailBody);
-		}
-		return $this->update($job);
-	}
-
-	/**
-	 * @param int $id
-	 * @param string $userId
-	 * @return Job|null
-	 * @throws Exception
-	 */
-	public function deleteJob(int $id, string $userId): ?Job {
-		try {
-			$job = $this->getJobOfUser($id, $userId);
+			$task = $this->getTaskOfUser($id, $userId);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
 
-		return $this->delete($job);
+		return $this->delete($task);
 	}
 
 	/**
@@ -144,7 +120,7 @@ class JobMapper extends QBMapper {
 	 * @return void
 	 * @throws Exception
 	 */
-	public function deleteJobsOfUser(string $userId): void {
+	public function deleteTasksOfUser(string $userId): void {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->delete($this->getTableName())

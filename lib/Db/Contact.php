@@ -10,12 +10,12 @@ use OCP\AppFramework\Db\Entity;
 /**
  * @method string|null getUserId()
  * @method void setUserId(?string $userId)
- * @method string getName()
- * @method void setName(string $name)
- * @method string getContent()
- * @method void setContent(string $content)
- * @method int getLastModified()
- * @method void setLastModified(int $lastModified)
+ * @method string getFirstName()
+ * @method void setFirstName(string $firstName)
+ * @method string getLastName()
+ * @method void setLastName(string $lastName)
+ * @method string getEmail()
+ * @method void setEmail(string $email)
  */
 class Contact extends Entity implements \JsonSerializable {
 
