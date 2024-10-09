@@ -31,72 +31,31 @@ class Version010001Date20241008110000 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
-        if (!$schema->hasTable('job')) {
-			$table = $schema->createTable('job');
-			$table->addColumn('id', Types::BIGINT, [
-				'autoincrement' => true,
-				'notnull' => true,
-				'length' => 4,
-			]);
-            $table->addColumn('user_id', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-			$table->addColumn('name', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-			$table->addColumn('email_subject', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-            $table->addColumn('email_body', Types::STRING, [
-				'notnull' => true,
-				'length' => 512,
-			]);
-			$table->setPrimaryKey(['id']);
-            $table->addIndex(['user_id'], 'job_uid');
-		} else {
-            $table = $schema->getTable('job');
-            $table->dropColumn('email_subject');
-            $table->dropColumn('email_body');
-            $table->addColumn('email_subject', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-            $table->addColumn('email_body', Types::STRING, [
-				'notnull' => true,
-				'length' => 512,
-			]);
-        }
-
-        if (!$schema->hasTable('trigger')) {
-			$table = $schema->createTable('trigger');
-			$table->addColumn('id', Types::BIGINT, [
-				'autoincrement' => true,
-				'notnull' => true,
-				'length' => 4,
-			]);
-            $table->addColumn('user_id', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-			$table->addColumn('name', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-			$table->addColumn('delay', Types::INTEGER, [
-				'notnull' => true,
-			]);
-			$table->setPrimaryKey(['id']);
-            $table->addIndex(['user_id'], 'trigger_uid');
-		} else {
+		if ($schema->hasTable('job')) {
+			$table = $schema->getTable('job');
+			if($table->getColumn('email_subject')->getType() == Types::INTEGER) {
+				$table->dropColumn('email_subject');
+				$table->dropColumn('email_body');
+				$table->addColumn('email_subject', Types::STRING, [
+					'notnull' => true,
+					'length' => 64,
+				]);
+				$table->addColumn('email_body', Types::STRING, [
+					'notnull' => true,
+					'length' => 512,
+				]);
+			}
+		}
+        
+        if ($schema->hasTable('trigger')) {
             $table = $schema->getTable('trigger');
-            $table->addColumn('user_id', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-            $table->addIndex(['user_id'], 'trigger_uid');
+			if (!$table->hasColumn('user_id')) {
+				$table->addColumn('user_id', Types::STRING, [
+					'notnull' => true,
+					'length' => 64,
+				]);
+            	$table->addIndex(['user_id'], 'trigger_uid');
+			}
         }
 
         if (!$schema->hasTable('contact')) {

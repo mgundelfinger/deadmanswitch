@@ -33,7 +33,7 @@ class CheckupInterval extends Entity implements \JsonSerializable {
 	}
 
 	#[\ReturnTypeWillChange]
-	public function jsonSerialize() {
+	public function jsonSerialize(): mixed {
 		return [
 			'id' => $this->id,
 			'user_id' => $this->userId,
