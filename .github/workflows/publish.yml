@@ -40,6 +40,7 @@ jobs:
           tag_name: v${{ steps.version.outputs.info }}
           body_path: ${{ github.workspace }}/CHANGELOG.md
           token: ${{ secrets.DMS_GIT_TOKEN }}
+          files: ${{ github.workspace }}.tar.gz
       - name: Prepare Signature Key
         run: echo "${{ secrets.DMS_KEY }}" | base64 --decode > ${{ github.workspace }}.key
       - name: Get Signature
