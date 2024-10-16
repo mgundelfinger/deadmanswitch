@@ -39,7 +39,7 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.info }}
           body_path: ${{ github.workspace }}/CHANGELOG.md
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.DMS_GIT_TOKEN }}
       - name: Prepare Signature Key
         run: echo "${{ secrets.DMS_KEY }}" | base64 --decode ${{ github.workspace }}.key
       - name: Get Signature
