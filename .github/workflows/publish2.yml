@@ -8,7 +8,7 @@ on:
   push:
     branches:
       - main
-      - publish-test2
+      - publish-test
 
 jobs:
   build-and-release:
