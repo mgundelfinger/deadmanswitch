@@ -9,7 +9,7 @@
     <name>Dead Man Switch</name>
     <summary>Transfer ownership of your data in the event of your death.</summary>
     <description><![CDATA[Periodical emails check in whether you are still alive, if left unanswered, your cloud data will become available to the users of your choice.]]></description>
-    <version>0.0.9</version>
+    <version>0.0.10</version>
     <licence>agpl</licence>
     <author mail="marlonqgundelfinger@gmail.com" >Marlon Gundelfinger</author>
     <namespace>DeadManSwitch</namespace>
