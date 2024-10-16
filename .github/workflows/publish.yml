@@ -52,15 +52,26 @@ jobs:
           echo "SIGNATURE=$SIGNATURE" >> "$GITHUB_OUTPUT"
         id: sign
       - name: Sign and Upload Release
+        id: upload
         env:
           SIGNATURE: ${{ steps.sign.outputs.SIGNATURE }}
           DOWNLOAD: https://github.com/mgundelfinger/deadmanswitch/releases/download/v${{ steps.version.outputs.info }}/deadmanswitch.tar.gz
+          NC_API_TOKEN: ${{ secrets.NC_API_TOKEN }}
         run: |
-          curl -X POST \
+          STATUS=$(curl -X POST \
             https://apps.nextcloud.com/api/v1/apps/releases \
             -H "Content-Type: application/json" \
             -H "Authorization: Token $NC_API_TOKEN" \
-            -d '\{ \
-            "download":"$DOWNLOAD", \
-            "signature": "$SIGNATURE", \
-            }'
+            -d '{"download":"$DOWNLOAD", "signature": "$SIGNATURE"}'); echo STATUS=$STATUS" >> "$GITHUB_OUTPUT"
+      - name: Upload Success
+        env:
+          STATUS: ${{ steps.upload.outputs.STATUS }}
+        if: ${{ steps.upload.outputs.STATUS }} == 200
+        run: echo $STATUS
+      - name: Upload Failure
+        if: ${{ steps.upload.outputs.STATUS }} != 200
+        env:
+          STATUS: ${{ steps.upload.outputs.STATUS }}
+        run: |
+          echo $STATUS
+          exit 1
