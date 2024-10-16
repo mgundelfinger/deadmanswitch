@@ -43,7 +43,13 @@ jobs:
       - name: Prepare Signature Key
         run: echo "${{ secrets.DMS_KEY }}" | base64 --decode > ${{ github.workspace }}.key
       - name: Get Signature
-        run: echo "SIGNATURE=$(openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64)" >> $GITHUB_OUTPUT
+        run: |
+          {
+            echo 'SIGNATURE<<EOF'
+            openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64
+            echo EOF
+          } >> "$GITHUB_ENV"
+          echo "SIGNATURE=$SIGNATURE" >> "$GITHUB_OUTPUT"
         id: sign
       - name: Sign and Upload Release
         env:
