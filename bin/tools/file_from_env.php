@@ -3,11 +3,8 @@
 /**
 * Nextcloud - News
 *
-* This file is licensed under the Affero General Public License version 3 or
-* later. See the COPYING file.
-*
-* @author Benjamin Brahmer <info@b-brahmer.de>
-* @copyright Benjamin Brahmer 2020
+* SPDX-FileCopyrightText: Benjamin Brahmer <info@b-brahmer.de>
+* SPDX-License-Identifier: AGPL-3.0-or-later
 */
 
 if ($argc < 2) {
