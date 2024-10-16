@@ -1,0 +1,81 @@
+# SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
+# SPDX-License-Identifier: AGPL-3.0-or-later
+
+name: Publish
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - publish-test2
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    name: Build and Release
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+      - name: npm install
+        run: npm ci
+      - name: npm run build
+        run: npm run build
+      - name: Package App
+        run: |
+          cd /home/runner/work/deadmanswitch
+          tar -czvf ${{ github.workspace }}.tar.gz --exclude-vcs deadmanswitch
+      - name: Get Version
+        id: version
+        uses: mavrosxristoforos/get-xml-info@1.0
+        with:
+          xml-file: 'appinfo/info.xml'
+          xpath: '/info/version'
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.version.outputs.info }}
+          body_path: ${{ github.workspace }}/CHANGELOG.md
+          token: ${{ secrets.DMS_GIT_TOKEN }}
+          files: ${{ github.workspace }}.tar.gz
+      - name: Prepare Signature Key
+        run: echo "${{ secrets.DMS_KEY }}" | base64 --decode > ${{ github.workspace }}.key
+      - name: Get Signature
+        run: |
+          {
+            echo 'SIGNATURE<<EOF'
+            openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64
+            echo EOF
+          } >> "$GITHUB_ENV"
+          echo "SIGNATURE=$SIGNATURE" >> "$GITHUB_OUTPUT"
+        id: sign
+      - name: Sign and Upload Release
+        id: upload
+        env:
+          SIGNATURE: ${{ steps.sign.outputs.SIGNATURE }}
+          DOWNLOAD: https://github.com/mgundelfinger/deadmanswitch/releases/download/v${{ steps.version.outputs.info }}/deadmanswitch.tar.gz
+          NC_API_TOKEN: ${{ secrets.NC_API_TOKEN }}
+        run: |
+          STATUS=$(curl -X POST \
+            https://apps.nextcloud.com/api/v1/apps/releases \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Token $NC_API_TOKEN" \
+            -d '{"download":"$DOWNLOAD", "signature": "$SIGNATURE"}')
+          echo "STATUS=$STATUS" >> "$GITHUB_OUTPUT"
+      - name: Upload Success
+        env:
+          STATUS: ${{ steps.upload.outputs.STATUS }}
+        if: ${{ steps.upload.outputs.STATUS }} == 200
+        run: echo $STATUS
+      - name: Upload Failure
+        if: ${{ steps.upload.outputs.STATUS }} != 200
+        env:
+          STATUS: ${{ steps.upload.outputs.STATUS }}
+        run: |
+          echo $STATUS
+          exit 1

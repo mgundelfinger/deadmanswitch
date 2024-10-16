@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: Bernhard Posselt <dev@bernhard-posselt.com>
 # SPDX-License-Identifier: AGPL-3.0-or-later
 
+cert_dir=$(HOME)/.nextcloud/certificates
+
 # Generic Makefile for building and packaging a Nextcloud app which uses npm and
 # Composer.
 #
@@ -156,6 +158,19 @@ appstore:
 	--exclude="../$(app_name)/package-lock.json" \
 	--exclude="../$(app_name)/LICENSES" \
 	../$(app_name) \
+	
+	mkdir -p $(cert_dir)
+	php ./bin/tools/file_from_env.php "app_private_key" "$(cert_dir)/$(app_name).key"
+	php ./bin/tools/file_from_env.php "app_public_crt" "$(cert_dir)/$(app_name).crt"
+
+	@if [ -f $(cert_dir)/$(app_name).key ]; then \
+		echo "Signing app files…"; \
+		php ../../occ integrity:sign-app \
+			--privateKey=$(cert_dir)/$(app_name).key\
+			--certificate=$(cert_dir)/$(app_name).crt\
+			--path=$(appstore_sign_dir)/$(app_name); \
+		echo "Signing app files ... done"; \
+	fi
 
 .PHONY: test
 test: composer
