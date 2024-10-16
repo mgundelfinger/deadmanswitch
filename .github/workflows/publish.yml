@@ -27,7 +27,9 @@ jobs:
       - name: npm run build
         run: npm run build
       - name: Package App
-        run: tar -czvf ${{ github.workspace }}.tar.gz --exclude-vcs ${{ github.workspace }}
+        run: |
+          cd /home/runner/work/deadmanswitch
+          tar -czvf ${{ github.workspace }}.tar.gz --exclude-vcs deadmanswitch
       - name: Get Version
         id: version
         uses: mavrosxristoforos/get-xml-info@1.0
