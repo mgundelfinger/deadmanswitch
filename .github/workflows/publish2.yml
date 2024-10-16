@@ -65,15 +65,15 @@ jobs:
             https://apps.nextcloud.com/api/v1/apps/releases \
             -H "Content-Type: application/json" \
             -H "Authorization: Token $NC_API_TOKEN" \
-            -d '{"download":"$DOWNLOAD", "signature": "$SIGNATURE"}')
+            -d '{"download":"'"$DOWNLOAD"'", "signature": "$SIGNATURE"}')
           echo "STATUS=$STATUS" >> "$GITHUB_OUTPUT"
       - name: Upload Success
         env:
           STATUS: ${{ steps.upload.outputs.STATUS }}
-        if: ${{ steps.upload.outputs.STATUS }} == 200
+        if: ${{ steps.upload.outputs.STATUS == 200 }}
         run: echo $STATUS
       - name: Upload Failure
-        if: ${{ steps.upload.outputs.STATUS }} != 200
+        if: ${{ steps.upload.outputs.STATUS != 200 }}
         env:
           STATUS: ${{ steps.upload.outputs.STATUS }}
         run: |
