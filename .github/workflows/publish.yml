@@ -48,7 +48,7 @@ jobs:
         env:
           VERSION: ${{ steps.version.outputs.info }}
           SIGNATURE: ${{ steps.sign.outputs.SIGNATURE }}
-        run: curl -X POST -u "$NC_API_TOKEN" https://apps.nextcloud.com/api/v1/apps/releases -H "Content-Type: application/json" -d '{"download":"https://github.com/mgundelfinger/deadmanswitch/releases/download/v$version/deadmanswitch.tar.gz", "signature": "$SIGNATURE"}'
+        run: curl -X POST -u "$NC_API_TOKEN" https://apps.nextcloud.com/api/v1/apps/releases -H "Content-Type: application/json" -d '{"download":"https://github.com/mgundelfinger/deadmanswitch/releases/download/v$VERSION/deadmanswitch.tar.gz", "signature": "$SIGNATURE"}'
 
 
 
