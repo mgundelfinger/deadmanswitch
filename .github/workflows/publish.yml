@@ -46,9 +46,14 @@ jobs:
         id: sign
       - name: Sign and Upload Release
         env:
-          VERSION: ${{ steps.version.outputs.info }}
           SIGNATURE: ${{ steps.sign.outputs.SIGNATURE }}
-        run: curl -X POST -u "$NC_API_TOKEN" https://apps.nextcloud.com/api/v1/apps/releases -H "Content-Type: application/json" -d '{"download":"https://github.com/mgundelfinger/deadmanswitch/releases/download/v$VERSION/deadmanswitch.tar.gz", "signature": "$SIGNATURE"}'
-
-
-
+          DOWNLOAD: https://github.com/mgundelfinger/deadmanswitch/releases/download/v${{ steps.version.outputs.info }}/deadmanswitch.tar.gz
+        run: |
+          curl -X POST \
+            https://apps.nextcloud.com/api/v1/apps/releases \
+            -H "Content-Type: application/json" \
+            -H "Authorization: Token $NC_API_TOKEN" \
+            -d '\{ \
+            "download":"$DOWNLOAD", \
+            "signature": "$SIGNATURE", \
+            }'
