@@ -74,7 +74,7 @@ jobs:
             https://apps.nextcloud.com/api/v1/apps/releases \
             -H "Content-Type: application/json" \
             -H "Authorization: Token $NC_API_TOKEN" \
-            -d '{"download":"'"$DOWNLOAD"'", "signature": "$SIGNATURE"}')
+            -d '{"download":"'"$DOWNLOAD"'", "signature": "'"$SIGNATURE"'"}')
           echo "STATUS=$STATUS" >> "$GITHUB_OUTPUT"
 
       - name: Upload Success
