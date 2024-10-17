@@ -40,12 +40,7 @@ jobs:
 
       - name: Get Signature
         id: signature
-        run: |
-          {
-            echo 'SIGNATURE<<EOF'
-            openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64
-            echo EOF
-          } >> "$GITHUB_OUTPUT"
+        run: openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64 >> ${{ github.workspace }}_signature
 
       - name: Get Version
         id: version
@@ -73,7 +68,7 @@ jobs:
             https://apps.nextcloud.com/api/v1/apps/releases \
             -H "Content-Type: application/json" \
             -H "Authorization: Token $NC_API_TOKEN" \
-            -d '{"download":"'"$DOWNLOAD"'", "signature": "'"$SIGNATURE"'"}')
+            -d '{"download":"'"$DOWNLOAD"'", "signature": "$(cat ${{ github.workspace }}_signature)"}')
           echo "STATUS=$STATUS" >> "$GITHUB_OUTPUT"
 
       - name: Upload Success
