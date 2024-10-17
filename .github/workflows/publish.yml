@@ -65,8 +65,9 @@ jobs:
           SIGNATURE: ${{ steps.signature.outputs.SIGNATURE }}
           DOWNLOAD: https://github.com/mgundelfinger/deadmanswitch/releases/download/v${{ steps.version.outputs.info }}/deadmanswitch.tar.gz
           NC_API_TOKEN: ${{ secrets.NC_API_TOKEN }}
+          TMP_DIR: /home/runner/work/deadmanswitch
         run: |
-          STATUS=$(curl -X POST \
+          STATUS=$(curl -X POST -o ${TMP_DIR}/response.txt -w "%{response_code}"  \
             https://apps.nextcloud.com/api/v1/apps/releases \
             -H "Content-Type: application/json" \
             -H "Authorization: Token $NC_API_TOKEN" \
@@ -77,12 +78,14 @@ jobs:
         env:
           STATUS: ${{ steps.upload.outputs.STATUS }}
         if: ${{ steps.upload.outputs.STATUS == 200 }}
-        run: echo $STATUS
+        run: echo "Upload Successful!"
 
       - name: Upload Failure
         if: ${{ steps.upload.outputs.STATUS != 200 }}
         env:
           STATUS: ${{ steps.upload.outputs.STATUS }}
+          TMP_DIR: /home/runner/work/deadmanswitc
         run: |
-          echo $STATUS
+          echo "Upload Failed!"
+          cat ${TMP_DIR}/response.txt
           exit 1
