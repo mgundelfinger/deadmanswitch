@@ -41,7 +41,7 @@ jobs:
       - name: Get Signature
         id: signature
         run: |
-          SIGNATURE=$(openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64 -A >> ${{ github.workspace }}_signature)
+          SIGNATURE=$(openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64 -A)
           echo "SIGNATURE=$SIGNATURE" >> "$GITHUB_OUTPUT"
 
       - name: Get Version
