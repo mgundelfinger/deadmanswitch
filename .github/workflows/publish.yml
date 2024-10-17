@@ -34,6 +34,19 @@ jobs:
         run: |
           cd /home/runner/work/deadmanswitch
           tar -czvf ${{ github.workspace }}.tar.gz --exclude-vcs deadmanswitch
+      
+      - name: Prepare Signature Key
+        run: echo "${{ secrets.DMS_KEY }}" | base64 --decode > ${{ github.workspace }}.key
+
+      - name: Get Signature
+        id: signature
+        run: |
+          {
+            echo 'SIGNATURE<<EOF'
+            openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64
+            echo EOF
+          } >> "$GITHUB_ENV"
+          echo "SIGNATURE=$SIGNATURE" >> "$GITHUB_OUTPUT"
 
       - name: Get Version
         id: version
@@ -49,19 +62,6 @@ jobs:
           body_path: ${{ github.workspace }}/CHANGELOG.md
           token: ${{ secrets.DMS_GIT_TOKEN }}
           files: ${{ github.workspace }}.tar.gz
-
-      - name: Prepare Signature Key
-        run: echo "${{ secrets.DMS_KEY }}" | base64 --decode > ${{ github.workspace }}.key
-
-      - name: Get Signature
-        id: signature
-        run: |
-          {
-            echo 'SIGNATURE<<EOF'
-            openssl dgst -sha512 -sign ${{ github.workspace }}.key ${{ github.workspace }}.tar.gz | openssl base64
-            echo EOF
-          } >> "$GITHUB_ENV"
-          echo "SIGNATURE=$SIGNATURE" >> "$GITHUB_OUTPUT"
 
       - name: Sign and Upload Release
         id: upload
