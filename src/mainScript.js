@@ -1,10 +1,9 @@
 // SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { generateUrl } from '@nextcloud/router'
-import { loadState } from '@nextcloud/initial-state'
 import axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import DataTable from 'datatables.net-dt';
+import DataTable from 'datatables.net-dt'
 
 import 'datatables.net'
 import 'datatables.net-bs'
@@ -60,6 +59,10 @@ function main() {
 	// addFormListener(state)
 }
 
+/**
+ *
+ * @param {any} state Initial State
+ */
 function updateForm(state) {
 	document.getElementById('intervalSelector').value = state.check_in_interval
 	document.getElementById('onOffSwitch').checked = !!+state.active
@@ -136,6 +139,9 @@ function addFormListener(state) {
 	}
 }
 
+/**
+ *
+ */
 function toggleFormElements() {
 	const isActive = document.getElementById('onOffSwitch').checked
 	const config = document.getElementById('config')
@@ -169,14 +175,14 @@ function toggleSave(state) {
 document.addEventListener('DOMContentLoaded', (event) => {
 	main()
 
-	let table = new DataTable('#jobsTable', {
-		'ajax': 'get-jobs',
-		'processing': true,
-		'serverSide': true,
-		"columns": [
-			{ "data": "name" },
-			{ "data": "emailSubject" },
-		]
-	});
+	const table = new DataTable('#jobsTable', {
+		ajax: 'get-jobs',
+		processing: true,
+		serverSide: true,
+		columns: [
+			{ data: 'name' },
+			{ data: 'emailSubject' },
+		],
+	})
 
 })
