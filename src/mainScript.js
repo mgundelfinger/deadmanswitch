@@ -175,6 +175,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#triggers-table').length) {
+		let table = new DataTable('#triggers-table', {
+			'ajax': 'get-triggers',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "delay" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
 
 
 })

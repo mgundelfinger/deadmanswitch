@@ -166,6 +166,7 @@ class ContactController extends Controller {
 		$contact = $this->contactMapper->getContactOfUser($id, $userId);
 
 		$contact->loadData($this->request->getParams());
+
 		$contact->setUserId($userId);
 		$errors = $contact->validate();
 		if($errors) {
@@ -176,7 +177,10 @@ class ContactController extends Controller {
 			);
 		}
 
-		$this->contactMapper->update($contact);
+		if($contact->isModified()) {
+			$this->contactMapper->update($contact);
+		}
+
 		$groupsIds = (array) $this->request->getParam('contactGroups');
 		$groups = $this->contactsGroupMapper->getGroups($userId, $groupsIds);
 		$this->contactsGroupMapper->updateGroups($contact, $groups);

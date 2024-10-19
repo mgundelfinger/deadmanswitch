@@ -40,4 +40,12 @@ trait ValidationTrait
 		}
 		return $errors;
 	}
+
+	public function isModified(): bool {
+		$updatedFields = $this->getUpdatedFields();
+		if(!empty($updatedFields['id'])) {
+			unset($updatedFields['id']);
+		}
+		return !empty($updatedFields);
+	}
 }

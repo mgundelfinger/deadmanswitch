@@ -38,6 +38,54 @@ class TriggerMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
+	 * @return Trigger[]
+	 * @throws Exception
+	 */
+	public function getTriggersOfUser(string $userId, $limit = 10, $offset = 0): array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb
+			->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+			->setFirstResult($offset)
+			->setMaxResults($limit)
+		;
+
+		return $this->findEntities($qb);
+	}
+
+	public function getTriggersOfUserTotal(string $userId): int {
+		$qb = $this->db->getQueryBuilder();
+
+		$result = $qb->select($qb->func()->count('*', 'triggers_count'))
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+			->executeQuery();
+		return $result->fetch()['triggers_count'];
+	}
+
+	public function getTriggerOfUser(int $id, string $userId): Trigger {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('id', $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT))
+			)
+			->andWhere(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			);
+
+		return $this->findEntity($qb);
+	}
+
+	/**
+	 * @param string $userId
 	 * @param string $name
 	 * @param int $delay
 	 * @return Trigger
@@ -57,9 +105,9 @@ class TriggerMapper extends QBMapper {
 	 * @return Trigger|null
 	 * @throws Exception
 	 */
-	public function deleteTrigger(int $id): ?Trigger {
+	public function deleteTrigger(int $id, string $userId): ?Trigger {
 		try {
-			$trigger = $this->getTrigger($id);
+			$trigger = $this->getTriggerOfUser($id, $userId);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
