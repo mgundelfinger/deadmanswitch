@@ -5,6 +5,7 @@ namespace OCA\DeadManSwitch\Controller;
 
 use OCA\DeadManSwitch\Db\ContactMapper;
 use OCA\DeadManSwitch\Db\Contact;
+use OCA\DeadManSwitch\Db\ContactsGroupMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Controller;
@@ -25,15 +26,22 @@ class ContactController extends Controller {
 
 	private $contactMapper;
 
+	/**
+	 * @var ContactsGroupMapper
+	 */
+	private $contactsGroupMapper;
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
 		IUserSession $currentUser,
 		ContactMapper $contactMapper,
+		ContactsGroupMapper $contactsGroupMapper,
 	) {
 		parent::__construct($appName, $request);
 		$this->currentUser = $currentUser->getUser();
 		$this->contactMapper = $contactMapper;
+		$this->contactsGroupMapper = $contactsGroupMapper;
 	}
 
 	/**
@@ -102,10 +110,13 @@ class ContactController extends Controller {
 	#[FrontpageRoute(verb: 'GET', url: '/contacts/create')]
 	public function create(): TemplateResponse {
 		$contact = new Contact();
+		$userId = $this->currentUser->getUID();
+		$groupsList = $this->contactsGroupMapper->getList($userId);
+		$currentGroups = [];
 		return new TemplateResponse(
 			Application::APP_ID,
 			'contacts/create',
-			['page' => 'contacts', 'contact' => $contact]
+			['page' => 'contacts', 'contact' => $contact, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 		);
 	}
 
@@ -124,14 +135,19 @@ class ContactController extends Controller {
 		$errors = $contact->validate();
 
 		if($errors) {
+			$groupsList = $this->contactsGroupMapper->getList($userId);
+			$currentGroups = $this->contactMapper->getGroups($contact);
 			return new TemplateResponse(
 				Application::APP_ID,
 				'contacts/create',
-				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors]
+				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 			);
 		}
 
 		$this->contactMapper->insert($contact);
+		$groupsIds = (array) $this->request->getParam('contactGroups');
+		$groups = $this->contactsGroupMapper->getGroups($userId, $groupsIds);
+		$this->contactsGroupMapper->updateGroups($contact, $groups);
 		return new RedirectResponse('/index.php/apps/deadmanswitch/contacts');
 	}
 
@@ -152,7 +168,6 @@ class ContactController extends Controller {
 		$contact->loadData($this->request->getParams());
 		$contact->setUserId($userId);
 		$errors = $contact->validate();
-
 		if($errors) {
 			return new TemplateResponse(
 				Application::APP_ID,
@@ -162,6 +177,9 @@ class ContactController extends Controller {
 		}
 
 		$this->contactMapper->update($contact);
+		$groupsIds = (array) $this->request->getParam('contactGroups');
+		$groups = $this->contactsGroupMapper->getGroups($userId, $groupsIds);
+		$this->contactsGroupMapper->updateGroups($contact, $groups);
 		return new RedirectResponse('/index.php/apps/deadmanswitch/contacts');
 	}
 
@@ -178,11 +196,13 @@ class ContactController extends Controller {
 		$userId = $this->currentUser->getUID();
 
 		$contact = $this->contactMapper->getContactOfUser($id, $userId);
+		$groupsList = $this->contactsGroupMapper->getList($userId);
+		$currentGroups = $this->contactMapper->getGroups($contact);
 
 		return new TemplateResponse(
 			Application::APP_ID,
 			'contacts/edit',
-			['page' => 'contacts', 'contact' => $contact]
+			['page' => 'contacts', 'contact' => $contact, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 		);
 	}
 

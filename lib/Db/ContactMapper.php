@@ -111,35 +111,35 @@ class ContactMapper extends QBMapper {
 		return $this->insert($contact);
 	}
 
-	/**
-	 * @param int $id
-	 * @param string $userId
-	 * @param string|null $firstName
-	 * @param string|null $lastName
-     * @param string|null $email
-	 * @return Contact|null
-	 * @throws Exception
-	 */
-	public function updateContact(int $id, string $userId, ?string $firstName = null, ?string $lastName = null, ?string $email = null): ?Contact {
-		if ($firstName === null && $lastName === null && $email === null) {
-			return null;
-		}
-		try {
-			$contact = $this->getContactOfUser($id, $userId);
-		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
-			return null;
-		}
-		if ($firstName !== null) {
-			$contact->setFirstName($firstName);
-		}
-		if ($lastName !== null) {
-			$contact->setLastName($lastName);
-		}
-        if ($email !== null) {
-			$contact->setEmail($email);
-		}
-		return $this->update($contact);
-	}
+//	/**
+//	 * @param int $id
+//	 * @param string $userId
+//	 * @param string|null $firstName
+//	 * @param string|null $lastName
+//     * @param string|null $email
+//	 * @return Contact|null
+//	 * @throws Exception
+//	 */
+//	public function updateContact(int $id, string $userId, ?string $firstName = null, ?string $lastName = null, ?string $email = null): ?Contact {
+//		if ($firstName === null && $lastName === null && $email === null) {
+//			return null;
+//		}
+//		try {
+//			$contact = $this->getContactOfUser($id, $userId);
+//		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
+//			return null;
+//		}
+//		if ($firstName !== null) {
+//			$contact->setFirstName($firstName);
+//		}
+//		if ($lastName !== null) {
+//			$contact->setLastName($lastName);
+//		}
+//        if ($email !== null) {
+//			$contact->setEmail($email);
+//		}
+//		return $this->update($contact);
+//	}
 
 	/**
 	 * @param int $id
@@ -155,6 +155,17 @@ class ContactMapper extends QBMapper {
 		}
 
 		return $this->delete($contact);
+	}
+
+	public function getGroups($contact) {
+		$ids = [];
+		$data = $this->db->executeQuery(
+			"SELECT `contacts_group_id` FROM `oc_contacts_group_map` WHERE `contact_id` = :contactId", ['contactId' => $contact->getId()]
+		)->fetchAll();
+		foreach($data as $d) {
+			$ids[] = $d['contacts_group_id'];
+		}
+		return $ids;
 	}
 
 	/**

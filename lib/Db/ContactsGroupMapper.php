@@ -75,6 +75,58 @@ class ContactsGroupMapper extends QBMapper {
 		return $this->findEntity($qb);
 	}
 
+	public function getList(string $userId) : array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb
+			->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+		;
+
+		$list = [];
+		$entities = $this->findEntities($qb);
+		foreach($entities as $entity) {
+			$list[$entity->getId()] = $entity->getName();
+		}
+
+		return $list;
+	}
+
+	public function getGroups(string $userId, array $groupsIds) {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
+			)
+			->andWhere(
+				$qb->expr()->in('id', $qb->createNamedParameter($groupsIds, IQueryBuilder::PARAM_INT_ARRAY))
+			)
+		;
+
+		return $this->findEntities($qb);
+	}
+
+	/**
+	 * @param Contact $contact
+	 * @param ContactsGroup[] $groups
+	 * @return void
+	 */
+	public function updateGroups(Contact $contact, array $groups) {
+		$this->db->executeStatement("DELETE FROM `oc_contacts_group_map` WHERE `contact_id` = :contactId", ['contactId' => $contact->getId()]);
+
+		foreach($groups as $group) {
+			$this->db->executeStatement(
+				"INSERT INTO `oc_contacts_group_map` (`contact_id`, `contacts_group_id`) VALUES (:contactId, :groupId)", [
+					'contactId' => $contact->getId(), 'groupId' => $group->getId()
+				]
+			);
+		}
+	}
 
 	/**
 	 * @param int $id
