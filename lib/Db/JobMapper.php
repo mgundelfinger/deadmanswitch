@@ -155,6 +155,17 @@ class JobMapper extends QBMapper {
 		return $this->delete($job);
 	}
 
+	public function getGroups($job) {
+		$ids = [];
+		$data = $this->db->executeQuery(
+			"SELECT `jobs_group_id` FROM `oc_jobs_group_map` WHERE `job_id` = :jobId", ['jobId' => $job->getId()]
+		)->fetchAll();
+		foreach($data as $d) {
+			$ids[] = $d['jobs_group_id'];
+		}
+		return $ids;
+	}
+
 	/**
 	 * @param string $userId
 	 * @return void

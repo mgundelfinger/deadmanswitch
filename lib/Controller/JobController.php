@@ -3,8 +3,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Controller;
 
+use OCA\DeadManSwitch\Db\ContactsGroupMapper;
 use OCA\DeadManSwitch\Db\Job;
 use OCA\DeadManSwitch\Db\JobMapper;
+use OCA\DeadManSwitch\Db\JobsGroupMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Controller;
@@ -25,15 +27,22 @@ class JobController extends Controller {
 
 	private $jobMapper;
 
+	/**
+	 * @var JobsGroupMapper
+	 */
+	private $jobsGroupMapper;
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
 		IUserSession $currentUser,
 		JobMapper $jobMapper,
+		JobsGroupMapper $jobsGroupMapper,
 	) {
 		parent::__construct($appName, $request);
 		$this->currentUser = $currentUser->getUser();
 		$this->jobMapper = $jobMapper;
+		$this->jobsGroupMapper = $jobsGroupMapper;
 	}
 
 	/**
@@ -101,10 +110,12 @@ class JobController extends Controller {
 	#[FrontpageRoute(verb: 'GET', url: '/jobs/create')]
 	public function create(): TemplateResponse {
 		$job = new Job();
+		$userId = $this->currentUser->getUID();
+		$groupsList = $this->jobsGroupMapper->getList($userId);
 		return new TemplateResponse(
 			Application::APP_ID,
 			'jobs/create',
-			['page' => 'jobs', 'job' => $job]
+			['page' => 'jobs', 'job' => $job, 'groupsList' => $groupsList]
 		);
 	}
 
@@ -123,14 +134,19 @@ class JobController extends Controller {
 		$errors = $job->validate();
 
 		if($errors) {
+			$groupsList = $this->jobsGroupMapper->getList($userId);
+			$currentGroups = $this->jobMapper->getGroups($job);
 			return new TemplateResponse(
 				Application::APP_ID,
 				'jobs/create',
-				['page' => 'jobs', 'job' => $job, 'errors' => $errors]
+				['page' => 'jobs', 'job' => $job, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 			);
 		}
 
 		$this->jobMapper->insert($job);
+		$groupsIds = (array) $this->request->getParam('jobGroups');
+		$groups = $this->jobsGroupMapper->getGroups($userId, $groupsIds);
+		$this->jobsGroupMapper->updateGroups($job, $groups);
 		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
 	}
 
@@ -153,14 +169,21 @@ class JobController extends Controller {
 		$errors = $job->validate();
 
 		if($errors) {
+			$groupsList = $this->jobsGroupMapper->getList($userId);
+			$currentGroups = $this->jobMapper->getGroups($job);
 			return new TemplateResponse(
 				Application::APP_ID,
 				'jobs/edit',
-				['page' => 'jobs', 'job' => $job, 'errors' => $errors]
+				['page' => 'jobs', 'job' => $job, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 			);
 		}
 
-		$this->jobMapper->update($job);
+		if($job->isModified()) {
+			$this->jobMapper->update($job);
+		}
+		$groupsIds = (array) $this->request->getParam('contactGroups');
+		$groups = $this->jobsGroupMapper->getGroups($userId, $groupsIds);
+		$this->jobsGroupMapper->updateGroups($job, $groups);
 		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
 	}
 
@@ -177,11 +200,13 @@ class JobController extends Controller {
 		$userId = $this->currentUser->getUID();
 
 		$job = $this->jobMapper->getJobOfUser($id, $userId);
+		$groupsList = $this->jobsGroupMapper->getList($userId);
+		$currentGroups = $this->jobMapper->getGroups($job);
 
 		return new TemplateResponse(
 			Application::APP_ID,
 			'jobs/edit',
-			['page' => 'jobs', 'job' => $job]
+			['page' => 'jobs', 'job' => $job, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 		);
 	}
 

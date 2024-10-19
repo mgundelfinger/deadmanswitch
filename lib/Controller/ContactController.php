@@ -170,10 +170,12 @@ class ContactController extends Controller {
 		$contact->setUserId($userId);
 		$errors = $contact->validate();
 		if($errors) {
+			$groupsList = $this->contactsGroupMapper->getList($userId);
+			$currentGroups = $this->contactMapper->getGroups($contact);
 			return new TemplateResponse(
 				Application::APP_ID,
 				'contacts/edit',
-				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors]
+				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 			);
 		}
 
