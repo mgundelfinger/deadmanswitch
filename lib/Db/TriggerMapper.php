@@ -99,6 +99,26 @@ class TriggerMapper extends QBMapper {
 		return $this->insert($trigger);
 	}
 
+	public function getList(string $userId) : array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb
+			->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+		;
+
+		$list = [];
+		$entities = $this->findEntities($qb);
+		foreach($entities as $entity) {
+			$list[$entity->getId()] = $entity->getName();
+		}
+
+		return $list;
+	}
+
 	/**
 	 * @param int $id
 	 * @param string $userId

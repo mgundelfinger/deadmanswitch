@@ -250,6 +250,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#tasks-table').length) {
+		let table = new DataTable('#tasks-table', {
+			'ajax': 'get-tasks',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "active" },
+				{ "data": "contactGroup" },
+				{ "data": "jobGroup" },
+				{ "data": "confirmatorGroup" },
+				{ "data": "trigger" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
 })
 
 jQuery(document).on('click', '.confirm-action', function (e) {

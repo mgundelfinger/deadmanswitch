@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use OCA\DeadManSwitch\Trait\ValidationTrait;
 use OCP\AppFramework\Db\Entity;
 
 /**
@@ -25,7 +26,9 @@ use OCP\AppFramework\Db\Entity;
  */
 class Task extends Entity implements \JsonSerializable {
 
-    /** @var string */
+	use ValidationTrait;
+
+	/** @var string */
 	protected $userId;
 	/** @var string */
 	protected $name;
@@ -48,6 +51,15 @@ class Task extends Entity implements \JsonSerializable {
         $this->addType('jobs_group_id', 'integer');
         $this->addType('confirmators_group_id', 'integer');
         $this->addType('trigger_id', 'integer');
+	}
+
+	public function rules() {
+		return [
+			'name' => [
+				'min' => 3,
+				'max' => 64
+			],
+		];
 	}
 
 	#[\ReturnTypeWillChange]
