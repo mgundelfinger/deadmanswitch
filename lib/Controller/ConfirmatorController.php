@@ -130,7 +130,7 @@ class ConfirmatorController extends Controller {
 			'confirmators/create',
 			[
 				'page' => 'confirmators', 'confirmator' => $confirmator, 'groupsList' => $groupsList,
-				'contactList' => $contactList, 'checkupIntervalList' => $checkupIntervalList
+				'contactList' => $contactList, 'checkupIntervalList' => $checkupIntervalList, 'currentGroups' => []
 			]
 		);
 	}

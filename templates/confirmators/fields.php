@@ -15,7 +15,7 @@
 	<label>Contact</label>
 	<select name="contactId" class="form-control">
 		<?php foreach($contactList as $id => $label): ?>
-		<option value="<?= $id ?>" <?= ($currentContact->getId() == $id) ? 'selected' : '' ?>>
+		<option value="<?= $id ?>" <?= ($currentContact?->getId() == $id) ? 'selected' : '' ?>>
 			<?= $label ?>
 		</option>
 		<?php endforeach; ?>
@@ -30,7 +30,7 @@
 	<label>Checkup interval</label>
 	<select name="intervalId" class="form-control">
 		<?php foreach($checkupIntervalList as $id => $label): ?>
-			<option value="<?= $id ?>" <?= ($currentInterval->getId() == $id) ? 'selected' : '' ?>>
+			<option value="<?= $id ?>" <?= ($currentInterval?->getId() == $id) ? 'selected' : '' ?>>
 				<?= $label ?>
 			</option>
 		<?php endforeach; ?>

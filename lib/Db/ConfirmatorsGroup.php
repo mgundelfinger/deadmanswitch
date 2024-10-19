@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use OCA\DeadManSwitch\Trait\ValidationTrait;
 use OCP\AppFramework\Db\Entity;
 
 /**
@@ -15,7 +16,9 @@ use OCP\AppFramework\Db\Entity;
  */
 class ConfirmatorsGroup extends Entity implements \JsonSerializable {
 
-    /** @var string */
+	use ValidationTrait;
+
+	/** @var string */
 	protected $userId;
 	/** @var string */
 	protected $name;
@@ -23,6 +26,10 @@ class ConfirmatorsGroup extends Entity implements \JsonSerializable {
 	public function __construct() {
 		$this->addType('user_id', 'string');
 		$this->addType('name', 'string');
+	}
+
+	public function rules() {
+		return [];
 	}
 
 	#[\ReturnTypeWillChange]

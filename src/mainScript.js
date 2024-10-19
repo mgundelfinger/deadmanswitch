@@ -238,6 +238,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#confirmator-groups-table').length) {
+		let table = new DataTable('#confirmator-groups-table', {
+			'ajax': 'get-confirmator-groups',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
 })
 
 jQuery(document).on('click', '.confirm-action', function (e) {
