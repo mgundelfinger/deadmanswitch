@@ -163,6 +163,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#contact-groups-table').length) {
+		let table = new DataTable('#contact-groups-table', {
+			'ajax': 'get-contact-groups',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+
+
 })
 
 jQuery(document).on('click', '.confirm-action', function (e) {
