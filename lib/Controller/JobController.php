@@ -6,6 +6,8 @@ namespace OCA\DeadManSwitch\Controller;
 use DateTime;
 use OCA\DeadManSwitch\Db\Job;
 use OCA\DeadManSwitch\Db\JobMapper;
+use OCP\AppFramework\Http\RedirectResponse;
+use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Services\IInitialState;
 use OCP\IConfig;
 use OCP\PreConditionNotMetException;
@@ -88,7 +90,7 @@ class JobController extends Controller {
 	public function jobs(): TemplateResponse {
 		return new TemplateResponse(
 			Application::APP_ID,
-			'jobs',
+			'jobs/jobs',
 			['page' => 'jobs']
 		);
 	}
@@ -113,6 +115,8 @@ class JobController extends Controller {
 			$data[] = [
 				'name' => $job->getName(),
 				'emailSubject' => $job->getEmailSubject(),
+				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/jobs/delete?id='.$job->getId().'">Delete</a>
+					<a href="/index.php/apps/deadmanswitch/jobs/edit?id='.$job->getId().'">Edit</a>'
 			];
 		}
 
@@ -130,8 +134,6 @@ class JobController extends Controller {
 		echo $data;
 		die;
 
-
-		return new JsonResponse(array('headers' => 'kjhjkh'));
 	}
 
 	/**
@@ -142,10 +144,11 @@ class JobController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'GET', url: '/jobs/create')]
 	public function create(): TemplateResponse {
+		$job = new Job();
 		return new TemplateResponse(
 			Application::APP_ID,
 			'jobs/create',
-			['page' => 'jobs']
+			['page' => 'jobs', 'job' => $job]
 		);
 	}
 
@@ -155,17 +158,91 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
-	#[FrontpageRoute(verb: 'GET', url: '/jobs/create')]
-	public function store(): TemplateResponse {
-
+	#[FrontpageRoute(verb: 'POST', url: '/jobs/store')]
+	public function store(): Response {
+		$userId = $this->currentUser->getUID();
 		$job = new Job();
+		$job->loadData($this->request->getParams());
+		$job->setUserId($userId);
+		$errors = $job->validate();
 
+		if($errors) {
+			return new TemplateResponse(
+				Application::APP_ID,
+				'jobs/create',
+				['page' => 'jobs', 'job' => $job, 'errors' => $errors]
+			);
+		}
+
+		$this->jobMapper->insert($job);
+		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
+	}
+
+
+
+	/**
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return TemplateResponse
+	 */
+	#[FrontpageRoute(verb: 'POST', url: '/jobs/update')]
+	public function update(): Response {
+		$id = $this->request->getParam('id');
+		$userId = $this->currentUser->getUID();
+		$job = $this->jobMapper->getJobOfUser($id, $userId);
+
+		$job->loadData($this->request->getParams());
+		$job->setUserId($userId);
+		$errors = $job->validate();
+
+		if($errors) {
+			return new TemplateResponse(
+				Application::APP_ID,
+				'jobs/edit',
+				['page' => 'jobs', 'job' => $job, 'errors' => $errors]
+			);
+		}
+
+		$this->jobMapper->update($job);
+		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
+	}
+
+
+	/**
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return TemplateResponse
+	 */
+	#[FrontpageRoute(verb: 'GET', url: '/jobs/edit')]
+	public function edit(): Response {
+		$id = $this->request->getParam('id');
+		$userId = $this->currentUser->getUID();
+
+		$job = $this->jobMapper->getJobOfUser($id, $userId);
 
 		return new TemplateResponse(
 			Application::APP_ID,
-			'jobs/create',
-			['page' => 'jobs']
+			'jobs/edit',
+			['page' => 'jobs', 'job' => $job]
 		);
+	}
+
+	/**
+	 *
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 * @return TemplateResponse
+	 */
+	#[FrontpageRoute(verb: 'GET', url: '/jobs/delete')]
+	public function delete(): Response {
+		$id = $this->request->getParam('id');
+		$userId = $this->currentUser->getUID();
+
+		$this->jobMapper->deleteJob($id, $userId);
+
+		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
 	}
 
 

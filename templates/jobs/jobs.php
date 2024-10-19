@@ -1,4 +1,4 @@
-<?php require_once  dirname(__FILE__) . "/menu.php" ?>
+<?php require_once  dirname(__FILE__) . "/../menu.php" ?>
 
 <div id="app-content">
 
@@ -13,6 +13,7 @@
 		<tr>
 			<th>Name</th>
 			<th>Email subject</th>
+			<th>Actions</th>
 		</tr>
 		</thead>
 		<tbody>

@@ -8,39 +8,6 @@ import DataTable from 'datatables.net-dt';
 
 import 'datatables.net'
 import 'datatables.net-bs'
-// import 'datatables.net-bs/css/dataTables.bootstrap.css'
-// import 'datatables.net-buttons'
-// import 'datatables.net-buttons-bs'
-// import 'datatables.net-buttons-bs/css/buttons.bootstrap.css'
-// import 'datatables.net-buttons/js/buttons.colVis'
-// import 'datatables.net-buttons/js/buttons.html5'
-// // import 'datatables.net-buttons/js/buttons.flash'
-// // import 'datatables.net-buttons/js/buttons.print'
-// import 'datatables.net-colreorder'
-// import 'datatables.net-colreorder-bs'
-// import 'datatables.net-colreorder-bs/css/colReorder.bootstrap.css'
-// import 'datatables.net-fixedcolumns'
-// import 'datatables.net-fixedcolumns-bs'
-// import 'datatables.net-fixedcolumns-bs/css/fixedColumns.bootstrap.css'
-// import 'datatables.net-fixedheader'
-// import 'datatables.net-fixedheader-bs'
-// import 'datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.css'
-// import 'datatables.net-rowgroup'
-// import 'datatables.net-rowgroup-bs'
-// import 'datatables.net-rowgroup-bs/css/rowGroup.bootstrap.css'
-// import 'datatables.net-rowreorder'
-// import 'datatables.net-rowreorder-bs'
-// import 'datatables.net-rowreorder-bs/css/rowReorder.bootstrap.css'
-// import 'datatables.net-responsive'
-// import 'datatables.net-responsive-bs'
-// import 'datatables.net-responsive-bs/css/responsive.bootstrap.css'
-// import 'datatables.net-scroller'
-// import 'datatables.net-scroller-bs'
-// import 'datatables.net-scroller-bs/css/scroller.bootstrap.css'
-// import 'datatables.net-select'
-// import 'datatables.net-select-bs'
-// import 'datatables.net-select-bs/css/select.bootstrap.css'
-//
 import 'bootstrap-css'
 
 /**
@@ -176,7 +143,15 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		"columns": [
 			{ "data": "name" },
 			{ "data": "emailSubject" },
+			{ "data": "actions" },
 		]
 	});
 
+})
+
+jQuery(document).on('click', '.confirm-action', function (e) {
+	if(confirm("Are you sure ?") === true) {
+		return true;
+	}
+	return false;
 })

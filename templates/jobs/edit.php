@@ -6,9 +6,12 @@
  */
 ?>
 
+
 <div id="app-content">
 	<div class="container custom-container">
-		<form method="post" action="/index.php/apps/deadmanswitch/jobs/store">
+		<form method="post" action="/index.php/apps/deadmanswitch/jobs/update">
+			<input type="hidden" name="id" value="<?= $job->getId() ?>"/>
+
 			<?php require_once  dirname(__FILE__) . "/fields.php" ?>
 		</form>
 	</div>
