@@ -200,6 +200,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#checkup-intervals-table').length) {
+		let table = new DataTable('#checkup-intervals-table', {
+			'ajax': 'get-checkup-intervals',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "interval" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
 
 
 })

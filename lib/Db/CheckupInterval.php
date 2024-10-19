@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use OCA\DeadManSwitch\Trait\ValidationTrait;
 use OCP\AppFramework\Db\Entity;
 
 /**
@@ -17,7 +18,9 @@ use OCP\AppFramework\Db\Entity;
  */
 class CheckupInterval extends Entity implements \JsonSerializable {
 
-    /** @var string */
+	use ValidationTrait;
+
+	/** @var string */
 	protected $userId;
 	/** @var string */
 	protected $name;
@@ -28,6 +31,15 @@ class CheckupInterval extends Entity implements \JsonSerializable {
 		$this->addType('user_id', 'string');
 		$this->addType('name', 'string');
 		$this->addType('interval', 'integer');
+	}
+
+	public function rules() {
+		return [
+			'name' => [
+				'min' => 3,
+				'max' => 64
+			],
+		];
 	}
 
 	#[\ReturnTypeWillChange]
