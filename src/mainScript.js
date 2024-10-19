@@ -188,6 +188,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#alive-statuses-table').length) {
+		let table = new DataTable('#alive-statuses-table', {
+			'ajax': 'get-alive-statuses',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
 
 
 })

@@ -52,9 +52,9 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 		</li>
 
 		<li>
-			<a href="/index.php/apps/deadmanswitch/statuses" class="nav-link text-white <?= $page == 'statuses' ? 'active' : '' ?>">
+			<a href="/index.php/apps/deadmanswitch/alive-statuses" class="nav-link text-white <?= $page == 'alive-statuses' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-				Statuses
+				Alive statuses
 			</a>
 		</li>
 
