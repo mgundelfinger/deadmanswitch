@@ -13,18 +13,18 @@ use OCP\IDBConnection;
 
 use OCP\AppFramework\Db\DoesNotExistException;
 
-class CheckupIntervalMapper extends QBMapper {
+class ConfirmatorMapper extends QBMapper {
 	public function __construct(IDBConnection $db) {
-		parent::__construct($db, 'checkup_interval', CheckupInterval::class);
+		parent::__construct($db, 'confirmator', Confirmator::class);
 	}
 
 	/**
 	 * @param int $id
-	 * @return CheckupInterval
+	 * @return Confirmator
 	 * @throws \OCP\AppFramework\Db\DoesNotExistException
 	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
 	 */
-	public function getCheckupInterval(int $id): CheckupInterval {
+	public function getConfirmator(int $id): Confirmator {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -39,12 +39,12 @@ class CheckupIntervalMapper extends QBMapper {
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return CheckupInterval
+	 * @return Confirmator
 	 * @throws DoesNotExistException
 	 * @throws Exception
 	 * @throws MultipleObjectsReturnedException
 	 */
-	public function getCheckupIntervalOfUser(int $id, string $userId): CheckupInterval {
+	public function getConfirmatorOfUser(int $id, string $userId): Confirmator {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -59,33 +59,12 @@ class CheckupIntervalMapper extends QBMapper {
 		return $this->findEntity($qb);
 	}
 
-	public function getList(string $userId) : array {
-		$qb = $this->db->getQueryBuilder();
-
-		$qb
-			->select('*')
-			->from($this->getTableName())
-			->where(
-				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-			)
-		;
-
-		$list = [];
-		$entities = $this->findEntities($qb);
-		foreach($entities as $entity) {
-			$list[$entity->getId()] = $entity->getName();
-		}
-
-		return $list;
-	}
-
-
 	/**
 	 * @param string $userId
-	 * @return CheckupInterval[]
+	 * @return Confirmator[]
 	 * @throws Exception
 	 */
-	public function getCheckupIntervalsOfUser(string $userId, $limit = 10, $offset = 0): array {
+	public function getConfirmatorsOfUser(string $userId, $limit = 10, $offset = 0): array {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb
@@ -101,16 +80,16 @@ class CheckupIntervalMapper extends QBMapper {
 		return $this->findEntities($qb);
 	}
 
-	public function getCheckupIntervalsOfUserTotal(string $userId): int {
+	public function getConfirmatorsOfUserTotal(string $userId): int {
 		$qb = $this->db->getQueryBuilder();
 
-		$result = $qb->select($qb->func()->count('*', 'checkup_intervals_count'))
+		$result = $qb->select($qb->func()->count('*', 'confirmators_count'))
 			->from($this->getTableName())
 			->where(
 				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
 			)
 			->executeQuery();
-		return $result->fetch()['checkup_intervals_count'];
+		return $result->fetch()['confirmators_count'];
 	}
 
 	/**
@@ -118,16 +97,16 @@ class CheckupIntervalMapper extends QBMapper {
 	 * @param string $name
 	 * @param string $emailSubject
      * @param string $emailBody
-	 * @return CheckupInterval
+	 * @return Confirmator
 	 * @throws Exception
 	 */
-	public function createCheckupInterval(string $userId, string $name, string $emailSubject, string $emailBody): CheckupInterval {
-		$checkup_interval = new CheckupInterval();
-		$checkup_interval->setUserId($userId);
-		$checkup_interval->setName($name);
-		$checkup_interval->setEmailSubject($emailSubject);
-        $checkup_interval->setEmailBody($emailBody);
-		return $this->insert($checkup_interval);
+	public function createConfirmator(string $userId, string $name, string $emailSubject, string $emailBody): Confirmator {
+		$confirmator = new Confirmator();
+		$confirmator->setUserId($userId);
+		$confirmator->setName($name);
+		$confirmator->setEmailSubject($emailSubject);
+        $confirmator->setEmailBody($emailBody);
+		return $this->insert($confirmator);
 	}
 
 	/**
@@ -136,44 +115,55 @@ class CheckupIntervalMapper extends QBMapper {
 	 * @param string|null $name
 	 * @param string|null $emailSubject
      * @param string|null $emailBody
-	 * @return CheckupInterval|null
+	 * @return Confirmator|null
 	 * @throws Exception
 	 */
-	public function updateCheckupInterval(int $id, string $userId, ?string $name = null, ?string $emailSubject = null, ?string $emailBody = null): ?CheckupInterval {
+	public function updateConfirmator(int $id, string $userId, ?string $name = null, ?string $emailSubject = null, ?string $emailBody = null): ?Confirmator {
 		if ($name === null && $emailSubject === null && $emailBody === null) {
 			return null;
 		}
 		try {
-			$checkup_interval = $this->getCheckupIntervalOfUser($id, $userId);
+			$confirmator = $this->getConfirmatorOfUser($id, $userId);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
 		if ($name !== null) {
-			$checkup_interval->setName($name);
+			$confirmator->setName($name);
 		}
 		if ($emailSubject !== null) {
-			$checkup_interval->setEmailSubject($emailSubject);
+			$confirmator->setEmailSubject($emailSubject);
 		}
         if ($emailBody !== null) {
-			$checkup_interval->setEmailBody($emailBody);
+			$confirmator->setEmailBody($emailBody);
 		}
-		return $this->update($checkup_interval);
+		return $this->update($confirmator);
 	}
 
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return CheckupInterval|null
+	 * @return Confirmator|null
 	 * @throws Exception
 	 */
-	public function deleteCheckupInterval(int $id, string $userId): ?CheckupInterval {
+	public function deleteConfirmator(int $id, string $userId): ?Confirmator {
 		try {
-			$checkup_interval = $this->getCheckupIntervalOfUser($id, $userId);
+			$confirmator = $this->getConfirmatorOfUser($id, $userId);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
 
-		return $this->delete($checkup_interval);
+		return $this->delete($confirmator);
+	}
+
+	public function getGroups($confirmator) {
+		$ids = [];
+		$data = $this->db->executeQuery(
+			"SELECT `confirmators_group_id` FROM `oc_confirmators_group_map` WHERE `confirmator_id` = :confirmatorId", ['confirmatorId' => $confirmator->getId()]
+		)->fetchAll();
+		foreach($data as $d) {
+			$ids[] = $d['confirmators_group_id'];
+		}
+		return $ids;
 	}
 
 	/**
@@ -181,7 +171,7 @@ class CheckupIntervalMapper extends QBMapper {
 	 * @return void
 	 * @throws Exception
 	 */
-	public function deleteCheckupIntervalsOfUser(string $userId): void {
+	public function deleteConfirmatorsOfUser(string $userId): void {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->delete($this->getTableName())

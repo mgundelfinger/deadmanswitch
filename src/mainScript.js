@@ -225,6 +225,18 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#confirmators-table').length) {
+		let table = new DataTable('#confirmators-table', {
+			'ajax': 'get-confirmators',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "contact" },
+				{ "data": "interval" },
+				{ "data": "actions" },
+			]
+		});
+	}
 
 })
 
