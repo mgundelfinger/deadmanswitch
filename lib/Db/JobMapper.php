@@ -85,6 +85,9 @@ class JobMapper extends QBMapper {
 
 		$result = $qb->select($qb->func()->count('*', 'jobs_count'))
 			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
 			->executeQuery();
 		return $result->fetch()['jobs_count'];
 	}

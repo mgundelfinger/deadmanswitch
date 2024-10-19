@@ -24,21 +24,72 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 			</a>
 		</li>
 		<li>
-			<a href="/index.php/apps/deadmanswitch/contacts" class="nav-link text-white">
+			<a href="/index.php/apps/deadmanswitch/contacts" class="nav-link text-white <?= $page == 'contacts' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
 				Contacts
 			</a>
 		</li>
+
 		<li>
-			<a href="/index.php/apps/deadmanswitch/tasks" class="nav-link text-white">
+			<a href="/index.php/apps/deadmanswitch/contact-groups" class="nav-link text-white <?= $page == 'contact-groups' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+				Contact groups
+			</a>
+		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/tasks" class="nav-link text-white <?= $page == 'tasks' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
 				Tasks
 			</a>
 		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/triggers" class="nav-link text-white <?= $page == 'triggers' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+				Triggers
+			</a>
+		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/statuses" class="nav-link text-white <?= $page == 'statuses' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+				Statuses
+			</a>
+		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/checkup-intervals" class="nav-link text-white <?= $page == 'checkup-intervals' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+				Checkup intervals
+			</a>
+		</li>
+
 		<li>
 			<a href="/index.php/apps/deadmanswitch/jobs" class="nav-link text-white <?= $page == 'jobs' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
 				Jobs
+			</a>
+		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/job-groups" class="nav-link text-white <?= $page == 'job-groups' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+				Job groups
+			</a>
+		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/confirmators" class="nav-link text-white <?= $page == 'confirmators' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+				Confirmators
+			</a>
+		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/confirmator-groups" class="nav-link text-white <?= $page == 'confirmator-groups' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+				Confirmator groups
 			</a>
 		</li>
 	</ul>

@@ -3,16 +3,18 @@
 <div id="app-content">
 
 	<div class="buttons-container">
-		<a type="button" class="btn btn-primary" href="/index.php/apps/deadmanswitch/jobs/create">
-			Add job
+		<a type="button" class="btn btn-primary" href="/index.php/apps/deadmanswitch/contacts/create">
+			Add contact
 		</a>
 	</div>
 
-	<table id="jobs-table" class="display">
+	<table id="contacts-table" class="display">
+
 		<thead>
 		<tr>
-			<th>Name</th>
-			<th>Email subject</th>
+			<th>First name</th>
+			<th>Last name</th>
+			<th>Email</th>
 			<th>Actions</th>
 		</tr>
 		</thead>

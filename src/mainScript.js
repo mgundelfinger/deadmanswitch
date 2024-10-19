@@ -136,16 +136,32 @@ function toggleSave(state) {
 document.addEventListener('DOMContentLoaded', (event) => {
 	main()
 
-	let table = new DataTable('#jobsTable', {
-		'ajax': 'get-jobs',
-		'processing': true,
-		'serverSide': true,
-		"columns": [
-			{ "data": "name" },
-			{ "data": "emailSubject" },
-			{ "data": "actions" },
-		]
-	});
+	if(jQuery('#jobs-table').length) {
+		let table = new DataTable('#jobs-table', {
+			'ajax': 'get-jobs',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "emailSubject" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#contacts-table').length) {
+		let table = new DataTable('#contacts-table', {
+			'ajax': 'get-contacts',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "firstName" },
+				{ "data": "lastName" },
+				{ "data": "email" },
+				{ "data": "actions" },
+			]
+		});
+	}
 
 })
 

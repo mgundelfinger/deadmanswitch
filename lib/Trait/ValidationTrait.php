@@ -24,12 +24,16 @@ trait ValidationTrait
 		foreach($this->rules() as $property => $rules) {
 			foreach($rules as $validator => $param) {
 				if($validator == 'min') {
-					if(strlen($this->{$property}) < $param) {
+					if(strlen((string) $this->{$property}) < $param) {
 						$errors[$property] = 'Minimal length is ' . $param;
 					}
 				} elseif($validator == 'max') {
-					if(strlen($this->{$property}) > $param) {
+					if(strlen((string) $this->{$property}) > $param) {
 						$errors[$property] = 'Maximal length is ' . $param;
+					}
+				} elseif($validator == 'email') {
+					if(!filter_var((string) $this->{$property}, FILTER_VALIDATE_EMAIL)) {
+						$errors[$property] = 'Email is not valid';
 					}
 				}
 			}

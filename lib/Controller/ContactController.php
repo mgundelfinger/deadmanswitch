@@ -3,8 +3,8 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Controller;
 
-use OCA\DeadManSwitch\Db\Job;
-use OCA\DeadManSwitch\Db\JobMapper;
+use OCA\DeadManSwitch\Db\ContactMapper;
+use OCA\DeadManSwitch\Db\Contact;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Controller;
@@ -16,24 +16,24 @@ use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class JobController extends Controller {
+class ContactController extends Controller {
 
 	/**
 	 * @var IUser
 	 */
 	private $currentUser;
 
-	private $jobMapper;
+	private $contactMapper;
 
 	public function __construct(
 		string $appName,
 		IRequest $request,
 		IUserSession $currentUser,
-		JobMapper $jobMapper,
+		ContactMapper $contactMapper,
 	) {
 		parent::__construct($appName, $request);
 		$this->currentUser = $currentUser->getUser();
-		$this->jobMapper = $jobMapper;
+		$this->contactMapper = $contactMapper;
 	}
 
 	/**
@@ -42,12 +42,12 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
-	#[FrontpageRoute(verb: 'GET', url: '/jobs')]
-	public function jobs(): TemplateResponse {
+	#[FrontpageRoute(verb: 'GET', url: '/contacts')]
+	public function contacts(): TemplateResponse {
 		return new TemplateResponse(
 			Application::APP_ID,
-			'jobs/jobs',
-			['page' => 'jobs']
+			'contacts/contacts',
+			['page' => 'contacts']
 		);
 	}
 
@@ -57,32 +57,33 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return JsonResponse
 	 */
-	#[FrontpageRoute(verb: 'GET', url: '/get-jobs')]
-	public function getJobs(): JsonResponse {
+	#[FrontpageRoute(verb: 'GET', url: '/get-contacts')]
+	public function getContacts(): JsonResponse {
 		$userId = $this->currentUser->getUID();
 
 		$limit = $this->request->getParam('length');
 		$offset = $this->request->getParam('start');
 		$draw = $this->request->getParam('draw');
 
-		$jobs = $this->jobMapper->getJobsOfUser($userId, $limit, $offset);
+		$contacts = $this->contactMapper->getContactsOfUser($userId, $limit, $offset);
 		$data = [];
-		foreach($jobs as $job) {
+		foreach($contacts as $contact) {
 			$data[] = [
-				'name' => $job->getName(),
-				'emailSubject' => $job->getEmailSubject(),
-				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/jobs/delete?id='.$job->getId().'">Delete</a>
-					<a href="/index.php/apps/deadmanswitch/jobs/edit?id='.$job->getId().'">Edit</a>'
+				'firstName' => $contact->getFirstName(),
+				'lastName' => $contact->getLastName(),
+				'email' => $contact->getEmail(),
+				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/contacts/delete?id='.$contact->getId().'">Delete</a>
+					<a href="/index.php/apps/deadmanswitch/contacts/edit?id='.$contact->getId().'">Edit</a>'
 			];
 		}
 
-		$jobsCount = $this->jobMapper->getJobsOfUserTotal($userId);
+		$contactsCount = $this->contactMapper->getContactsOfUserTotal($userId);
 
 
 		$data = json_encode([
 			'draw' => $draw,
-			'recordsTotal' => $jobsCount,
-			'recordsFiltered' => $jobsCount,
+			'recordsTotal' => $contactsCount,
+			'recordsFiltered' => $contactsCount,
 			'data' => $data
 		]);
 
@@ -98,13 +99,13 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
-	#[FrontpageRoute(verb: 'GET', url: '/jobs/create')]
+	#[FrontpageRoute(verb: 'GET', url: '/contacts/create')]
 	public function create(): TemplateResponse {
-		$job = new Job();
+		$contact = new Contact();
 		return new TemplateResponse(
 			Application::APP_ID,
-			'jobs/create',
-			['page' => 'jobs', 'job' => $job]
+			'contacts/create',
+			['page' => 'contacts', 'contact' => $contact]
 		);
 	}
 
@@ -114,24 +115,24 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
-	#[FrontpageRoute(verb: 'POST', url: '/jobs/store')]
+	#[FrontpageRoute(verb: 'POST', url: '/contacts/store')]
 	public function store(): Response {
 		$userId = $this->currentUser->getUID();
-		$job = new Job();
-		$job->loadData($this->request->getParams());
-		$job->setUserId($userId);
-		$errors = $job->validate();
+		$contact = new Contact();
+		$contact->loadData($this->request->getParams());
+		$contact->setUserId($userId);
+		$errors = $contact->validate();
 
 		if($errors) {
 			return new TemplateResponse(
 				Application::APP_ID,
-				'jobs/create',
-				['page' => 'jobs', 'job' => $job, 'errors' => $errors]
+				'contacts/create',
+				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors]
 			);
 		}
 
-		$this->jobMapper->insert($job);
-		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
+		$this->contactMapper->insert($contact);
+		return new RedirectResponse('/index.php/apps/deadmanswitch/contacts');
 	}
 
 
@@ -142,26 +143,26 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
-	#[FrontpageRoute(verb: 'POST', url: '/jobs/update')]
+	#[FrontpageRoute(verb: 'POST', url: '/contacts/update')]
 	public function update(): Response {
 		$id = $this->request->getParam('id');
 		$userId = $this->currentUser->getUID();
-		$job = $this->jobMapper->getJobOfUser($id, $userId);
+		$contact = $this->contactMapper->getContactOfUser($id, $userId);
 
-		$job->loadData($this->request->getParams());
-		$job->setUserId($userId);
-		$errors = $job->validate();
+		$contact->loadData($this->request->getParams());
+		$contact->setUserId($userId);
+		$errors = $contact->validate();
 
 		if($errors) {
 			return new TemplateResponse(
 				Application::APP_ID,
-				'jobs/edit',
-				['page' => 'jobs', 'job' => $job, 'errors' => $errors]
+				'contacts/edit',
+				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors]
 			);
 		}
 
-		$this->jobMapper->update($job);
-		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
+		$this->contactMapper->update($contact);
+		return new RedirectResponse('/index.php/apps/deadmanswitch/contacts');
 	}
 
 
@@ -171,17 +172,17 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
-	#[FrontpageRoute(verb: 'GET', url: '/jobs/edit')]
+	#[FrontpageRoute(verb: 'GET', url: '/contacts/edit')]
 	public function edit(): Response {
 		$id = $this->request->getParam('id');
 		$userId = $this->currentUser->getUID();
 
-		$job = $this->jobMapper->getJobOfUser($id, $userId);
+		$contact = $this->contactMapper->getContactOfUser($id, $userId);
 
 		return new TemplateResponse(
 			Application::APP_ID,
-			'jobs/edit',
-			['page' => 'jobs', 'job' => $job]
+			'contacts/edit',
+			['page' => 'contacts', 'contact' => $contact]
 		);
 	}
 
@@ -191,14 +192,14 @@ class JobController extends Controller {
 	 * @NoCSRFRequired
 	 * @return TemplateResponse
 	 */
-	#[FrontpageRoute(verb: 'GET', url: '/jobs/delete')]
+	#[FrontpageRoute(verb: 'GET', url: '/contacts/delete')]
 	public function delete(): Response {
 		$id = $this->request->getParam('id');
 		$userId = $this->currentUser->getUID();
 
-		$this->jobMapper->deleteJob($id, $userId);
+		$this->contactMapper->deleteContact($id, $userId);
 
-		return new RedirectResponse('/index.php/apps/deadmanswitch/jobs');
+		return new RedirectResponse('/index.php/apps/deadmanswitch/contacts');
 	}
 
 

@@ -62,20 +62,37 @@ class ContactMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
-	 * @return Contact[]
+	 * @return Job[]
 	 * @throws Exception
 	 */
-	public function getContactsOfUser(string $userId): array {
+	public function getContactsOfUser(string $userId, $limit = 10, $offset = 0): array {
 		$qb = $this->db->getQueryBuilder();
 
-		$qb->select('*')
+		$qb
+			->select('*')
 			->from($this->getTableName())
 			->where(
 				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-			);
+			)
+			->setFirstResult($offset)
+			->setMaxResults($limit)
+		;
 
 		return $this->findEntities($qb);
 	}
+
+	public function getContactsOfUserTotal(string $userId): int {
+		$qb = $this->db->getQueryBuilder();
+
+		$result = $qb->select($qb->func()->count('*', 'contacts_count'))
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+			->executeQuery();
+		return $result->fetch()['contacts_count'];
+	}
+
 
 	/**
 	 * @param string $userId
