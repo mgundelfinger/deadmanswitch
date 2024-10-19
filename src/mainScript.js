@@ -213,6 +213,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		});
 	}
 
+	if(jQuery('#job-groups-table').length) {
+		let table = new DataTable('#job-groups-table', {
+			'ajax': 'get-job-groups',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
 
 
 })

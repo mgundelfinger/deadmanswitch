@@ -19,32 +19,48 @@ class JobsGroupMapper extends QBMapper {
 	}
 
 	/**
-	 * @param int $id
-	 * @return JobsGroup
-	 * @throws \OCP\AppFramework\Db\DoesNotExistException
-	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
+	 * @param string $userId
+	 * @return Job[]
+	 * @throws Exception
 	 */
-	public function getJobsGroup(int $id): JobsGroup {
+	public function getJobGroupsOfUser(string $userId, $limit = 10, $offset = 0): array {
 		$qb = $this->db->getQueryBuilder();
 
-		$qb->select('*')
+		$qb
+			->select('*')
 			->from($this->getTableName())
 			->where(
-				$qb->expr()->eq('id', $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT))
-			);
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+			->setFirstResult($offset)
+			->setMaxResults($limit)
+		;
 
-		return $this->findEntity($qb);
+		return $this->findEntities($qb);
 	}
+
+	public function getJobsGroupsOfUserTotal(string $userId): int {
+		$qb = $this->db->getQueryBuilder();
+
+		$result = $qb->select($qb->func()->count('*', 'job_groups_count'))
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+			->executeQuery();
+		return $result->fetch()['job_groups_count'];
+	}
+
 
 	/**
 	 * @param int $id
 	 * @param string $userId
-	 * @return JobsGroup
+	 * @return Job
 	 * @throws DoesNotExistException
 	 * @throws Exception
 	 * @throws MultipleObjectsReturnedException
 	 */
-	public function getJobsGroupOfUser(int $id, string $userId): JobsGroup {
+	public function getJobGroupOfUser(int $id, string $userId): JobsGroup {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -59,81 +75,73 @@ class JobsGroupMapper extends QBMapper {
 		return $this->findEntity($qb);
 	}
 
-	/**
-	 * @param string $userId
-	 * @return JobsGroup[]
-	 * @throws Exception
-	 */
-	public function getJobsGroupsOfUser(string $userId): array {
+	public function getList(string $userId) : array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb
+			->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+		;
+
+		$list = [];
+		$entities = $this->findEntities($qb);
+		foreach($entities as $entity) {
+			$list[$entity->getId()] = $entity->getName();
+		}
+
+		return $list;
+	}
+
+	public function getGroups(string $userId, array $groupsIds) {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
 			->from($this->getTableName())
 			->where(
-				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-			);
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId))
+			)
+			->andWhere(
+				$qb->expr()->in('id', $qb->createNamedParameter($groupsIds, IQueryBuilder::PARAM_INT_ARRAY))
+			)
+		;
 
 		return $this->findEntities($qb);
 	}
 
 	/**
-	 * @param string $userId
-	 * @param string|null $name
-	 * @return JobsGroup
-	 * @throws Exception
-	 */
-	public function createJobsGroup(string $userId, string $name = null): JobsGroup {
-		$jobsGroup = new JobsGroup();
-		$jobsGroup->setUserId($userId);
-		$jobsGroup->setName($name);
-		return $this->insert($jobsGroup);
-	}
-
-	/**
-	 * @param int $id
-	 * @param string $userId
-	 * @param string $name
-	 * @return JobsGroup|null
-	 * @throws Exception
-	 */
-	public function updateJobsGroup(int $id, string $userId, string $name): ?JobsGroup {
-		try {
-			$jobsGroup = $this->getJobsGroupOfUser($id, $userId);
-		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
-			return null;
-		}
-		$jobsGroup->setName($name);
-		return $this->update($jobsGroup);
-	}
-
-	/**
-	 * @param int $id
-	 * @param string $userId
-	 * @return JobsGroup|null
-	 * @throws Exception
-	 */
-	public function deleteJobsGroup(int $id, string $userId): ?JobsGroup {
-		try {
-			$jobsGroup = $this->getJobsGroupOfUser($id, $userId);
-		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
-			return null;
-		}
-		return $this->delete($jobsGroup);
-	}
-
-	/**
-	 * @param string $userId
+	 * @param Job $job
+	 * @param JobsGroup[] $groups
 	 * @return void
+	 */
+	public function updateGroups(Job $job, array $groups) {
+		$this->db->executeStatement("DELETE FROM `oc_jobs_group_map` WHERE `job_id` = :jobId", ['jobId' => $job->getId()]);
+
+		foreach($groups as $group) {
+			$this->db->executeStatement(
+				"INSERT INTO `oc_jobs_group_map` (`job_id`, `jobs_group_id`) VALUES (:jobId, :groupId)", [
+					'jobId' => $job->getId(), 'groupId' => $group->getId()
+				]
+			);
+		}
+	}
+
+	/**
+	 * @param int $id
+	 * @param string $userId
+	 * @return Job|null
 	 * @throws Exception
 	 */
-	public function deleteJobsGroupsOfUser(string $userId): void {
-		$qb = $this->db->getQueryBuilder();
+	public function deleteJobGroup(int $id, string $userId): ?JobsGroup {
+		try {
+			$job = $this->getJobGroupOfUser($id, $userId);
+		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
+			return null;
+		}
 
-		$qb->delete($this->getTableName())
-			->where(
-				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-			);
-		$qb->executeStatement();
-		$qb->resetQueryParts();
+		return $this->delete($job);
 	}
+
 }
