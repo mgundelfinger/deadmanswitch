@@ -83,7 +83,7 @@ jobs:
         if: ${{ steps.upload.outputs.STATUS != 200 }}
         env:
           STATUS: ${{ steps.upload.outputs.STATUS }}
-          TMP_DIR: /home/runner/work/deadmanswitc
+          TMP_DIR: /home/runner/work/deadmanswitch
         run: |
           echo "Upload Failed!"
           cat ${TMP_DIR}/response.txt
