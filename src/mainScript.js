@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import DataTable from 'datatables.net-dt'
+import jQuery from 'jquery'
 
 import 'datatables.net'
 import 'datatables.net-bs'
