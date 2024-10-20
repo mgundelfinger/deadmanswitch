@@ -77,6 +77,22 @@ class TaskMapper extends QBMapper {
 	}
 
 	/**
+	 * @return Task[]
+	 * @throws Exception
+	 */
+	public function getActiveTasks(): array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter(true, IQueryBuilder::PARAM_BOOL))
+			);
+
+		return $this->findEntities($qb);
+	}
+
+	/**
 	 * @param string $userId
 	 * @param string $name
 	 * @param int $contactsGroupId
