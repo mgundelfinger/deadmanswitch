@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use OCA\DeadManSwitch\Trait\ValidationTrait;
 use OCP\AppFramework\Db\Entity;
 
 /**
@@ -19,7 +20,9 @@ use OCP\AppFramework\Db\Entity;
  */
 class Contact extends Entity implements \JsonSerializable {
 
-    /** @var string */
+	use ValidationTrait;
+
+	/** @var string */
 	protected $userId;
 	/** @var string */
 	protected $firstName;
@@ -33,6 +36,24 @@ class Contact extends Entity implements \JsonSerializable {
 		$this->addType('first_name', 'string');
 		$this->addType('last_name', 'string');
 		$this->addType('email', 'string');
+	}
+
+	public function rules() {
+		return [
+			'firstName' => [
+				'min' => 3,
+				'max' => 64
+			],
+			'lastName' => [
+				'min' => 3,
+				'max' => 64
+			],
+			'email' => [
+				'min' => 3,
+				'max' => 64,
+				'email' => ''
+			]
+		];
 	}
 
 	#[\ReturnTypeWillChange]

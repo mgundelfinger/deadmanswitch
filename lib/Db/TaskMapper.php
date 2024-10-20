@@ -130,4 +130,17 @@ class TaskMapper extends QBMapper {
 		$qb->executeStatement();
 		$qb->resetQueryParts();
 	}
+
+	public function getTasksOfUserTotal(string $userId): int {
+		$qb = $this->db->getQueryBuilder();
+
+		$result = $qb->select($qb->func()->count('*', 'tasks_count'))
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+			->executeQuery();
+		return $result->fetch()['tasks_count'];
+	}
+
 }

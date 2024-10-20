@@ -85,6 +85,9 @@ class JobMapper extends QBMapper {
 
 		$result = $qb->select($qb->func()->count('*', 'jobs_count'))
 			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
 			->executeQuery();
 		return $result->fetch()['jobs_count'];
 	}
@@ -150,6 +153,17 @@ class JobMapper extends QBMapper {
 		}
 
 		return $this->delete($job);
+	}
+
+	public function getGroups($job) {
+		$ids = [];
+		$data = $this->db->executeQuery(
+			"SELECT `jobs_group_id` FROM `oc_jobs_group_map` WHERE `job_id` = :jobId", ['jobId' => $job->getId()]
+		)->fetchAll();
+		foreach($data as $d) {
+			$ids[] = $d['jobs_group_id'];
+		}
+		return $ids;
 	}
 
 	/**

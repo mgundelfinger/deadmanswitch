@@ -1,45 +1,13 @@
 // SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 import { generateUrl } from '@nextcloud/router'
+import { loadState } from '@nextcloud/initial-state'
 import axios from '@nextcloud/axios'
 import { showSuccess, showError } from '@nextcloud/dialogs'
-import DataTable from 'datatables.net-dt'
+import DataTable from 'datatables.net-dt';
 
 import 'datatables.net'
 import 'datatables.net-bs'
-// import 'datatables.net-bs/css/dataTables.bootstrap.css'
-// import 'datatables.net-buttons'
-// import 'datatables.net-buttons-bs'
-// import 'datatables.net-buttons-bs/css/buttons.bootstrap.css'
-// import 'datatables.net-buttons/js/buttons.colVis'
-// import 'datatables.net-buttons/js/buttons.html5'
-// // import 'datatables.net-buttons/js/buttons.flash'
-// // import 'datatables.net-buttons/js/buttons.print'
-// import 'datatables.net-colreorder'
-// import 'datatables.net-colreorder-bs'
-// import 'datatables.net-colreorder-bs/css/colReorder.bootstrap.css'
-// import 'datatables.net-fixedcolumns'
-// import 'datatables.net-fixedcolumns-bs'
-// import 'datatables.net-fixedcolumns-bs/css/fixedColumns.bootstrap.css'
-// import 'datatables.net-fixedheader'
-// import 'datatables.net-fixedheader-bs'
-// import 'datatables.net-fixedheader-bs/css/fixedHeader.bootstrap.css'
-// import 'datatables.net-rowgroup'
-// import 'datatables.net-rowgroup-bs'
-// import 'datatables.net-rowgroup-bs/css/rowGroup.bootstrap.css'
-// import 'datatables.net-rowreorder'
-// import 'datatables.net-rowreorder-bs'
-// import 'datatables.net-rowreorder-bs/css/rowReorder.bootstrap.css'
-// import 'datatables.net-responsive'
-// import 'datatables.net-responsive-bs'
-// import 'datatables.net-responsive-bs/css/responsive.bootstrap.css'
-// import 'datatables.net-scroller'
-// import 'datatables.net-scroller-bs'
-// import 'datatables.net-scroller-bs/css/scroller.bootstrap.css'
-// import 'datatables.net-select'
-// import 'datatables.net-select-bs'
-// import 'datatables.net-select-bs/css/select.bootstrap.css'
-//
 import 'bootstrap-css'
 
 /**
@@ -59,10 +27,6 @@ function main() {
 	// addFormListener(state)
 }
 
-/**
- *
- * @param {any} state Initial State
- */
 function updateForm(state) {
 	document.getElementById('intervalSelector').value = state.check_in_interval
 	document.getElementById('onOffSwitch').checked = !!+state.active
@@ -139,9 +103,6 @@ function addFormListener(state) {
 	}
 }
 
-/**
- *
- */
 function toggleFormElements() {
 	const isActive = document.getElementById('onOffSwitch').checked
 	const config = document.getElementById('config')
@@ -175,14 +136,142 @@ function toggleSave(state) {
 document.addEventListener('DOMContentLoaded', (event) => {
 	main()
 
-	const table = new DataTable('#jobsTable', {
-		ajax: 'get-jobs',
-		processing: true,
-		serverSide: true,
-		columns: [
-			{ data: 'name' },
-			{ data: 'emailSubject' },
-		],
-	})
+	if(jQuery('#jobs-table').length) {
+		let table = new DataTable('#jobs-table', {
+			'ajax': 'get-jobs',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "emailSubject" },
+				{ "data": "actions" },
+			]
+		});
+	}
 
+	if(jQuery('#contacts-table').length) {
+		let table = new DataTable('#contacts-table', {
+			'ajax': 'get-contacts',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "firstName" },
+				{ "data": "lastName" },
+				{ "data": "email" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#contact-groups-table').length) {
+		let table = new DataTable('#contact-groups-table', {
+			'ajax': 'get-contact-groups',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#triggers-table').length) {
+		let table = new DataTable('#triggers-table', {
+			'ajax': 'get-triggers',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "delay" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#alive-statuses-table').length) {
+		let table = new DataTable('#alive-statuses-table', {
+			'ajax': 'get-alive-statuses',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#checkup-intervals-table').length) {
+		let table = new DataTable('#checkup-intervals-table', {
+			'ajax': 'get-checkup-intervals',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "interval" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#job-groups-table').length) {
+		let table = new DataTable('#job-groups-table', {
+			'ajax': 'get-job-groups',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#confirmators-table').length) {
+		let table = new DataTable('#confirmators-table', {
+			'ajax': 'get-confirmators',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "contact" },
+				{ "data": "interval" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#confirmator-groups-table').length) {
+		let table = new DataTable('#confirmator-groups-table', {
+			'ajax': 'get-confirmator-groups',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+	if(jQuery('#tasks-table').length) {
+		let table = new DataTable('#tasks-table', {
+			'ajax': 'get-tasks',
+			'processing': true,
+			'serverSide': true,
+			"columns": [
+				{ "data": "name" },
+				{ "data": "active" },
+				{ "data": "contactGroup" },
+				{ "data": "jobGroup" },
+				{ "data": "confirmatorGroup" },
+				{ "data": "trigger" },
+				{ "data": "actions" },
+			]
+		});
+	}
+
+})
+
+jQuery(document).on('click', '.confirm-action', function (e) {
+	if(confirm("Are you sure ?") === true) {
+		return true;
+	}
+	return false;
 })
