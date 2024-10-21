@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Controller;
 
+use DateTimeImmutable;
 use OCA\DeadManSwitch\Db\ConfirmatorsGroupMapper;
 use OCA\DeadManSwitch\Db\ContactMapper;
 use OCA\DeadManSwitch\Db\ContactsGroupMapper;
@@ -17,6 +18,7 @@ use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCA\DeadManSwitch\AppInfo\Application;
+use OCA\DeadManSwitch\Db\CheckupIntervalMapper;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -37,6 +39,8 @@ class TaskController extends Controller {
 
 	private $confirmatorsGroupMapper;
 
+	private $intervalMapper;
+
 	private $triggerMapper;
 
 	public function __construct(
@@ -47,6 +51,7 @@ class TaskController extends Controller {
 		ContactsGroupMapper $contactsGroupMapper,
 		JobsGroupMapper $jobsGroupMapper,
 		ConfirmatorsGroupMapper $confirmatorsGroupMapper,
+		CheckupIntervalMapper $intervalMapper,
 		TriggerMapper $triggerMapper
 	) {
 		parent::__construct($appName, $request);
@@ -55,6 +60,7 @@ class TaskController extends Controller {
 		$this->contactsGroupMapper = $contactsGroupMapper;
 		$this->jobsGroupMapper = $jobsGroupMapper;
 		$this->confirmatorsGroupMapper = $confirmatorsGroupMapper;
+		$this->intervalMapper = $intervalMapper;
 		$this->triggerMapper = $triggerMapper;
 	}
 
@@ -96,6 +102,7 @@ class TaskController extends Controller {
 				'contactGroup' => $task->getContactsGroupId(),
 				'jobGroup' => $task->getJobsGroupId(),
 				'confirmatorGroup' => $task->getConfirmatorsGroupId(),
+				'interval' => $task->getIntervalId(),
 				'trigger' => $task->getTriggerId(),
 				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/tasks/delete?id='.$task->getId().'">Delete</a>
 					<a href="/index.php/apps/deadmanswitch/tasks/edit?id='.$task->getId().'">Edit</a>'
@@ -132,6 +139,7 @@ class TaskController extends Controller {
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 		$jobGroups = $this->jobsGroupMapper->getList($userId);
 		$confirmatorGroups = $this->confirmatorsGroupMapper->getList($userId);
+		$intervals = $this->intervalMapper->getList($userId);
 		$triggers = $this->triggerMapper->getList($userId);
 
 		return new TemplateResponse(
@@ -139,7 +147,7 @@ class TaskController extends Controller {
 			'tasks/create',
 			[
 				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
-				'confirmatorGroups' => $confirmatorGroups, 'triggers' => $triggers
+				'confirmatorGroups' => $confirmatorGroups, 'intervals' => $intervals, 'triggers' => $triggers
 			]
 		);
 	}
@@ -156,6 +164,7 @@ class TaskController extends Controller {
 		$task = new Task();
 		$task->loadData($this->request->getParams());
 		$task->setUserId($userId);
+		// $task->setLastCheckup(new DateTimeImmutable());
 		$errors = $task->validate();
 
 		if($errors) {
@@ -166,7 +175,9 @@ class TaskController extends Controller {
 			);
 		}
 
-		$this->taskMapper->insert($task);
+		$this->taskMapper->createTask($userId, $task->getName(), $task->getContactsGroupId(), $task->getJobsGroupId(), $task->getConfirmatorsGroupId(), $task->getIntervalId(), $task->getTriggerId(), $task->getActive());
+
+		// $this->taskMapper->insert($task);
 
 		return new RedirectResponse('/index.php/apps/deadmanswitch/tasks');
 	}
@@ -193,13 +204,14 @@ class TaskController extends Controller {
 			$contactGroups = $this->contactsGroupMapper->getList($userId);
 			$jobGroups = $this->jobsGroupMapper->getList($userId);
 			$confirmatorGroups = $this->confirmatorsGroupMapper->getList($userId);
+			$intervals = $this->intervalMapper->getList($userId);
 			$triggers = $this->triggerMapper->getList($userId);
 			return new TemplateResponse(
 				Application::APP_ID,
 				'tasks/edit',
 				[
 					'page' => 'tasks', 'task' => $task, 'errors' => $errors, 'contactGroups' => $contactGroups,
-					'jobGroups' => $jobGroups, 'confirmatorGroups' => $confirmatorGroups, 'triggers' => $triggers
+					'jobGroups' => $jobGroups, 'confirmatorGroups' => $confirmatorGroups, 'intervals' => $intervals, 'triggers' => $triggers
 				]
 			);
 		}
@@ -228,6 +240,7 @@ class TaskController extends Controller {
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 		$jobGroups = $this->jobsGroupMapper->getList($userId);
 		$confirmatorGroups = $this->confirmatorsGroupMapper->getList($userId);
+		$intervals = $this->intervalMapper->getList($userId);
 		$triggers = $this->triggerMapper->getList($userId);
 
 		return new TemplateResponse(
@@ -235,7 +248,7 @@ class TaskController extends Controller {
 			'tasks/edit',
 			[
 				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
-				'confirmatorGroups' => $confirmatorGroups, 'triggers' => $triggers
+				'confirmatorGroups' => $confirmatorGroups, 'intervals' => $intervals, 'triggers' => $triggers
 				]
 		);
 	}

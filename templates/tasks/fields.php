@@ -82,6 +82,20 @@
 </div>
 
 <div class="form-group">
+	<label>Interval</label>
+	<select class="form-control" name="intervalId">
+		<?php foreach($intervals as $id => $label): ?>
+			<option value="<?= $id ?>" <?= ($id == $task->getIntervalId()) ? 'selected' : '' ?>>
+				<?= $label ?>
+			</option>
+		<?php endforeach; ?>
+	</select>
+	<small class="form-text text-muted error">
+		<?= !empty($errors['name']) ? $errors['name'] : '' ?>
+	</small>
+</div>
+
+<div class="form-group">
 	<label>Trigger</label>
 	<select class="form-control" name="triggerId">
 		<?php foreach($triggers as $id => $label): ?>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use DateTimeImmutable;
 use OCA\DeadManSwitch\Trait\ValidationTrait;
 use OCP\AppFramework\Db\Entity;
 
@@ -21,6 +22,10 @@ use OCP\AppFramework\Db\Entity;
  * @method void setJobsGroupId(int $jobsGroupId)
  * @method int getConfirmatorsGroupId()
  * @method void setConfirmatorsGroupId(int $confirmatorsGroupId)
+ * @method int getIntervalId()
+ * @method void setIntervalId(int $intervalId)
+ * @method DateTimeImmutable getLastCheckup()
+ * @method void setLastCheckup(DateTimeImmutable $lastCheckup)
  * @method int getTriggerId()
  * @method void setTriggerId(int $triggerId)
  */
@@ -40,6 +45,10 @@ class Task extends Entity implements \JsonSerializable {
 	protected $jobsGroupId;
     /** @var int */
 	protected $confirmatorsGroupId;
+	/** @var int */
+	protected $intervalId;
+	/** @var DateTimeImmutable */
+	protected $lastCheckup;
     /** @var int */
 	protected $triggerId;
 
@@ -50,6 +59,8 @@ class Task extends Entity implements \JsonSerializable {
         $this->addType('contacts_group_id', 'integer');
         $this->addType('jobs_group_id', 'integer');
         $this->addType('confirmators_group_id', 'integer');
+		$this->addType('interval_id', 'integer');
+		$this->addType('last_checkup', 'datetime_immutable');
         $this->addType('trigger_id', 'integer');
 	}
 
@@ -72,6 +83,8 @@ class Task extends Entity implements \JsonSerializable {
             'contacts_group_id' => $this->contactsGroupId,
             'jobs_group_id' => $this->jobsGroupId,
             'confirmators_group_id' => $this->confirmatorsGroupId,
+			'interval_id' => $this->intervalId,
+			'last_checkup' => $this->lastCheckup,
             'trigger_id' => $this->triggerId,
 		];
 	}

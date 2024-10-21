@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use DateTimeImmutable;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\AppFramework\Db\QBMapper;
 use OCP\DB\Exception;
@@ -86,7 +87,7 @@ class TaskMapper extends QBMapper {
 		$qb->select('*')
 			->from($this->getTableName())
 			->where(
-				$qb->expr()->eq('user_id', $qb->createNamedParameter(true, IQueryBuilder::PARAM_BOOL))
+				$qb->expr()->eq('active', $qb->createNamedParameter(true, IQueryBuilder::PARAM_BOOL))
 			);
 
 		return $this->findEntities($qb);
@@ -98,18 +99,21 @@ class TaskMapper extends QBMapper {
 	 * @param int $contactsGroupId
      * @param int $jobsGroupId
      * @param int $confirmatorsGroupId
+	 * @param int $intervalId
      * @param int $triggerId
      * @param bool $active
 	 * @return Task
 	 * @throws Exception
 	 */
-	public function createTask(string $userId, string $name, int $contactsGroupId, int $jobsGroupId, int $confirmatorsGroupId, int $triggerId, bool $active): Job {
+	public function createTask(string $userId, string $name, int $contactsGroupId, int $jobsGroupId, int $confirmatorsGroupId, int $intervalId, int $triggerId, bool $active): Task {
 		$task = new Task();
 		$task->setUserId($userId);
 		$task->setName($name);
         $task->setContactsGroupId($contactsGroupId);
         $task->setJobsGroupId($jobsGroupId);
         $task->setConfirmatorsGroupId($confirmatorsGroupId);
+		$task->setIntervalId($intervalId);
+		$task->setLastCheckup((new DateTimeImmutable())->format('Y-m-d'));
         $task->setTriggerId($triggerId);
 		$task->setActive($active);
 		return $this->insert($task);
