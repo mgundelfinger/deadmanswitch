@@ -47,7 +47,7 @@ class Task extends Entity implements \JsonSerializable {
 	protected $confirmatorsGroupId;
 	/** @var int */
 	protected $intervalId;
-	/** @var DateTimeImmutable */
+	/** @var string */
 	protected $lastCheckup;
     /** @var int */
 	protected $triggerId;
@@ -62,6 +62,14 @@ class Task extends Entity implements \JsonSerializable {
 		$this->addType('interval_id', 'integer');
 		$this->addType('last_checkup', 'datetime_immutable');
         $this->addType('trigger_id', 'integer');
+	}
+
+	public function getLastCheckup(): DateTimeImmutable {
+		return new DateTimeImmutable($this->lastCheckup);
+	}
+
+	public function setLastCheckup(DateTimeImmutable $lastCheckup) {
+		$this->lastCheckup = new DateTimeImmutable($lastCheckup->format('Y-m-d'));
 	}
 
 	public function rules() {

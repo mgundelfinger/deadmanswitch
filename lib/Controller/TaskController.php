@@ -19,6 +19,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCA\DeadManSwitch\AppInfo\Application;
 use OCA\DeadManSwitch\Db\CheckupIntervalMapper;
+use OCA\DeadManSwitch\Service\MailService;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\IUser;
 use OCP\IUserSession;
@@ -43,6 +44,8 @@ class TaskController extends Controller {
 
 	private $triggerMapper;
 
+	private $mailService;
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
@@ -52,7 +55,8 @@ class TaskController extends Controller {
 		JobsGroupMapper $jobsGroupMapper,
 		ConfirmatorsGroupMapper $confirmatorsGroupMapper,
 		CheckupIntervalMapper $intervalMapper,
-		TriggerMapper $triggerMapper
+		TriggerMapper $triggerMapper,
+		MailService $mailService,
 	) {
 		parent::__construct($appName, $request);
 		$this->currentUser = $currentUser->getUser();
@@ -62,6 +66,7 @@ class TaskController extends Controller {
 		$this->confirmatorsGroupMapper = $confirmatorsGroupMapper;
 		$this->intervalMapper = $intervalMapper;
 		$this->triggerMapper = $triggerMapper;
+		$this->mailService = $mailService;
 	}
 
 	/**
@@ -72,6 +77,8 @@ class TaskController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'GET', url: '/tasks')]
 	public function tasks(): TemplateResponse {
+		$this->mailService->notify('test@test.com', 'test', 'test');
+
 		return new TemplateResponse(
 			Application::APP_ID,
 			'tasks/tasks',

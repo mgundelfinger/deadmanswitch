@@ -111,11 +111,12 @@ class JobController extends Controller {
 	public function create(): TemplateResponse {
 		$job = new Job();
 		$userId = $this->currentUser->getUID();
+		$currentGroups = $this->jobMapper->getGroups($job);
 		$groupsList = $this->jobsGroupMapper->getList($userId);
 		return new TemplateResponse(
 			Application::APP_ID,
 			'jobs/create',
-			['page' => 'jobs', 'job' => $job, 'groupsList' => $groupsList]
+			['page' => 'jobs', 'job' => $job, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
 		);
 	}
 
