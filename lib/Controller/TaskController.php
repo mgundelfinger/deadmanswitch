@@ -77,8 +77,6 @@ class TaskController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'GET', url: '/tasks')]
 	public function tasks(): TemplateResponse {
-		$this->mailService->notify('test@test.com', 'test', 'test');
-
 		return new TemplateResponse(
 			Application::APP_ID,
 			'tasks/tasks',
