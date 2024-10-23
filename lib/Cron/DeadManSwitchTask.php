@@ -108,19 +108,15 @@ class DeadManSwitchTask extends TimedJob {
         $diff = $aliveStatus->getLastCheckupAsDate()->diff($today)->format("%r%a");
 
         foreach ($tasks as $task) {
-            $delay = $this->relationService->getTaskTrigger($task)->getDelay();
+            $delay = $this->relationService->getTaskTrigger($task)->getDelay(); // TODO remove Trigger entity, and make it a field instead
             $contacts = $this->contactMapper->getContactsOfGroup($task->getContactsGroupId());
 
             if($diff >= $delay) {
-                $this->mailService->sendEmail('success@test.com', (string) $diff . " - Interval reached");
                 foreach($this->jobMapper->getJobsOfGroup($task->getJobsGroupId()) as $job) {
                     foreach($contacts as $contact) {
-                        // if ($task->)
                         $this->mailService->sendEmail($contact->getEmail(), $job->getEmailSubject(), $job->getEmailBody());
                     }  
                 }
-            } else {
-                $this->mailService->sendEmail('fail@test.com', (string) $diff . " - Interval not reached");
             }
         }
     }
