@@ -67,14 +67,8 @@
 </div>
 
 <div class="form-group">
-	<label>Trigger</label>
-	<select class="form-control" name="triggerId">
-		<?php foreach($triggers as $id => $label): ?>
-			<option value="<?= $id ?>" <?= ($id == $task->getTriggerId()) ? 'selected' : '' ?>>
-				<?= $label ?>
-			</option>
-		<?php endforeach; ?>
-	</select>
+<label>Delay</label>
+	<input type="number" name="deathDays" class="form-control" value="<?= $task->getDeathDays() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['name']) ? $errors['name'] : '' ?>
 	</small>

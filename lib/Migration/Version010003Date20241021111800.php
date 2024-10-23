@@ -63,49 +63,29 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 			$table->addColumn('jobs_group_id', Types::BIGINT, [
 				'notnull' => true,
 			]);
-            $table->addColumn('interval_id', Types::BIGINT, [
-				'notnull' => true,
-			]);
-            $table->addColumn('trigger_id', Types::BIGINT, [
+            $table->addColumn('death_days', Types::INTEGER, [
 				'notnull' => true,
 			]);
 			$table->setPrimaryKey(['id']);
             $table->addIndex(['user_id'], 'task_uid');
 			$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
             $table->addForeignKeyConstraint('oc_jobs_group', ['jobs_group_id'], ['id']);
-            $table->addForeignKeyConstraint('oc_checkup_interval', ['interval_id'], ['id']);
-            $table->addForeignKeyConstraint('oc_trigger', ['trigger_id'], ['id']);
 		} else {
             $table = $schema->getTable('task');
 			$keys = $table->getForeignKeys();
 			foreach ($keys as $k) {
-			    if (in_array('oc_confirmator', $k->getLocalColumns()) || 
-					in_array('oc_confirmators_group', $k->getLocalColumns()) ||
-					in_array('oc_confirmators_group_map', $k->getLocalColumns())) {
-						$table->dropIndex($k->getName());
+			    if (in_array('trigger_id', $k->getLocalColumns()) || 
+					in_array('confirmators_group_id', $k->getLocalColumns())) {
+						$table->removeForeignKey($k->getName());
 				}
 			};
+			$table->dropColumn('trigger_id');
+			$table->dropColumn('interval_id');
 			$table->dropColumn('confirmators_group_id');
+			$table->addColumn('death_days', Types::INTEGER, [
+				'notnull' => true,
+			]);
         }
-
-		if (!$schema->hasTable('confirmators')) {
-			$table = $schema->createTable('confirmators');
-			$table->addColumn('id', Types::BIGINT, [
-				'autoincrement' => true,
-				'notnull' => true,
-				'length' => 4,
-			]);
-            $table->addColumn('user_id', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-			$table->addColumn('contacts_group_id', Types::BIGINT, [
-				'notnull' => true,
-			]);
-			$table->setPrimaryKey(['id']);
-			$table->addIndex(['user_id'], 'confirmators_uid');
-			$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
-		}
 
 		if (!$schema->hasTable('alive_status')) {
 			$table = $schema->createTable('alive_status');
@@ -121,31 +101,45 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 			$table->addColumn('status', Types::INTEGER, [
 				'notnull' => true,
 			]);
-			$table->addColumn('interval', Types::INTEGER, [
+			$table->addColumn('contacts_group_id', Types::BIGINT, [
 				'notnull' => true,
 			]);
-			$table->addColumn('last_checkup', Types::DATETIME_IMMUTABLE, [
+			$table->addColumn('alive_days', Types::INTEGER, [
+				'notnull' => true,
+			]);
+			$table->addColumn('pending_days', Types::INTEGER, [
+				'notnull' => true,
+			]);
+			$table->addColumn('last_change', Types::DATETIME_IMMUTABLE, [
 				'notnull' => true,
 			]);
 			$table->setPrimaryKey(['id']);
 			$table->addIndex(['user_id'], 'alive_status_uid');
+			$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
 		} else {
 			$table = $schema->getTable('alive_status');
 			$table->dropColumn('name');
-            // $table->addColumn('user_id', Types::STRING, [
-			// 	'notnull' => true,
-			// 	'length' => 64,
-			// ]);
-			// $table->addColumn('status', Types::INTEGER, [
-			// 	'notnull' => true,
-			// ]);
-			// $table->addColumn('interval', Types::INTEGER, [
-			// 	'notnull' => true,
-			// ]);
-			// $table->addColumn('last_checkup', Types::DATETIME_IMMUTABLE, [
-			// 	'notnull' => true,
-			// ]);
-			// $table->addIndex(['user_id'], 'alive_status_uid');
+            $table->addColumn('user_id', Types::STRING, [
+				'notnull' => true,
+				'length' => 64,
+			]);
+			$table->addColumn('status', Types::INTEGER, [
+				'notnull' => true,
+			]);
+			$table->addColumn('contacts_group_id', Types::BIGINT, [
+				'notnull' => true,
+			]);
+			$table->addColumn('alive_days', Types::INTEGER, [
+				'notnull' => true,
+			]);
+			$table->addColumn('pending_days', Types::INTEGER, [
+				'notnull' => true,
+			]);
+			$table->addColumn('last_change', Types::DATETIME_IMMUTABLE, [
+				'notnull' => true,
+			]);
+			$table->addIndex(['user_id'], 'alive_status_uid');
+			$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
 		}
 
 		return $schema;

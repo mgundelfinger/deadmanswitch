@@ -14,10 +14,14 @@ use OCP\AppFramework\Db\Entity;
  * @method void setUserId(string $name)
  * @method int getStatus()
  * @method void setStatus(int $status)
- * @method int getInterval()
- * @method void setInterval(int $interval)
- * @method string getLastCheckup()
- * @method void setLastCheckup(string $lastCheckup)
+ * @method int getContactsGroupId()
+ * @method void setContactsGroupId(int $contactsGroupId)
+ * @method int getAliveDays()
+ * @method void setAliveDays(int $aliveDays)
+ * @method int getPendingDays()
+ * @method void setPendingDays(int $pendingDays)
+ * @method string getLastChange()
+ * @method void setLastChange(string $lastChange)
  */
 class AliveStatus extends Entity implements \JsonSerializable {
 
@@ -28,23 +32,29 @@ class AliveStatus extends Entity implements \JsonSerializable {
 	/** @var string */
 	protected $status;
 	/** @var int */
-	protected $interval;
+	protected $contactsGroupId;
+	/** @var int */
+	protected $aliveDays;
+	/** @var int */
+	protected $pendingDays;
 	/** @var string */
-	protected $lastCheckup;
+	protected $lastChange;
 
 	public function __construct() {
 		$this->addType('user_id', 'string');
 		$this->addType('status', 'integer');
-		$this->addType('interval', 'integer');
-		$this->addType('last_checkup', 'datetime_immutable');
+		$this->addType('contacts_group_id', 'integer');
+		$this->addType('alive_days', 'integer');
+		$this->addType('pending_days', 'integer');
+		$this->addType('last_change', 'datetime_immutable');
 	}
 
-	public function getLastCheckupAsDate(): DateTimeImmutable {
-		return new DateTimeImmutable($this->lastCheckup);
+	public function getLastChangeAsDate(): DateTimeImmutable {
+		return new DateTimeImmutable($this->lastChange);
 	}
 
-	public function setLastCheckupAsDate(DateTimeImmutable $lastCheckup) {
-		$this->lastCheckup = new DateTimeImmutable($lastCheckup->format('Y-m-d'));
+	public function setLastChangeAsDate(DateTimeImmutable $lastChange) {
+		$this->lastChange = new DateTimeImmutable($lastChange->format('Y-m-d'));
 	}
 
 	public function rules() {
@@ -62,8 +72,10 @@ class AliveStatus extends Entity implements \JsonSerializable {
 			'id' => $this->id,
 			'user_id' => $this->userId,
 			'status' => $this->status,
-			'interval' => $this->interval,
-			'last_checkup' => $this->lastCheckup,
+			'contacts_group_id' => $this->contactsGroupId,
+			'alive_days' => $this->aliveDays,
+			'pending_days' => $this->pendingDays,
+			'last_change' => $this->lastChange,
 		];
 	}
 }

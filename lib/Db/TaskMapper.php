@@ -134,18 +134,18 @@ class TaskMapper extends QBMapper {
 	 * @param string $name
 	 * @param int $contactsGroupId
      * @param int $jobsGroupId
-     * @param int $triggerId
+     * @param int $deathDays
      * @param bool $active
 	 * @return Task
 	 * @throws Exception
 	 */
-	public function createTask(string $userId, string $name, int $contactsGroupId, int $jobsGroupId, int $triggerId, bool $active): Task {
+	public function createTask(string $userId, string $name, int $contactsGroupId, int $jobsGroupId, int $deathDays, bool $active): Task {
 		$task = new Task();
 		$task->setUserId($userId);
 		$task->setName($name);
         $task->setContactsGroupId($contactsGroupId);
         $task->setJobsGroupId($jobsGroupId);
-        $task->setTriggerId($triggerId);
+        $task->setDeathDays($deathDays);
 		$task->setActive($active);
 		return $this->insert($task);
 	}

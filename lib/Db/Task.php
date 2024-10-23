@@ -19,8 +19,8 @@ use OCP\AppFramework\Db\Entity;
  * @method void setContactsGroupId(int $contactsGroupId)
  * @method int getJobsGroupId()
  * @method void setJobsGroupId(int $jobsGroupId)
- * @method int getTriggerId()
- * @method void setTriggerId(int $triggerId)
+ * @method int getDeathDays()
+ * @method void setDeathDays(int $deathDays)
  */
 class Task extends Entity implements \JsonSerializable {
 
@@ -37,7 +37,7 @@ class Task extends Entity implements \JsonSerializable {
     /** @var int */
 	protected $jobsGroupId;
     /** @var int */
-	protected $triggerId;
+	protected $deathDays;
 
 	public function __construct() {
 		$this->addType('user_id', 'string');
@@ -45,7 +45,7 @@ class Task extends Entity implements \JsonSerializable {
 		$this->addType('active', 'boolean');
         $this->addType('contacts_group_id', 'integer');
         $this->addType('jobs_group_id', 'integer');
-        $this->addType('trigger_id', 'integer');
+        $this->addType('death_days', 'integer');
 	}
 
 	public function rules() {
@@ -66,7 +66,7 @@ class Task extends Entity implements \JsonSerializable {
 			'active' => $this->active,
             'contacts_group_id' => $this->contactsGroupId,
             'jobs_group_id' => $this->jobsGroupId,
-            'trigger_id' => $this->triggerId,
+            'death_days' => $this->deathDays,
 		];
 	}
 }

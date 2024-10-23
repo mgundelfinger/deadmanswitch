@@ -22,7 +22,7 @@ class MailService {
         $this->userManager = $userManager;
     }
 
-    public function sendCheckUpEmail(Contact $contact, string $userId) {
+    public function sendCheckInEmail(Contact $contact, string $userId) {
         $user = $this->userManager->get($userId);
         $subject = "Nextcloud Dead Man Switch: Check In";
         $htmlBody = "<doctype html><html><body><div>Bitte klicken Sie hier um den Dead Man Switch für " . $user->getDisplayName() . " zurückzusetzen:</div><div><a href='" . $this->urlGenerator->linkToRouteAbsolute('deadmanswitch.page.checkInPage') . "';>Reset</a></div></body></html>";

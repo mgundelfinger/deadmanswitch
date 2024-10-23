@@ -7,7 +7,6 @@ use OCA\DeadManSwitch\Db\ContactsGroupMapper;
 use OCA\DeadManSwitch\Db\JobsGroupMapper;
 use OCA\DeadManSwitch\Db\Task;
 use OCA\DeadManSwitch\Db\TaskMapper;
-use OCA\DeadManSwitch\Db\TriggerMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Controller;
@@ -21,18 +20,13 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TaskController extends Controller {
 
-	/**
-	 * @var IUser
-	 */
-	private $currentUser;
+	private IUser $currentUser;
 
-	private $taskMapper;
+	private TaskMapper $taskMapper;
 
-	private $contactsGroupMapper;
+	private ContactsGroupMapper $contactsGroupMapper;
 
-	private $jobsGroupMapper;
-
-	private $triggerMapper;
+	private JobsGroupMapper $jobsGroupMapper;
 
 	public function __construct(
 		string $appName,
@@ -41,14 +35,12 @@ class TaskController extends Controller {
 		TaskMapper $taskMapper,
 		ContactsGroupMapper $contactsGroupMapper,
 		JobsGroupMapper $jobsGroupMapper,
-		TriggerMapper $triggerMapper,
 	) {
 		parent::__construct($appName, $request);
 		$this->currentUser = $currentUser->getUser();
 		$this->taskMapper = $taskMapper;
 		$this->contactsGroupMapper = $contactsGroupMapper;
 		$this->jobsGroupMapper = $jobsGroupMapper;
-		$this->triggerMapper = $triggerMapper;
 	}
 
 	/**
@@ -88,7 +80,7 @@ class TaskController extends Controller {
 				'active' => $task->getActive(),
 				'contactGroup' => $task->getContactsGroupId(),
 				'jobGroup' => $task->getJobsGroupId(),
-				'trigger' => $task->getTriggerId(),
+				'deathDays' => $task->getDeathDays(),
 				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/tasks/delete?id='.$task->getId().'">Delete</a>
 					<a href="/index.php/apps/deadmanswitch/tasks/edit?id='.$task->getId().'">Edit</a>'
 			];
@@ -123,13 +115,12 @@ class TaskController extends Controller {
 
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 		$jobGroups = $this->jobsGroupMapper->getList($userId);
-		$triggers = $this->triggerMapper->getList($userId);
 
 		return new TemplateResponse(
 			Application::APP_ID,
 			'tasks/create',
 			[
-				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups, 'triggers' => $triggers
+				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
 			]
 		);
 	}
@@ -156,7 +147,7 @@ class TaskController extends Controller {
 			);
 		}
 
-		$this->taskMapper->createTask($userId, $task->getName(), $task->getContactsGroupId(), $task->getJobsGroupId(), $task->getTriggerId(), $task->getActive());
+		$this->taskMapper->createTask($userId, $task->getName(), $task->getContactsGroupId(), $task->getJobsGroupId(), $task->getDeathDays(), $task->getActive());
 
 		// $this->taskMapper->insert($task);
 
@@ -183,13 +174,12 @@ class TaskController extends Controller {
 		if($errors) {
 			$contactGroups = $this->contactsGroupMapper->getList($userId);
 			$jobGroups = $this->jobsGroupMapper->getList($userId);
-			$triggers = $this->triggerMapper->getList($userId);
 			return new TemplateResponse(
 				Application::APP_ID,
 				'tasks/edit',
 				[
 					'page' => 'tasks', 'task' => $task, 'errors' => $errors, 'contactGroups' => $contactGroups,
-					'jobGroups' => $jobGroups, 'triggers' => $triggers
+					'jobGroups' => $jobGroups,
 				]
 			);
 		}
@@ -217,13 +207,12 @@ class TaskController extends Controller {
 
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 		$jobGroups = $this->jobsGroupMapper->getList($userId);
-		$triggers = $this->triggerMapper->getList($userId);
 
 		return new TemplateResponse(
 			Application::APP_ID,
 			'tasks/edit',
 			[
-				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups, 'triggers' => $triggers
+				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
 				]
 		);
 	}
