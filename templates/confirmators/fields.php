@@ -5,9 +5,7 @@
  * @var array $currentGroups
  * @var array $groupsList
  * @var array $contactList
- * @var array $checkupIntervalList
  * @var \OCA\DeadManSwitch\Db\Contact $currentContact
- * @var \OCA\DeadManSwitch\Db\CheckupInterval $currentInterval
  */
 ?>
 
@@ -27,15 +25,6 @@
 </div>
 
 <div class="form-group">
-	<label>Checkup interval</label>
-	<select name="intervalId" class="form-control">
-		<?php foreach($checkupIntervalList as $id => $label): ?>
-			<option value="<?= $id ?>" <?= ($currentInterval?->getId() == $id) ? 'selected' : '' ?>>
-				<?= $label ?>
-			</option>
-		<?php endforeach; ?>
-	</select>
-
 	<small class="form-text text-muted error">
 		<?= !empty($errors['name']) ? $errors['name'] : '' ?>
 	</small>

@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	main()
 
 	if (jQuery('#jobs-table').length) {
-		const table = new DataTable('#jobs-table', {
+		DataTable('#jobs-table', {
 			ajax: 'get-jobs',
 			processing: true,
 			serverSide: true,
@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#contacts-table').length) {
-		const table = new DataTable('#contacts-table', {
+		DataTable('#contacts-table', {
 			ajax: 'get-contacts',
 			processing: true,
 			serverSide: true,
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#contact-groups-table').length) {
-		const table = new DataTable('#contact-groups-table', {
+		DataTable('#contact-groups-table', {
 			ajax: 'get-contact-groups',
 			processing: true,
 			serverSide: true,
@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#triggers-table').length) {
-		const table = new DataTable('#triggers-table', {
+		DataTable('#triggers-table', {
 			ajax: 'get-triggers',
 			processing: true,
 			serverSide: true,
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#alive-statuses-table').length) {
-		const table = new DataTable('#alive-statuses-table', {
+		DataTable('#alive-statuses-table', {
 			ajax: 'get-alive-statuses',
 			processing: true,
 			serverSide: true,
@@ -92,21 +92,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		})
 	}
 
-	if (jQuery('#checkup-intervals-table').length) {
-		const table = new DataTable('#checkup-intervals-table', {
-			ajax: 'get-checkup-intervals',
-			processing: true,
-			serverSide: true,
-			columns: [
-				{ data: 'name' },
-				{ data: 'interval' },
-				{ data: 'actions' },
-			],
-		})
-	}
-
 	if (jQuery('#job-groups-table').length) {
-		const table = new DataTable('#job-groups-table', {
+		DataTable('#job-groups-table', {
 			ajax: 'get-job-groups',
 			processing: true,
 			serverSide: true,
@@ -117,33 +104,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 		})
 	}
 
-	if (jQuery('#confirmators-table').length) {
-		const table = new DataTable('#confirmators-table', {
-			ajax: 'get-confirmators',
-			processing: true,
-			serverSide: true,
-			columns: [
-				{ data: 'contact' },
-				{ data: 'interval' },
-				{ data: 'actions' },
-			],
-		})
-	}
-
-	if (jQuery('#confirmator-groups-table').length) {
-		const table = new DataTable('#confirmator-groups-table', {
-			ajax: 'get-confirmator-groups',
-			processing: true,
-			serverSide: true,
-			columns: [
-				{ data: 'name' },
-				{ data: 'actions' },
-			],
-		})
-	}
-
 	if (jQuery('#tasks-table').length) {
-		const table = new DataTable('#tasks-table', {
+		DataTable('#tasks-table', {
 			ajax: 'get-tasks',
 			processing: true,
 			serverSide: true,
@@ -152,7 +114,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 				{ data: 'active' },
 				{ data: 'contactGroup' },
 				{ data: 'jobGroup' },
-				{ data: 'confirmatorGroup' },
 				{ data: 'trigger' },
 				{ data: 'actions' },
 			],

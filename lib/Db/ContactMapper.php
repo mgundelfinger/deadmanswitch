@@ -93,6 +93,26 @@ class ContactMapper extends QBMapper {
 		return $result->fetch()['contacts_count'];
 	}
 
+	/**
+	 * @param int $groupId
+	 * @return Contact[]
+	 * @throws DoesNotExistException
+	 * @throws Exception
+	 * @throws MultipleObjectsReturnedException
+	 */
+	public function getContactsOfGroup(int $groupId): array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb->select('t.*')
+			->from($this->getTableName(), 't')
+			->join('t', 'contacts_group_map', 'm', 't.id=m.contact_id')
+			->where(
+				$qb->expr()->eq('m.contacts_group_id', $qb->createNamedParameter($groupId, IQueryBuilder::PARAM_INT))
+			)
+			;
+
+		return $this->findEntities($qb);
+	}
 
 	/**
 	 * @param string $userId

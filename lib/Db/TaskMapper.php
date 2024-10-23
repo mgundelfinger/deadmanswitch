@@ -5,7 +5,6 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
-use DateTimeImmutable;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\AppFramework\Db\QBMapper;
 use OCP\DB\Exception;
@@ -65,6 +64,26 @@ class TaskMapper extends QBMapper {
 	 * @return Task[]
 	 * @throws Exception
 	 */
+	public function getActiveTasksOfUser(string $userId): array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb->select('*')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
+			->andWhere(
+				$qb->expr()->eq('active', $qb->createNamedParameter(True, IQueryBuilder::PARAM_BOOL))
+			);
+
+		return $this->findEntities($qb);
+	}
+
+	/**
+	 * @param string $userId
+	 * @return Task[]
+	 * @throws Exception
+	 */
 	public function getTasksOfUser(string $userId): array {
 		$qb = $this->db->getQueryBuilder();
 
@@ -94,26 +113,38 @@ class TaskMapper extends QBMapper {
 	}
 
 	/**
+	 * @return String[]
+	 */
+	public function getUserIdsWithActiveTasks(): array {
+		$qb = $this->db->getQueryBuilder();
+
+		$result = $qb->select('user_id')
+			->from($this->getTableName())
+			->where(
+				$qb->expr()->eq('active', $qb->createNamedParameter(true, IQueryBuilder::PARAM_BOOL))
+			)
+			->executeQuery()
+			;
+
+		return $result->fetchAll();
+	}
+
+	/**
 	 * @param string $userId
 	 * @param string $name
 	 * @param int $contactsGroupId
      * @param int $jobsGroupId
-     * @param int $confirmatorsGroupId
-	 * @param int $intervalId
      * @param int $triggerId
      * @param bool $active
 	 * @return Task
 	 * @throws Exception
 	 */
-	public function createTask(string $userId, string $name, int $contactsGroupId, int $jobsGroupId, int $confirmatorsGroupId, int $intervalId, int $triggerId, bool $active): Task {
+	public function createTask(string $userId, string $name, int $contactsGroupId, int $jobsGroupId, int $triggerId, bool $active): Task {
 		$task = new Task();
 		$task->setUserId($userId);
 		$task->setName($name);
         $task->setContactsGroupId($contactsGroupId);
         $task->setJobsGroupId($jobsGroupId);
-        $task->setConfirmatorsGroupId($confirmatorsGroupId);
-		$task->setIntervalId($intervalId);
-		$task->setLastCheckup((new DateTimeImmutable())->format('Y-m-d'));
         $task->setTriggerId($triggerId);
 		$task->setActive($active);
 		return $this->insert($task);

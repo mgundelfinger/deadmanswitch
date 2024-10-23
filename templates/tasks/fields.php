@@ -6,7 +6,6 @@
  * @var array $groupsList
  * @var array $contactGroups
  * @var array $jobGroups
- * @var array $confirmatorGroups
  * @var array $triggers
  * @var \OCA\DeadManSwitch\Db\Task $task
  */
@@ -58,34 +57,6 @@
 	<select class="form-control" name="jobsGroupId">
 		<?php foreach($jobGroups as $id => $label): ?>
 			<option value="<?= $id ?>" <?= ($id == $task->getJobsGroupId()) ? 'selected' : '' ?>>
-				<?= $label ?>
-			</option>
-		<?php endforeach; ?>
-	</select>
-	<small class="form-text text-muted error">
-		<?= !empty($errors['name']) ? $errors['name'] : '' ?>
-	</small>
-</div>
-
-<div class="form-group">
-	<label>Confirmator group</label>
-	<select class="form-control" name="confirmatorsGroupId">
-		<?php foreach($confirmatorGroups as $id => $label): ?>
-			<option value="<?= $id ?>" <?= ($id == $task->getConfirmatorsGroupId()) ? 'selected' : '' ?>>
-				<?= $label ?>
-			</option>
-		<?php endforeach; ?>
-	</select>
-	<small class="form-text text-muted error">
-		<?= !empty($errors['name']) ? $errors['name'] : '' ?>
-	</small>
-</div>
-
-<div class="form-group">
-	<label>Interval</label>
-	<select class="form-control" name="intervalId">
-		<?php foreach($intervals as $id => $label): ?>
-			<option value="<?= $id ?>" <?= ($id == $task->getIntervalId()) ? 'selected' : '' ?>>
 				<?= $label ?>
 			</option>
 		<?php endforeach; ?>

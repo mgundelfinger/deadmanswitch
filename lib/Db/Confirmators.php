@@ -11,21 +11,21 @@ use OCP\AppFramework\Db\Entity;
 /**
  * @method string|null getUserId()
  * @method void setUserId(?string $userId)
- * @method string getName()
- * @method void setName(string $name)
+ * @method int getContactsGroupId()
+ * @method void setContactsGroupId(int $contactsGroupId)
  */
-class ConfirmatorsGroup extends Entity implements \JsonSerializable {
+class Confirmators extends Entity implements \JsonSerializable {
 
 	use ValidationTrait;
 
 	/** @var string */
 	protected $userId;
-	/** @var string */
-	protected $name;
+	/** @var int */
+	protected $contactsGroupId;
 
 	public function __construct() {
 		$this->addType('user_id', 'string');
-		$this->addType('name', 'string');
+		$this->addType('contacts_group_id', 'integer');
 	}
 
 	public function rules() {
@@ -37,7 +37,7 @@ class ConfirmatorsGroup extends Entity implements \JsonSerializable {
 		return [
 			'id' => $this->id,
 			'user_id' => $this->userId,
-			'name' => $this->name,
+			'contacts_group_id' => $this->contactsGroupId,
 		];
 	}
 }

@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Service;
 
+use OCA\DeadManSwitch\Db\Contact;
 use OCP\IURLGenerator;
+use OCP\IUserManager;
 use OCP\Mail\IMailer;
 
 class MailService {
@@ -12,24 +14,22 @@ class MailService {
 
     private IURLGenerator $urlGenerator;
 
-    public function __construct(IMailer $mailer, IURLGenerator $urlGenerator) {
+    private IUserManager $userManager;
+
+    public function __construct(IMailer $mailer, IURLGenerator $urlGenerator, IUserManager $userManager) {
         $this->mailer = $mailer;
         $this->urlGenerator = $urlGenerator;
+        $this->userManager = $userManager;
     }
 
-    public function sendCheckInEmail(string $email) {
+    public function sendCheckUpEmail(Contact $contact, string $userId) {
+        $user = $this->userManager->get($userId);
         $subject = "Nextcloud Dead Man Switch: Check In";
-        $htmlBody = "<doctype html><html><body><div>Bitte klicken Sie hier um ihren Dead Man Switch zurückzusetzen:</div><div><a href='" . $this->urlGenerator->linkToRouteAbsolute('deadmanswitch.page.checkInPage') . "';>Reset</a></div></body></html>";
-        $this->notify($email, $subject, htmlBody:$htmlBody);
+        $htmlBody = "<doctype html><html><body><div>Bitte klicken Sie hier um den Dead Man Switch für " . $user->getDisplayName() . " zurückzusetzen:</div><div><a href='" . $this->urlGenerator->linkToRouteAbsolute('deadmanswitch.page.checkInPage') . "';>Reset</a></div></body></html>";
+        $this->sendEmail($contact->getEmail(), $subject, htmlBody:$htmlBody);
     }
 
-    public function sendFinalEmail(string $email, string $originalEmail) {
-        $subject = "Nextcloud Dead Man Switch: Account Transfer";
-        $htmlBody = "<doctype html><html><body><div>Der Nextcloud Account von $originalEmail steht Ihnen jetzt zur Verfügung</div></body></html>";
-        $this->notify($email, $subject, htmlBody:$htmlBody);
-    }
-
-    public function notify(string $email, string $subject, string $body = "", $htmlBody = ""): void {
+    public function sendEmail(string $email, string $subject = "", string $body = "", $htmlBody = ""): void {
         $message = $this->mailer->createMessage();
         $message->setSubject($subject);
         if (!empty($htmlBody)) {

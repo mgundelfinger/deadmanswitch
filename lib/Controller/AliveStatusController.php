@@ -142,7 +142,7 @@ class AliveStatusController extends Controller {
 	#[FrontpageRoute(verb: 'POST', url: '/alive-statuses/update')]
 	public function update(): Response {
 		$id = $this->request->getParam('id');
-		$aliveStatus = $this->aliveStatusMapper->getAliveStatusOfUser($id);
+		$aliveStatus = $this->aliveStatusMapper->getOrCreateAliveStatusOfUser($id);
 
 		$aliveStatus->loadData($this->request->getParams());
 		$errors = $aliveStatus->validate();
@@ -170,7 +170,7 @@ class AliveStatusController extends Controller {
 	public function edit(): Response {
 		$id = $this->request->getParam('id');
 
-		$aliveStatus = $this->aliveStatusMapper->getAliveStatusOfUser($id);
+		$aliveStatus = $this->aliveStatusMapper->getOrCreateAliveStatusOfUser($id);
 
 		return new TemplateResponse(
 			Application::APP_ID,
@@ -178,21 +178,5 @@ class AliveStatusController extends Controller {
 			['page' => 'alive-statuses', 'aliveStatus' => $aliveStatus]
 		);
 	}
-
-	/**
-	 *
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 * @return TemplateResponse
-	 */
-	#[FrontpageRoute(verb: 'GET', url: '/alive-statuses/delete')]
-	public function delete(): Response {
-		$id = $this->request->getParam('id');
-
-		$this->aliveStatusMapper->deleteAliveStatus($id);
-
-		return new RedirectResponse('/index.php/apps/deadmanswitch/alive-statuses');
-	}
-
 
 }

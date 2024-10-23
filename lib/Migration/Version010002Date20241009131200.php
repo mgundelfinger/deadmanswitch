@@ -186,9 +186,6 @@ class Version010002Date20241009131200 extends SimpleMigrationStep {
 			$table->addColumn('jobs_group_id', Types::BIGINT, [
 				'notnull' => true,
 			]);
-            $table->addColumn('confirmators_group_id', Types::BIGINT, [
-				'notnull' => true,
-			]);
             $table->addColumn('trigger_id', Types::BIGINT, [
 				'notnull' => true,
 			]);
@@ -196,7 +193,6 @@ class Version010002Date20241009131200 extends SimpleMigrationStep {
             $table->addIndex(['user_id'], 'task_uid');
 			$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
             $table->addForeignKeyConstraint('oc_jobs_group', ['jobs_group_id'], ['id']);
-            $table->addForeignKeyConstraint('oc_confirmators_group', ['confirmators_group_id'], ['id']);
             $table->addForeignKeyConstraint('oc_trigger', ['trigger_id'], ['id']);
 		}
 

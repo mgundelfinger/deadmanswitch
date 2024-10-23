@@ -15,7 +15,6 @@
 			<th>Active</th>
 			<th>Contact group</th>
 			<th>Job group</th>
-			<th>Confirmator group</th>
 			<th>Trigger</th>
 			<th>Actions</th>
 		</tr>

@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace OCA\DeadManSwitch\Db;
 
+use DateTimeImmutable;
 use OCP\AppFramework\Db\DoesNotExistException;
 use OCP\AppFramework\Db\MultipleObjectsReturnedException;
 use OCP\AppFramework\Db\QBMapper;
@@ -13,6 +14,11 @@ use OCP\DB\QueryBuilder\IQueryBuilder;
 use OCP\IDBConnection;
 
 class AliveStatusMapper extends QBMapper {
+
+	const STATUS_ALIVE = 0;
+	const STATUS_PENDING = 1;
+	const STATUS_DEAD = 2;
+
 	public function __construct(IDBConnection $db) {
 		parent::__construct($db, 'alive_status', AliveStatus::class);
 	}
@@ -50,16 +56,37 @@ class AliveStatusMapper extends QBMapper {
 		return $result->fetch()['alive_statuses_count'];
 	}
 
-	public function getAliveStatusOfUser(int $id): AliveStatus {
+	/**
+	 * @param string $userId
+	 * @return AliveStatus
+	 */
+	public function getOrCreateAliveStatusOfUser(string $userId): AliveStatus {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
 			->from($this->getTableName())
 			->where(
-				$qb->expr()->eq('id', $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT))
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
 			);
 
-		return $this->findEntity($qb);
+			try {
+				return $this->findEntity($qb);
+			} catch (DoesNotExistException ) {
+				return $this->createAliveStatus($userId);
+			}
+	}
+
+	/**
+	 * @param string $userId
+	 * @return AliveStatus
+	 * @throws Exception
+	 */
+	public function createAliveStatus(string $userId): AliveStatus {
+		$aliveStatus = new AliveStatus();
+		$aliveStatus->setUserId($userId);
+		$aliveStatus->setStatus(self::STATUS_ALIVE);
+		$aliveStatus->setLastCheckup((new DateTimeImmutable())->format('Y-m-d'));
+		return $this->insert($aliveStatus);
 	}
 
 	/**
@@ -80,14 +107,23 @@ class AliveStatusMapper extends QBMapper {
 		return $this->findEntity($qb);
 	}
 
-	public function deleteAliveStatus(int $id): ?AliveStatus {
+	/**
+	 * @param AliveStatus $aliveStatus
+	 * @return AliveStatus|null
+	 */
+	public function updateAliveStatus(int $id, int $status): ?AliveStatus {
+		if (!in_array($status, [self::STATUS_ALIVE, self::STATUS_PENDING, self::STATUS_DEAD])) {
+			return null;
+		}
 		try {
-			$job = $this->getAliveStatusOfUser($id);
+			$aliveStatus = $this->getAliveStatus($id);
 		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
 			return null;
 		}
+		$aliveStatus->setStatus($status);
+		$aliveStatus->setLastCheckup(new DateTimeImmutable());
 
-		return $this->delete($job);
+		return $this->update($aliveStatus);
 	}
 
 }

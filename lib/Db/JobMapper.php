@@ -93,6 +93,27 @@ class JobMapper extends QBMapper {
 	}
 
 	/**
+	 * @param int $groupId
+	 * @return Job[]
+	 * @throws DoesNotExistException
+	 * @throws Exception
+	 * @throws MultipleObjectsReturnedException
+	 */
+	public function getJobsOfGroup(int $groupId): array {
+		$qb = $this->db->getQueryBuilder();
+
+		$qb->select('t.*')
+			->from($this->getTableName(), 't')
+			->join('t', 'jobs_group_map', 'm', 't.id=m.job_id')
+			->where(
+				$qb->expr()->eq('m.jobs_group_id', $qb->createNamedParameter($groupId, IQueryBuilder::PARAM_INT))
+			)
+			;
+
+		return $this->findEntities($qb);
+	}
+
+	/**
 	 * @param string $userId
 	 * @param string $name
 	 * @param string $emailSubject
