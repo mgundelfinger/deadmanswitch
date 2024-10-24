@@ -48,14 +48,13 @@ class AliveStatusMapper extends QBMapper {
 	 * @return AliveStatus
 	 * @throws Exception
 	 */
-	public function createAliveStatus(string $userId, int $contactGroupId, int $aliveDays = 14, int $pendingDays = 7): AliveStatus {
+	public function createAliveStatus(string $userId, int $aliveDays = 14, int $pendingDays = 7): AliveStatus {
 		$aliveStatus = new AliveStatus();
 		$aliveStatus->setUserId($userId);
 		$aliveStatus->setStatus(self::STATUS_ALIVE);
 		$aliveStatus->setLastChangeAsDate(new DateTimeImmutable());
 		$aliveStatus->setAliveDays($aliveDays);
 		$aliveStatus->setPendingDays($pendingDays);
-		$aliveStatus->setContactsGroupId($contactGroupId);
 		return $this->insert($aliveStatus);
 	}
 

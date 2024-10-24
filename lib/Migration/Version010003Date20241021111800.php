@@ -115,9 +115,7 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 			$table->addColumn('status', Types::INTEGER, [
 				'notnull' => true,
 			]);
-			$table->addColumn('contacts_group_id', Types::BIGINT, [
-				'notnull' => true,
-			]);
+			$table->addColumn('contacts_group_id', Types::BIGINT);
 			$table->addColumn('alive_days', Types::INTEGER, [
 				'notnull' => true,
 			]);
@@ -147,7 +145,7 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 			}
 			if (!$table->hasColumn('contacts_group_id')) {
 				$table->addColumn('contacts_group_id', Types::BIGINT, [
-					'notnull' => true,
+					'notnull' => false,
 				]);
 				$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
 			}

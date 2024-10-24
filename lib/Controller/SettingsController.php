@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Controller;
 
+use DateTimeImmutable;
 use OCA\DeadManSwitch\Db\AliveStatus;
 use OCA\DeadManSwitch\Db\AliveStatusMapper;
 use OCA\DeadManSwitch\Db\ContactsGroupMapper;
@@ -50,6 +51,9 @@ class SettingsController extends Controller {
 	public function settings(): TemplateResponse {
 		$userId = $this->currentUser->getUID();
 		$aliveStatus = $this->aliveStatusMapper->getAliveStatusOfUser($userId);
+		if ($aliveStatus == null) {
+			$aliveStatus = $this->aliveStatusMapper->createAliveStatus($userId);
+		}
 
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 
@@ -97,8 +101,8 @@ class SettingsController extends Controller {
 		$aliveStatus->setUserId($userId);
 		$aliveStatus->setAliveDays($aliveDays);
 		$aliveStatus->setPendingDays($pendingDays);
-		$aliveStatus->setStatus((int) $aliveStatus->getStatus());
-		$aliveStatus->setLastChange(date('Y-m-d H:i:s'));
+		$aliveStatus->setStatus($aliveStatus->getStatus());
+		$aliveStatus->setLastChangeAsDate(new DateTimeImmutable());
 		$aliveStatus->setContactsGroupId($contactGroup);
 
 		if(!$aliveStatus->getId()) {
