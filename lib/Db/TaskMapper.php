@@ -194,4 +194,20 @@ class TaskMapper extends QBMapper {
 		return $result->fetch()['tasks_count'];
 	}
 
+	/**
+	 * @param int $id
+	 * @param bool $active
+	 * @return Task|null
+	 */
+	public function toggleActive(int $id, bool $active) {
+		try {
+			$task = $this->getTask($id);
+		} catch (DoesNotExistException | MultipleObjectsReturnedException) {
+			return null;
+		}
+		$task->setActive($active);
+
+		return $this->update($task);
+	}
+
 }

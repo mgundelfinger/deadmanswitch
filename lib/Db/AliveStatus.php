@@ -46,7 +46,7 @@ class AliveStatus extends Entity implements \JsonSerializable {
 		$this->addType('contacts_group_id', 'integer');
 		$this->addType('alive_days', 'integer');
 		$this->addType('pending_days', 'integer');
-		$this->addType('last_change', 'datetime_immutable');
+		$this->addType('last_change', 'string');
 	}
 
 	public function getLastChangeAsDate(): DateTimeImmutable {
@@ -54,7 +54,8 @@ class AliveStatus extends Entity implements \JsonSerializable {
 	}
 
 	public function setLastChangeAsDate(DateTimeImmutable $lastChange) {
-		$this->lastChange = new DateTimeImmutable($lastChange->format('Y-m-d'));
+		$this->setLastChange($lastChange->format('Y-m-d'));
+		// $this->lastChange = $lastChange->format('Y-m-d');
 	}
 
 	public function rules() {

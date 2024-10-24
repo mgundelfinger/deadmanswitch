@@ -58,9 +58,9 @@ class AliveStatusMapper extends QBMapper {
 
 	/**
 	 * @param string $userId
-	 * @return AliveStatus
+	 * @return AliveStatus|null
 	 */
-	public function getOrCreateAliveStatusOfUser(string $userId): AliveStatus {
+	public function getAliveStatusOfUser(string $userId): ?AliveStatus {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -69,11 +69,11 @@ class AliveStatusMapper extends QBMapper {
 				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
 			);
 
-			try {
-				return $this->findEntity($qb);
-			} catch (DoesNotExistException ) {
-				return $this->createAliveStatus($userId);
-			}
+		try {
+			return $this->findEntity($qb);
+		} catch (DoesNotExistException | MultipleObjectsReturnedException) {
+			return null;
+		}
 	}
 
 	/**
@@ -81,11 +81,14 @@ class AliveStatusMapper extends QBMapper {
 	 * @return AliveStatus
 	 * @throws Exception
 	 */
-	public function createAliveStatus(string $userId): AliveStatus {
+	public function createAliveStatus(string $userId, int $contactGroupId, int $aliveDays = 14, int $pendingDays = 7): AliveStatus {
 		$aliveStatus = new AliveStatus();
 		$aliveStatus->setUserId($userId);
 		$aliveStatus->setStatus(self::STATUS_ALIVE);
-		$aliveStatus->setLastCheckup((new DateTimeImmutable())->format('Y-m-d'));
+		$aliveStatus->setLastChangeAsDate(new DateTimeImmutable());
+		$aliveStatus->setAliveDays($aliveDays);
+		$aliveStatus->setPendingDays($pendingDays);
+		$aliveStatus->setContactsGroupId($contactGroupId);
 		return $this->insert($aliveStatus);
 	}
 
@@ -108,7 +111,8 @@ class AliveStatusMapper extends QBMapper {
 	}
 
 	/**
-	 * @param AliveStatus $aliveStatus
+	 * @param int $id
+	 * @param int $status
 	 * @return AliveStatus|null
 	 */
 	public function updateAliveStatus(int $id, int $status): ?AliveStatus {
@@ -117,11 +121,11 @@ class AliveStatusMapper extends QBMapper {
 		}
 		try {
 			$aliveStatus = $this->getAliveStatus($id);
-		} catch (DoesNotExistException | MultipleObjectsReturnedException $e) {
+		} catch (DoesNotExistException | MultipleObjectsReturnedException) {
 			return null;
 		}
 		$aliveStatus->setStatus($status);
-		$aliveStatus->setLastCheckup(new DateTimeImmutable());
+		$aliveStatus->setLastChangeAsDate(new DateTimeImmutable());
 
 		return $this->update($aliveStatus);
 	}

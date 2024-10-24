@@ -120,7 +120,7 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 			$table->addColumn('pending_days', Types::INTEGER, [
 				'notnull' => true,
 			]);
-			$table->addColumn('last_change', Types::DATETIME_IMMUTABLE, [
+			$table->addColumn('last_change', Types::DATETIME, [
 				'notnull' => true,
 			]);
 			$table->setPrimaryKey(['id']);
@@ -158,7 +158,7 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 				]);
 			}
 			if (!$table->hasColumn('last_change')) {
-				$table->addColumn('last_change', Types::DATETIME_IMMUTABLE, [
+				$table->addColumn('last_change', Types::DATETIME, [
 					'notnull' => true,
 				]);
 			}
