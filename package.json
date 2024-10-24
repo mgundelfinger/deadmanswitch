@@ -21,10 +21,10 @@
   },
   "dependencies": {
     "@nextcloud/axios": "^2.4.0",
-    "@nextcloud/dialogs": "^1.4.0",
+    "@nextcloud/dialogs": "^5.3.7",
     "@nextcloud/initial-state": "^2.1.0",
     "@nextcloud/router": "^2.0.0",
-    "@nextcloud/vue": "^1.3.1",
+    "@nextcloud/vue": "^8.19.0",
     "bootstrap-css": "^4.0.0-alpha.5",
     "datatables": "^1.10.18",
     "datatables.net": "^2.1.8",

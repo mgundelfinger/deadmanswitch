@@ -73,14 +73,8 @@ jobs:
             -d '{"download":"'"$DOWNLOAD"'", "signature": "'"$SIGNATURE"'"}')
           echo "STATUS=$STATUS" >> "$GITHUB_OUTPUT"
 
-      - name: Upload Success
-        env:
-          STATUS: ${{ steps.upload.outputs.STATUS }}
-        if: ${{ steps.upload.outputs.STATUS == 200 }}
-        run: echo "Upload Successful!"
-
       - name: Upload Failure
-        if: ${{ steps.upload.outputs.STATUS != 200 }}
+        if: ${{ steps.upload.outputs.STATUS != 200 && steps.upload.outputs.STATUS != 201 }}
         env:
           STATUS: ${{ steps.upload.outputs.STATUS }}
           TMP_DIR: /home/runner/work/deadmanswitch
