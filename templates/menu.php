@@ -1,6 +1,7 @@
 <?php
-// SPDX-FileCopyrightText: Marlon Gundelfinger <marlonqgundelfinger@gmail.com>
+// SPDX-FileCopyrightText: Mikael Nazarenko <miknazarenko@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
+
 use OCP\Util;
 $appId = OCA\DeadManSwitch\AppInfo\Application::APP_ID;
 Util::addScript($appId, $appId . '-mainScript');
@@ -44,13 +45,6 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 			</a>
 		</li>
 
-<!--		<li>-->
-<!--			<a href="/index.php/apps/deadmanswitch/alive-statuses" class="nav-link text-white --><?//= $page == 'alive-statuses' ? 'active' : '' ?><!--">-->
-<!--				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>-->
-<!--				Alive statuses-->
-<!--			</a>-->
-<!--		</li>-->
-
 		<li>
 			<a href="/index.php/apps/deadmanswitch/jobs" class="nav-link text-white <?= $page == 'jobs' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
@@ -62,6 +56,13 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 			<a href="/index.php/apps/deadmanswitch/job-groups" class="nav-link text-white <?= $page == 'job-groups' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
 				Job groups
+			</a>
+		</li>
+
+		<li>
+			<a href="/index.php/apps/deadmanswitch/settings" class="nav-link text-white <?= $page == 'settings' ? 'active' : '' ?>">
+				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+				Settings
 			</a>
 		</li>
 
