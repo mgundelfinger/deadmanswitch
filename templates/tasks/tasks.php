@@ -1,3 +1,8 @@
+<?php
+// SPDX-FileCopyrightText: Mikael Nazarenko <miknazarenko@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+?>
+
 <?php require_once  dirname(__FILE__) . "/../menu.php" ?>
 
 <div id="app-content">
@@ -15,7 +20,7 @@
 			<th>Active</th>
 			<th>Contact group</th>
 			<th>Job group</th>
-			<th>Trigger</th>
+			<th>Death days</th>
 			<th>Actions</th>
 		</tr>
 		</thead>

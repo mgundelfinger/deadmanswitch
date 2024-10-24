@@ -1,3 +1,7 @@
+<?php
+// SPDX-FileCopyrightText: Mikael Nazarenko <miknazarenko@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+?>
 
 <?php
 /**
@@ -67,7 +71,7 @@
 </div>
 
 <div class="form-group">
-<label>Delay</label>
+<label>Death days</label>
 	<input type="number" name="deathDays" class="form-control" value="<?= $task->getDeathDays() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['name']) ? $errors['name'] : '' ?>

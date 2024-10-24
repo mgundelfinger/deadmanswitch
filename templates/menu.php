@@ -44,26 +44,12 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 			</a>
 		</li>
 
-		<li>
-			<a href="/index.php/apps/deadmanswitch/triggers" class="nav-link text-white <?= $page == 'triggers' ? 'active' : '' ?>">
-				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-				Triggers
-			</a>
-		</li>
-
-		<li>
-			<a href="/index.php/apps/deadmanswitch/alive-statuses" class="nav-link text-white <?= $page == 'alive-statuses' ? 'active' : '' ?>">
-				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-				Alive statuses
-			</a>
-		</li>
-
-		<li>
-			<a href="/index.php/apps/deadmanswitch/checkup-intervals" class="nav-link text-white <?= $page == 'checkup-intervals' ? 'active' : '' ?>">
-				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-				Checkup intervals
-			</a>
-		</li>
+<!--		<li>-->
+<!--			<a href="/index.php/apps/deadmanswitch/alive-statuses" class="nav-link text-white --><?//= $page == 'alive-statuses' ? 'active' : '' ?><!--">-->
+<!--				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>-->
+<!--				Alive statuses-->
+<!--			</a>-->
+<!--		</li>-->
 
 		<li>
 			<a href="/index.php/apps/deadmanswitch/jobs" class="nav-link text-white <?= $page == 'jobs' ? 'active' : '' ?>">
@@ -79,32 +65,6 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 			</a>
 		</li>
 
-		<li>
-			<a href="/index.php/apps/deadmanswitch/confirmators" class="nav-link text-white <?= $page == 'confirmators' ? 'active' : '' ?>">
-				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-				Confirmators
-			</a>
-		</li>
-
-		<li>
-			<a href="/index.php/apps/deadmanswitch/confirmator-groups" class="nav-link text-white <?= $page == 'confirmator-groups' ? 'active' : '' ?>">
-				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-				Confirmator groups
-			</a>
-		</li>
 	</ul>
-	<!--	<hr>-->
-	<!--	<div class="dropdown">-->
-	<!--		<a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">-->
-	<!--			<img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">-->
-	<!--			<strong>mdo</strong>-->
-	<!--		</a>-->
-	<!--		<ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1" style="">-->
-	<!--			<li><a class="dropdown-item" href="#">New project...</a></li>-->
-	<!--			<li><a class="dropdown-item" href="#">Settings</a></li>-->
-	<!--			<li><a class="dropdown-item" href="#">Profile</a></li>-->
-	<!--			<li><hr class="dropdown-divider"></li>-->
-	<!--			<li><a class="dropdown-item" href="#">Sign out</a></li>-->
-	<!--		</ul>-->
-	<!--	</div>-->
+
 </div>
