@@ -31,12 +31,20 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 		/** @var ISchemaWrapper $schema */
 		$schema = $schemaClosure();
 
+		if ($schema->hasTable('confirmators_group_map')) {
+			$schema->dropTable('confirmators_group_map');
+		}
+		if ($schema->hasTable('confirmators_group')) {
+			$schema->dropTable('confirmators_group');
+		}
 		if ($schema->hasTable('confirmator')) {
-			if ($schema->hasTable('confirmators_group_map')) {
-				$schema->dropTable('confirmators_group_map');
-				$schema->dropTable('confirmators_group');
-				$schema->dropTable('confirmator');
-			}
+			$schema->dropTable('confirmator');
+		}
+		if ($schema->hasTable('trigger')) {
+			$schema->dropTable('trigger');
+		}
+		if ($schema->hasTable('checkup_interval')) {
+			$schema->dropTable('checkup_interval');
 		}
 
 		if (!$schema->hasTable('task')) {
@@ -80,12 +88,14 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 				}
 			};
 			$table->dropColumn('trigger_id');
-			$table->dropColumn('interval_id');
 			$table->dropColumn('confirmators_group_id');
-			$table->addColumn('death_days', Types::INTEGER, [
-				'notnull' => true,
-			]);
+			if (!$table->hasColumn('death_days')) {
+				$table->addColumn('death_days', Types::INTEGER, [
+					'notnull' => true,
+				]);
+			}
         }
+
 
 		if (!$schema->hasTable('alive_status')) {
 			$table = $schema->createTable('alive_status');
@@ -119,27 +129,39 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 		} else {
 			$table = $schema->getTable('alive_status');
 			$table->dropColumn('name');
-            $table->addColumn('user_id', Types::STRING, [
-				'notnull' => true,
-				'length' => 64,
-			]);
-			$table->addColumn('status', Types::INTEGER, [
-				'notnull' => true,
-			]);
-			$table->addColumn('contacts_group_id', Types::BIGINT, [
-				'notnull' => true,
-			]);
-			$table->addColumn('alive_days', Types::INTEGER, [
-				'notnull' => true,
-			]);
-			$table->addColumn('pending_days', Types::INTEGER, [
-				'notnull' => true,
-			]);
-			$table->addColumn('last_change', Types::DATETIME_IMMUTABLE, [
-				'notnull' => true,
-			]);
-			$table->addIndex(['user_id'], 'alive_status_uid');
-			$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
+			if (!$table->hasColumn('user_id')) {
+				$table->addColumn('user_id', Types::STRING, [
+					'notnull' => true,
+					'length' => 64,
+				]);
+				$table->addIndex(['user_id'], 'alive_status_uid');
+			}
+				if (!$table->hasColumn('status')) {
+				$table->addColumn('status', Types::INTEGER, [
+					'notnull' => true,
+				]);
+			}
+			if (!$table->hasColumn('contacts_group_id')) {
+				$table->addColumn('contacts_group_id', Types::BIGINT, [
+					'notnull' => true,
+				]);
+				$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
+			}
+			if (!$table->hasColumn('alive_days')) {
+				$table->addColumn('alive_days', Types::INTEGER, [
+					'notnull' => true,
+				]);
+			}
+			if (!$table->hasColumn('pending_days')) {
+				$table->addColumn('pending_days', Types::INTEGER, [
+					'notnull' => true,
+				]);
+			}
+			if (!$table->hasColumn('last_change')) {
+				$table->addColumn('last_change', Types::DATETIME_IMMUTABLE, [
+					'notnull' => true,
+				]);
+			}
 		}
 
 		return $schema;
