@@ -23,25 +23,31 @@ class AliveStatusMapper extends QBMapper {
 		parent::__construct($db, 'alive_status', AliveStatus::class);
 	}
 
+
 	/**
 	 * @param string $userId
-	 * @return Job[]
+	 * @param $limit
+	 * @param $offset
+	 * @return AliveStatus
+	 * @throws DoesNotExistException
 	 * @throws Exception
+	 * @throws MultipleObjectsReturnedException
 	 */
-	public function getAliveStatusesOfUser(string $userId, $limit = 10, $offset = 0): array {
+	public function getAliveStatusOfUser(string $userId): AliveStatus {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb
 			->select('*')
 			->from($this->getTableName())
-//			->where(
-//				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-//			)
-			->setFirstResult($offset)
-			->setMaxResults($limit)
+			->where(
+				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
+			)
 		;
-
-		return $this->findEntities($qb);
+		try {
+			return $this->findEntity($qb);
+		} catch(DoesNotExistException) {
+			return new AliveStatus();
+		}
 	}
 
 	public function getAliveStatusesOfUserTotal(string $userId): int {

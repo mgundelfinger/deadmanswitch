@@ -1,3 +1,8 @@
+<?php
+// SPDX-FileCopyrightText: Mikael Nazarenko <miknazarenko@gmail.com>
+// SPDX-License-Identifier: AGPL-3.0-or-later
+?>
+
 <?php require_once  dirname(__FILE__) . "/../menu.php" ?>
 
 <?php
