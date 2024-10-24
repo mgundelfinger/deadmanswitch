@@ -23,45 +23,6 @@ class AliveStatusMapper extends QBMapper {
 		parent::__construct($db, 'alive_status', AliveStatus::class);
 	}
 
-
-	/**
-	 * @param string $userId
-	 * @param $limit
-	 * @param $offset
-	 * @return AliveStatus
-	 * @throws DoesNotExistException
-	 * @throws Exception
-	 * @throws MultipleObjectsReturnedException
-	 */
-	public function getAliveStatusOfUser(string $userId): AliveStatus {
-		$qb = $this->db->getQueryBuilder();
-
-		$qb
-			->select('*')
-			->from($this->getTableName())
-			->where(
-				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-			)
-		;
-		try {
-			return $this->findEntity($qb);
-		} catch(DoesNotExistException) {
-			return new AliveStatus();
-		}
-	}
-
-	public function getAliveStatusesOfUserTotal(string $userId): int {
-		$qb = $this->db->getQueryBuilder();
-
-		$result = $qb->select($qb->func()->count('*', 'alive_statuses_count'))
-			->from($this->getTableName())
-//			->where(
-//				$qb->expr()->eq('user_id', $qb->createNamedParameter($userId, IQueryBuilder::PARAM_STR))
-//			)
-			->executeQuery();
-		return $result->fetch()['alive_statuses_count'];
-	}
-
 	/**
 	 * @param string $userId
 	 * @return AliveStatus|null
@@ -100,11 +61,9 @@ class AliveStatusMapper extends QBMapper {
 
 	/**
 	 * @param int $id
-	 * @return AliveStatus
-	 * @throws \OCP\AppFramework\Db\DoesNotExistException
-	 * @throws \OCP\AppFramework\Db\MultipleObjectsReturnedException
+	 * @return AliveStatus|null
 	 */
-	public function getAliveStatus(int $id): AliveStatus {
+	public function getAliveStatus(int $id): ?AliveStatus {
 		$qb = $this->db->getQueryBuilder();
 
 		$qb->select('*')
@@ -113,7 +72,12 @@ class AliveStatusMapper extends QBMapper {
 				$qb->expr()->eq('id', $qb->createNamedParameter($id, IQueryBuilder::PARAM_INT))
 			);
 
-		return $this->findEntity($qb);
+		try {
+			return $this->findEntity($qb);
+		} catch (DoesNotExistException | MultipleObjectsReturnedException) {
+			return null;
+		}
+		
 	}
 
 	/**

@@ -87,8 +87,12 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 						$table->removeForeignKey($k->getName());
 				}
 			};
-			$table->dropColumn('trigger_id');
-			$table->dropColumn('confirmators_group_id');
+			if ($table->hasColumn('trigger_id')) {
+				$table->dropColumn('trigger_id');
+			}
+			if ($table->hasColumn('confirmators_group_id')) {
+				$table->dropColumn('confirmators_group_id');
+			}
 			if (!$table->hasColumn('death_days')) {
 				$table->addColumn('death_days', Types::INTEGER, [
 					'notnull' => true,
@@ -136,7 +140,7 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 				]);
 				$table->addIndex(['user_id'], 'alive_status_uid');
 			}
-				if (!$table->hasColumn('status')) {
+			if (!$table->hasColumn('status')) {
 				$table->addColumn('status', Types::INTEGER, [
 					'notnull' => true,
 				]);
