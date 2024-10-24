@@ -34,9 +34,9 @@
 </div>
 
 <div class="form-group">
-	<label>Contact groups</label>
+	<label>Job groups</label>
 
-	<select name="contactGroups[]" multiple class="form-control" style="min-height: 150px">
+	<select name="jobGroups[]" multiple class="form-control" style="min-height: 150px">
 		<?php foreach($groupsList as $id => $name): ?>
 			<option value="<?= $id ?>" <?= in_array($id, $currentGroups) ? 'selected' : '' ?>><?= $name ?></option>
 		<?php endforeach; ?>
