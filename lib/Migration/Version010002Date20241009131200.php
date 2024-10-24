@@ -81,8 +81,8 @@ class Version010002Date20241009131200 extends SimpleMigrationStep {
 				'notnull' => true,
 			]);
 			$table->setPrimaryKey(['id']);
-            $table->addForeignKeyConstraint('oc_job', ['job_id'], ['id']);
-            $table->addForeignKeyConstraint('oc_jobs_group', ['jobs_group_id'], ['id']);
+            $table->addForeignKeyConstraint('oc_job', ['job_id'], ['id'], ['onDelete' => 'cascade']);
+            $table->addForeignKeyConstraint('oc_jobs_group', ['jobs_group_id'], ['id'], ['onDelete' => 'cascade']);
 		}
 
         if (!$schema->hasTable('contacts_group_map')) {
@@ -99,8 +99,8 @@ class Version010002Date20241009131200 extends SimpleMigrationStep {
 				'notnull' => true,
 			]);
 			$table->setPrimaryKey(['id']);
-            $table->addForeignKeyConstraint('oc_contact', ['contact_id'], ['id']);
-            $table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id']);
+            $table->addForeignKeyConstraint('oc_contact', ['contact_id'], ['id'], ['onDelete' => 'cascade']);
+            $table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id'], ['onDelete' => 'cascade']);
 		}
 
 		if (!$schema->hasTable('task')) {

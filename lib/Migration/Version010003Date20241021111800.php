@@ -100,6 +100,33 @@ class Version010003Date20241021111800 extends SimpleMigrationStep {
 			}
         }
 
+		if ($schema->hasTable('contacts_group_map')) {
+			$table = $schema->getTable('contacts_group_map');
+			$keys = $table->getForeignKeys();
+			foreach ($keys as $k) {
+			    if (in_array('contacts_group_id', $k->getLocalColumns())) {
+						$table->removeForeignKey($k->getName());
+						$table->addForeignKeyConstraint('oc_contacts_group', ['contacts_group_id'], ['id'], ['onDelete' => 'cascade']);
+				} else if (in_array('contact_id', $k->getLocalColumns())) {
+						$table->removeForeignKey($k->getName());
+						$table->addForeignKeyConstraint('oc_contact', ['contact_id'], ['id'], ['onDelete' => 'cascade']);
+				}
+			};
+		}
+
+		if ($schema->hasTable('jobs_group_map')) {
+			$table = $schema->getTable('jobs_group_map');
+			$keys = $table->getForeignKeys();
+			foreach ($keys as $k) {
+			    if (in_array('jobs_group_id', $k->getLocalColumns())) {
+						$table->removeForeignKey($k->getName());
+						$table->addForeignKeyConstraint('oc_jobs_group', ['jobs_group_id'], ['id'], ['onDelete' => 'cascade']);
+				} else if (in_array('job_id', $k->getLocalColumns())) {
+						$table->removeForeignKey($k->getName());
+						$table->addForeignKeyConstraint('oc_job', ['job_id'], ['id'], ['onDelete' => 'cascade']);
+				}
+			};
+		}
 
 		if (!$schema->hasTable('alive_status')) {
 			$table = $schema->createTable('alive_status');
