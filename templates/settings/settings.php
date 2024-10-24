@@ -4,6 +4,7 @@
 
 /**
  * @var \OCA\DeadManSwitch\Db\AliveStatus $aliveStatus
+ * @var array $contactGroups
  */
 ?>
 
@@ -27,6 +28,21 @@
 				<small class="form-text text-muted error">
 					<?= !empty($errors['pendingDays']) ? $errors['pendingDays'] : '' ?>
 				</small>
+			</div>
+
+			<div class="form-group">
+				<label>Contact group</label>
+				<select class="form-control" name="contactGroup">
+					<?php foreach($contactGroups as $value => $label): ?>
+					<option value="<?= $value ?>" <?= ($aliveStatus->getContactsGroupId() == $value) ? 'selected' : '' ?>>
+						<?= $label ?>
+					</option>
+					<?php endforeach; ?>
+				</select>
+				<small class="form-text text-muted error">
+					<?= !empty($errors['contactGroup']) ? $errors['contactGroup'] : '' ?>
+				</small>
+
 			</div>
 
 			<button type="submit" class="btn btn-primary">Submit</button>
