@@ -7,18 +7,17 @@ use OCA\DeadManSwitch\Db\ContactsGroupMapper;
 use OCA\DeadManSwitch\Db\JobsGroupMapper;
 use OCA\DeadManSwitch\Db\Task;
 use OCA\DeadManSwitch\Db\TaskMapper;
+use OCA\DeadManSwitch\Db\UserSettingsMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
-use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
-use OCA\DeadManSwitch\AppInfo\Application;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class TaskController extends Controller {
+class TaskController extends BasicController {
 
 	private IUser $currentUser;
 
@@ -35,8 +34,9 @@ class TaskController extends Controller {
 		TaskMapper $taskMapper,
 		ContactsGroupMapper $contactsGroupMapper,
 		JobsGroupMapper $jobsGroupMapper,
+		UserSettingsMapper $userSettingsMapper,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->taskMapper = $taskMapper;
 		$this->contactsGroupMapper = $contactsGroupMapper;
@@ -51,11 +51,7 @@ class TaskController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'GET', url: '/tasks')]
 	public function tasks(): TemplateResponse {
-		return new TemplateResponse(
-			Application::APP_ID,
-			'tasks/tasks',
-			['page' => 'tasks']
-		);
+		return $this->getTemplate('tasks/tasks', ['page' => 'tasks']);
 	}
 
 	/**
@@ -116,13 +112,9 @@ class TaskController extends Controller {
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 		$jobGroups = $this->jobsGroupMapper->getList($userId);
 
-		return new TemplateResponse(
-			Application::APP_ID,
-			'tasks/create',
-			[
-				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
-			]
-		);
+		return $this->getTemplate('tasks/create', [
+			'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
+		]);
 	}
 
 	/**
@@ -140,16 +132,10 @@ class TaskController extends Controller {
 		$errors = $task->validate();
 
 		if($errors) {
-			return new TemplateResponse(
-				Application::APP_ID,
-				'tasks/create',
-				['page' => 'tasks', 'task' => $task, 'errors' => $errors]
-			);
+			return $this->getTemplate('tasks/create', ['page' => 'tasks', 'task' => $task, 'errors' => $errors]);
 		}
 
 		$this->taskMapper->createTask($userId, $task->getName(), $task->getContactsGroupId(), $task->getJobsGroupId(), $task->getDeathDays(), $task->getActive());
-
-		// $this->taskMapper->insert($task);
 
 		return new RedirectResponse('/index.php/apps/deadmanswitch/tasks');
 	}
@@ -174,14 +160,12 @@ class TaskController extends Controller {
 		if($errors) {
 			$contactGroups = $this->contactsGroupMapper->getList($userId);
 			$jobGroups = $this->jobsGroupMapper->getList($userId);
-			return new TemplateResponse(
-				Application::APP_ID,
-				'tasks/edit',
-				[
-					'page' => 'tasks', 'task' => $task, 'errors' => $errors, 'contactGroups' => $contactGroups,
-					'jobGroups' => $jobGroups,
-				]
-			);
+
+
+			return $this->getTemplate('tasks/edit', 				[
+				'page' => 'tasks', 'task' => $task, 'errors' => $errors, 'contactGroups' => $contactGroups,
+				'jobGroups' => $jobGroups,
+			]);
 		}
 
 		if($task->isModified()) {
@@ -208,13 +192,10 @@ class TaskController extends Controller {
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 		$jobGroups = $this->jobsGroupMapper->getList($userId);
 
-		return new TemplateResponse(
-			Application::APP_ID,
-			'tasks/edit',
-			[
-				'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
-				]
-		);
+
+		return $this->getTemplate('tasks/edit', 							[
+			'page' => 'tasks', 'task' => $task, 'contactGroups' => $contactGroups, 'jobGroups' => $jobGroups,
+		]);
 	}
 
 	/**

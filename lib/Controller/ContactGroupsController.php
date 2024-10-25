@@ -5,19 +5,17 @@ namespace OCA\DeadManSwitch\Controller;
 
 use OCA\DeadManSwitch\Db\ContactsGroup;
 use OCA\DeadManSwitch\Db\ContactsGroupMapper;
-use OCA\DeadManSwitch\Db\Contact;
+use OCA\DeadManSwitch\Db\UserSettingsMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
-use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
-use OCA\DeadManSwitch\AppInfo\Application;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ContactGroupsController extends Controller {
+class ContactGroupsController extends BasicController {
 
 	/**
 	 * @var IUser
@@ -31,8 +29,9 @@ class ContactGroupsController extends Controller {
 		IRequest $request,
 		IUserSession $currentUser,
 		ContactsGroupMapper $contactsGroupMapper,
+		UserSettingsMapper $userSettingsMapper,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->contactsGroupMapper = $contactsGroupMapper;
 	}
@@ -45,11 +44,9 @@ class ContactGroupsController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'GET', url: '/contact-groups')]
 	public function contactGroups(): TemplateResponse {
-		return new TemplateResponse(
-			Application::APP_ID,
-			'contact-groups/contact-groups',
-			['page' => 'contact-groups']
-		);
+
+		return $this->getTemplate('contact-groups/contact-groups', ['page' => 'contact-groups']);
+
 	}
 
 	/**
@@ -101,11 +98,9 @@ class ContactGroupsController extends Controller {
 	#[FrontpageRoute(verb: 'GET', url: '/contact-groups/create')]
 	public function create(): TemplateResponse {
 		$contactsGroup = new ContactsGroup();
-		return new TemplateResponse(
-			Application::APP_ID,
-			'contact-groups/create',
-			['page' => 'contact-groups', 'contactsGroup' => $contactsGroup]
-		);
+
+		return $this->getTemplate('contact-groups/create', ['page' => 'contact-groups', 'contactsGroup' => $contactsGroup]);
+
 	}
 
 	/**
@@ -123,11 +118,7 @@ class ContactGroupsController extends Controller {
 		$errors = $contactsGroup->validate();
 
 		if($errors) {
-			return new TemplateResponse(
-				Application::APP_ID,
-				'contact-groups/create',
-				['page' => 'contact-groups', 'contactsGroup' => $contactsGroup, 'errors' => $errors]
-			);
+			return $this->getTemplate('contact-groups/create', ['page' => 'contact-groups', 'contactsGroup' => $contactsGroup, 'errors' => $errors]);
 		}
 
 		$this->contactsGroupMapper->insert($contactsGroup);
@@ -153,11 +144,7 @@ class ContactGroupsController extends Controller {
 		$errors = $contactsGroup->validate();
 
 		if($errors) {
-			return new TemplateResponse(
-				Application::APP_ID,
-				'contact-groups/edit',
-				['page' => 'contact-groups', 'contactsGroup' => $contactsGroup, 'errors' => $errors]
-			);
+			return $this->getTemplate('contact-groups/edit', ['page' => 'contact-groups', 'contactsGroup' => $contactsGroup, 'errors' => $errors]);
 		}
 
 		$this->contactsGroupMapper->update($contactsGroup);
@@ -178,11 +165,8 @@ class ContactGroupsController extends Controller {
 
 		$contactsGroup = $this->contactsGroupMapper->getContactGroupOfUser($id, $userId);
 
-		return new TemplateResponse(
-			Application::APP_ID,
-			'contact-groups/edit',
-			['page' => 'contact-groups', 'contactsGroup' => $contactsGroup]
-		);
+		return $this->getTemplate('contact-groups/edit', ['page' => 'contact-groups', 'contactsGroup' => $contactsGroup]);
+
 	}
 
 	/**

@@ -2,6 +2,14 @@
 // SPDX-FileCopyrightText: Mikael Nazarenko <miknazarenko@gmail.com>
 // SPDX-License-Identifier: AGPL-3.0-or-later
 
+/**
+ * @var \OCA\DeadManSwitch\Db\UserSettings $userSettings
+ */
+
+if(empty($userSettings)) {
+	$userSettings = new \OCA\DeadManSwitch\Db\UserSettings();
+}
+
 use OCP\Util;
 $appId = OCA\DeadManSwitch\AppInfo\Application::APP_ID;
 Util::addScript($appId, $appId . '-mainScript');
@@ -10,6 +18,14 @@ Util::addStyle($appId, 'main');
 $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 
 ?>
+
+<?php if($userSettings->getColor() == '2'): ?>
+<style>
+	.container.custom-container label{
+		color: #fff;
+	}
+</style>
+<?php endif; ?>
 
 <div class="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark" style="width: 280px;">
 	<a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">

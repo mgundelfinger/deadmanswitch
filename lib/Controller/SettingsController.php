@@ -4,21 +4,18 @@
 namespace OCA\DeadManSwitch\Controller;
 
 use DateTimeImmutable;
-use OCA\DeadManSwitch\Db\AliveStatus;
 use OCA\DeadManSwitch\Db\AliveStatusMapper;
 use OCA\DeadManSwitch\Db\ContactsGroupMapper;
 use OCA\DeadManSwitch\Db\UserSettingsMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
-use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
-use OCA\DeadManSwitch\AppInfo\Application;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
 use OCP\IUser;
 use OCP\IUserSession;
 
-class SettingsController extends Controller {
+class SettingsController extends BasicController {
 
 	/**
 	 * @var IUser
@@ -39,7 +36,7 @@ class SettingsController extends Controller {
 		ContactsGroupMapper $contactsGroupMapper,
 		UserSettingsMapper $userSettingsMapper,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->aliveStatusMapper = $aliveStatusMapper;
 		$this->contactsGroupMapper = $contactsGroupMapper;
@@ -63,11 +60,9 @@ class SettingsController extends Controller {
 
 		$contactGroups = $this->contactsGroupMapper->getList($userId);
 
-		return new TemplateResponse(
-			Application::APP_ID,
-			'settings/settings',
-			['page' => 'settings', 'aliveStatus' => $aliveStatus, 'contactGroups' => $contactGroups, 'userSettings' => $userSettings]
-		);
+		return $this->getTemplate('settings/settings', [
+			'page' => 'settings', 'aliveStatus' => $aliveStatus, 'contactGroups' => $contactGroups, 'userSettings' => $userSettings
+		]);
 	}
 
 	/**
@@ -98,11 +93,7 @@ class SettingsController extends Controller {
 		}
 
 		if($errors) {
-			return new TemplateResponse(
-				Application::APP_ID,
-				'settings/settings',
-				['page' => 'settings', 'errors' => $errors]
-			);
+			return $this->getTemplate('settings/settings', ['page' => 'settings', 'errors' => $errors]);
 		}
 
 		$aliveStatus = $this->aliveStatusMapper->getAliveStatusOfUser($userId);

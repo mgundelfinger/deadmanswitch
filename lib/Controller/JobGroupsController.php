@@ -5,6 +5,7 @@ namespace OCA\DeadManSwitch\Controller;
 
 use OCA\DeadManSwitch\Db\JobsGroup;
 use OCA\DeadManSwitch\Db\JobsGroupMapper;
+use OCA\DeadManSwitch\Db\UserSettingsMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Controller;
@@ -16,7 +17,7 @@ use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class JobGroupsController extends Controller {
+class JobGroupsController extends BasicController {
 
 	/**
 	 * @var IUser
@@ -30,8 +31,9 @@ class JobGroupsController extends Controller {
 		IRequest $request,
 		IUserSession $currentUser,
 		JobsGroupMapper $jobsGroupMapper,
+		UserSettingsMapper $userSettingsMapper,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->jobsGroupMapper = $jobsGroupMapper;
 	}
@@ -44,11 +46,7 @@ class JobGroupsController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'GET', url: '/job-groups')]
 	public function jobGroups(): TemplateResponse {
-		return new TemplateResponse(
-			Application::APP_ID,
-			'job-groups/job-groups',
-			['page' => 'job-groups']
-		);
+		return $this->getTemplate('job-groups/job-groups', ['page' => 'job-groups']);
 	}
 
 	/**
@@ -100,11 +98,9 @@ class JobGroupsController extends Controller {
 	#[FrontpageRoute(verb: 'GET', url: '/job-groups/create')]
 	public function create(): TemplateResponse {
 		$jobsGroup = new JobsGroup();
-		return new TemplateResponse(
-			Application::APP_ID,
-			'job-groups/create',
-			['page' => 'job-groups', 'jobsGroup' => $jobsGroup]
-		);
+
+		return $this->getTemplate('job-groups/create', ['page' => 'job-groups', 'jobsGroup' => $jobsGroup]);
+
 	}
 
 	/**
@@ -122,11 +118,7 @@ class JobGroupsController extends Controller {
 		$errors = $jobsGroup->validate();
 
 		if($errors) {
-			return new TemplateResponse(
-				Application::APP_ID,
-				'job-groups/create',
-				['page' => 'job-groups', 'jobsGroup' => $jobsGroup, 'errors' => $errors]
-			);
+			return $this->getTemplate('job-groups/create', ['page' => 'job-groups', 'jobsGroup' => $jobsGroup, 'errors' => $errors]);
 		}
 
 		$this->jobsGroupMapper->insert($jobsGroup);
@@ -152,11 +144,7 @@ class JobGroupsController extends Controller {
 		$errors = $jobsGroup->validate();
 
 		if($errors) {
-			return new TemplateResponse(
-				Application::APP_ID,
-				'job-groups/edit',
-				['page' => 'job-groups', 'jobsGroup' => $jobsGroup, 'errors' => $errors]
-			);
+			return $this->getTemplate('job-groups/edit', ['page' => 'job-groups', 'jobsGroup' => $jobsGroup, 'errors' => $errors]);
 		}
 
 		$this->jobsGroupMapper->update($jobsGroup);
@@ -177,11 +165,7 @@ class JobGroupsController extends Controller {
 
 		$jobsGroup = $this->jobsGroupMapper->getJobGroupOfUser($id, $userId);
 
-		return new TemplateResponse(
-			Application::APP_ID,
-			'job-groups/edit',
-			['page' => 'job-groups', 'jobsGroup' => $jobsGroup]
-		);
+		return $this->getTemplate('job-groups/edit', ['page' => 'job-groups', 'jobsGroup' => $jobsGroup]);
 	}
 
 	/**
