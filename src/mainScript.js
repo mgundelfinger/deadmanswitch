@@ -12,7 +12,7 @@ import 'bootstrap-css';
 document.addEventListener('DOMContentLoaded', (event) => {
 
 	if (jQuery('#jobs-table').length) {
-		new DataTable('#jobs-table', {
+		let dataTable = new DataTable('#jobs-table', {
 			ajax: 'get-jobs',
 			processing: true,
 			serverSide: true,
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#contacts-table').length) {
-		 new DataTable('#contacts-table', {
+		let dataTable = new DataTable('#contacts-table', {
 			ajax: 'get-contacts',
 			processing: true,
 			serverSide: true,
@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#contact-groups-table').length) {
-		new DataTable('#contact-groups-table', {
+		let dataTable = new DataTable('#contact-groups-table', {
 			ajax: 'get-contact-groups',
 			processing: true,
 			serverSide: true,
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#job-groups-table').length) {
-		new DataTable('#job-groups-table', {
+		let dataTable = new DataTable('#job-groups-table', {
 			ajax: 'get-job-groups',
 			processing: true,
 			serverSide: true,
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#tasks-table').length) {
-		new DataTable('#tasks-table', {
+		let dataTable = new DataTable('#tasks-table', {
 			ajax: 'get-tasks',
 			processing: true,
 			serverSide: true,
