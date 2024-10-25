@@ -3,13 +3,13 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Controller;
 
-use OCP\AppFramework\Controller;
+use OCA\DeadManSwitch\Db\UserSettingsMapper;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
-use OCA\DeadManSwitch\AppInfo\Application;
 use OCP\AppFramework\Services\IAppConfig;
+use OCP\IUserSession;
 
-class PageController extends Controller {
+class PageController extends BasicController {
 
 	/**
 	 * @var IAppConfig
@@ -20,8 +20,10 @@ class PageController extends Controller {
 		string $appName,
 		IRequest $request,
 		IAppConfig $config,
+		IUserSession $currentUser,
+		UserSettingsMapper $userSettingsMapper,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->config = $config;
 	}
 
@@ -33,12 +35,9 @@ class PageController extends Controller {
 	 */
 	public function mainPage(): TemplateResponse {
 		$appVersion = $this->config->getAppValueString('installed_version');
-		return new TemplateResponse(
-			Application::APP_ID,
-			'myMainTemplate',
-			[
-				'app_version' => $appVersion,
-			]
-		);
+
+		return $this->getTemplate('myMainTemplate', 			[
+			'app_version' => $appVersion,
+		]);
 	}
 }

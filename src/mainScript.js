@@ -7,11 +7,13 @@ import 'datatables.net'
 import 'datatables.net-bs'
 import 'bootstrap-css'
 
+/* eslint-disable no-unused-vars */
+
 // we wait for the page to be fully loaded
 document.addEventListener('DOMContentLoaded', (event) => {
 
 	if (jQuery('#jobs-table').length) {
-		DataTable('#jobs-table', {
+		const dataTable = new DataTable('#jobs-table', {
 			ajax: 'get-jobs',
 			processing: true,
 			serverSide: true,
@@ -24,7 +26,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#contacts-table').length) {
-		DataTable('#contacts-table', {
+		const dataTable = new DataTable('#contacts-table', {
 			ajax: 'get-contacts',
 			processing: true,
 			serverSide: true,
@@ -38,7 +40,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#contact-groups-table').length) {
-		DataTable('#contact-groups-table', {
+		const dataTable = new DataTable('#contact-groups-table', {
 			ajax: 'get-contact-groups',
 			processing: true,
 			serverSide: true,
@@ -50,7 +52,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#job-groups-table').length) {
-		DataTable('#job-groups-table', {
+		const dataTable = new DataTable('#job-groups-table', {
 			ajax: 'get-job-groups',
 			processing: true,
 			serverSide: true,
@@ -62,7 +64,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	}
 
 	if (jQuery('#tasks-table').length) {
-		DataTable('#tasks-table', {
+		const dataTable = new DataTable('#tasks-table', {
 			ajax: 'get-tasks',
 			processing: true,
 			serverSide: true,

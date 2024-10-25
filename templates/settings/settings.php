@@ -4,6 +4,7 @@
 
 /**
  * @var \OCA\DeadManSwitch\Db\AliveStatus $aliveStatus
+ * @var \OCA\DeadManSwitch\Db\UserSettings $userSettings
  * @var array $contactGroups
  */
 ?>
@@ -42,7 +43,18 @@
 				<small class="form-text text-muted error">
 					<?= !empty($errors['contactGroup']) ? $errors['contactGroup'] : '' ?>
 				</small>
+			</div>
 
+			<div class="form-group">
+				<label>Text color</label>
+				<select class="form-control" name="color">
+					<option value="1" <?= ($userSettings->getColor() == 1) ? 'selected' : '' ?>>
+						Black
+					</option>
+					<option value="2" <?= ($userSettings->getColor() == 2) ? 'selected' : '' ?>>
+						White
+					</option>
+				</select>
 			</div>
 
 			<button type="submit" class="btn btn-primary">Submit</button>

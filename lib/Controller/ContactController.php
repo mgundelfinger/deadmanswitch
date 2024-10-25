@@ -6,6 +6,7 @@ namespace OCA\DeadManSwitch\Controller;
 use OCA\DeadManSwitch\Db\ContactMapper;
 use OCA\DeadManSwitch\Db\Contact;
 use OCA\DeadManSwitch\Db\ContactsGroupMapper;
+use OCA\DeadManSwitch\Db\UserSettingsMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Controller;
@@ -17,7 +18,7 @@ use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ContactController extends Controller {
+class ContactController extends BasicController {
 
 	/**
 	 * @var IUser
@@ -37,8 +38,9 @@ class ContactController extends Controller {
 		IUserSession $currentUser,
 		ContactMapper $contactMapper,
 		ContactsGroupMapper $contactsGroupMapper,
+		UserSettingsMapper $userSettingsMapper,
 	) {
-		parent::__construct($appName, $request);
+		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->contactMapper = $contactMapper;
 		$this->contactsGroupMapper = $contactsGroupMapper;
@@ -52,11 +54,7 @@ class ContactController extends Controller {
 	 */
 	#[FrontpageRoute(verb: 'GET', url: '/contacts')]
 	public function contacts(): TemplateResponse {
-		return new TemplateResponse(
-			Application::APP_ID,
-			'contacts/contacts',
-			['page' => 'contacts']
-		);
+		return $this->getTemplate('contacts/contacts', ['page' => 'contacts']);
 	}
 
 	/**
@@ -113,11 +111,11 @@ class ContactController extends Controller {
 		$userId = $this->currentUser->getUID();
 		$groupsList = $this->contactsGroupMapper->getList($userId);
 		$currentGroups = [];
-		return new TemplateResponse(
-			Application::APP_ID,
-			'contacts/create',
-			['page' => 'contacts', 'contact' => $contact, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
-		);
+
+		return $this->getTemplate('contacts/create', [
+			'page' => 'contacts', 'contact' => $contact, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups
+		]);
+
 	}
 
 	/**
@@ -137,11 +135,11 @@ class ContactController extends Controller {
 		if($errors) {
 			$groupsList = $this->contactsGroupMapper->getList($userId);
 			$currentGroups = $this->contactMapper->getGroups($contact);
-			return new TemplateResponse(
-				Application::APP_ID,
-				'contacts/create',
-				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
-			);
+
+			return $this->getTemplate('contacts/create', [
+				'page' => 'contacts', 'contact' => $contact, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups
+			]);
+
 		}
 
 		$this->contactMapper->insert($contact);
@@ -172,11 +170,10 @@ class ContactController extends Controller {
 		if($errors) {
 			$groupsList = $this->contactsGroupMapper->getList($userId);
 			$currentGroups = $this->contactMapper->getGroups($contact);
-			return new TemplateResponse(
-				Application::APP_ID,
-				'contacts/edit',
-				['page' => 'contacts', 'contact' => $contact, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
-			);
+
+			return $this->getTemplate('contacts/edit', [
+				'page' => 'contacts', 'contact' => $contact, 'errors' => $errors, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups
+			]);
 		}
 
 		if($contact->isModified()) {
@@ -205,11 +202,8 @@ class ContactController extends Controller {
 		$groupsList = $this->contactsGroupMapper->getList($userId);
 		$currentGroups = $this->contactMapper->getGroups($contact);
 
-		return new TemplateResponse(
-			Application::APP_ID,
-			'contacts/edit',
-			['page' => 'contacts', 'contact' => $contact, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]
-		);
+		return $this->getTemplate('contacts/edit', ['page' => 'contacts', 'contact' => $contact, 'groupsList' => $groupsList, 'currentGroups' => $currentGroups]);
+
 	}
 
 	/**
