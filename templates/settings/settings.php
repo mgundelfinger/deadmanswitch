@@ -57,18 +57,6 @@
 				</select>
 			</div>
 
-			<div class="form-group">
-				<label>Language</label>
-				<select class="form-control" name="locale">
-					<option value="en" <?= ($userSettings->getLocale() == 'en') ? 'selected' : '' ?>>
-						English
-					</option>
-					<option value="de" <?= ($userSettings->getLocale() == 'de') ? 'selected' : '' ?>>
-						German
-					</option>
-				</select>
-			</div>
-
 			<button type="submit" class="btn btn-primary">Submit</button>
 
 		</form>

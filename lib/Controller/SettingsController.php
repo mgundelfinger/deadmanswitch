@@ -80,7 +80,6 @@ class SettingsController extends BasicController {
 		$pendingDays = (int) $this->request->getParam('pendingDays');
 		$contactGroup = (int) $this->request->getParam('contactGroup');
 		$color = (int) $this->request->getParam('color');
-		$locale = $this->request->getParam('locale');
 
 		if(!$aliveDays) {
 			$errors['aliveDays'] = 'Alive days must be specified and > 0';
@@ -114,7 +113,7 @@ class SettingsController extends BasicController {
 
 		$userSettings->setUserId($userId);
 		$userSettings->setColor($color);
-		$userSettings->setLocale($locale);
+		$userSettings->setLocale('de');
 		if(!$userSettings->getId()) {
 			$this->userSettingsMapper->insert($userSettings);
 		} else {
