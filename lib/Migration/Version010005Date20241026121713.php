@@ -10,8 +10,6 @@ declare(strict_types=1);
 namespace OCA\DeadManSwitch\Migration;
 
 use Closure;
-use Doctrine\DBAL\Types\Type;
-use Doctrine\DBAL\Types\Types as TypesTypes;
 use OCP\DB\ISchemaWrapper;
 use OCP\DB\Types;
 use OCP\Migration\IOutput;
