@@ -1,18 +1,16 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Nextcloud package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# FIRST AUTHOR marlonqgundelfinger@gmail.com, 2024.
 #
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Nextcloud 3.14159\n"
 "Report-Msgid-Bugs-To: translations\\@example.com\n"
-"POT-Creation-Date: 2024-10-27 19:12+0100\n"
+"POT-Creation-Date: 2024-10-27 19:37+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Last-Translator: Marlon Gundelfingger marlonqgundelfinger@gmail.com\n"
+"Language: German\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,8 +43,22 @@ msgstr ""
 msgid "Contact group must be selected"
 msgstr ""
 
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:38
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/specialAppInfoFakeDummyForL10nScript.php:2
 msgid "Dead Man Switch"
+msgstr ""
+
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:38
+msgid "Check-in"
+msgstr ""
+
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:39
+#, php-format
+msgid "Click here to confirm that %1$s is still alive"
+msgstr ""
+
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:39
+msgid "Confirm"
 msgstr ""
 
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/specialAppInfoFakeDummyForL10nScript.php:3
@@ -57,6 +69,15 @@ msgstr ""
 msgid ""
 "Periodical emails check in whether you are still alive, if left unanswered, "
 "your cloud data will become available to the users of your choice."
+msgstr ""
+
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/checkin/reset.php:15
+#, php-format
+msgid "You have confirmed that %1$s is still alive."
+msgstr ""
+
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/checkin/reset.php:17
+msgid "Your token is invalid."
 msgstr ""
 
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/contact-groups/contact-groups.php:12

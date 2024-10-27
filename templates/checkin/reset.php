@@ -12,9 +12,9 @@
 <div id="app-content">
 	<div class="container custom-container">
         <?php if ($name != null) {
-            echo "You have confirmed that $name is still alive.";
+            echo p($l->t('You have confirmed that %1$s is still alive.', [$name]));
         } else {
-            echo "Your token is invalid.";
+            echo p($l->t('Your token is invalid.'));
         }
         ?>
 	</div>
