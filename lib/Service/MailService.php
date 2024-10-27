@@ -3,7 +3,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 namespace OCA\DeadManSwitch\Service;
 
+use OCA\DeadManSwitch\Db\AliveStatus;
 use OCA\DeadManSwitch\Db\Contact;
+use OCA\DeadManSwitch\Db\ResetTokenMapper;
 use OCP\IURLGenerator;
 use OCP\IUserManager;
 use OCP\Mail\IMailer;
@@ -16,16 +18,21 @@ class MailService {
 
     private IUserManager $userManager;
 
-    public function __construct(IMailer $mailer, IURLGenerator $urlGenerator, IUserManager $userManager) {
+    private ResetTokenMapper $tokenMapper;
+
+    public function __construct(IMailer $mailer, IURLGenerator $urlGenerator, IUserManager $userManager, ResetTokenMapper $tokenMapper) {
         $this->mailer = $mailer;
         $this->urlGenerator = $urlGenerator;
         $this->userManager = $userManager;
+        $this->tokenMapper = $tokenMapper;
     }
 
-    public function sendCheckInEmail(Contact $contact, string $userId) {
-        $user = $this->userManager->get($userId);
+    public function sendCheckInEmail(Contact $contact, AliveStatus $aliveStatus) {
+        $user = $this->userManager->get($aliveStatus->getUserId());
+        $resetToken = $this->tokenMapper->createResetToken($contact->getId(), $aliveStatus->getId());
+
         $subject = "Nextcloud Dead Man Switch: Check In";
-        $htmlBody = "<doctype html><html><body><div>Bitte klicken Sie hier um den Dead Man Switch für " . $user->getDisplayName() . " zurückzusetzen:</div><div><a href='" . $this->urlGenerator->linkToRouteAbsolute('deadmanswitch.page.checkInPage') . "';>Reset</a></div></body></html>";
+        $htmlBody = "<doctype html><html><body><div>Bitte klicken Sie hier um den Dead Man Switch für " . $user->getDisplayName() . " zurückzusetzen:</div><div><a href='" . $this->urlGenerator->linkToRouteAbsolute('deadmanswitch.checkin.reset', ['token' => $resetToken->getToken()]) . "';>Reset</a></div></body></html>";
         $this->sendEmail($contact->getEmail(), $subject, htmlBody:$htmlBody);
     }
 
