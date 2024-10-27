@@ -8,6 +8,7 @@ use OCA\DeadManSwitch\Db\AliveStatus;
 use OCA\DeadManSwitch\Db\AliveStatusMapper;
 use OCA\DeadManSwitch\Db\ContactMapper;
 use OCA\DeadManSwitch\Db\JobMapper;
+use OCA\DeadManSwitch\Db\ResetTokenMapper;
 use OCA\DeadManSwitch\Db\TaskMapper;
 use OCA\DeadManSwitch\Service\MailService;
 use OCP\BackgroundJob\TimedJob;
@@ -25,13 +26,16 @@ class DeadManSwitchTask extends TimedJob {
 
     private AliveStatusMapper $aliveStatusMapper;
 
-    public function __construct(ITimeFactory $time, MailService $mailService, TaskMapper $taskMapper, ContactMapper $contactMapper, JobMapper $jobMapper, AliveStatusMapper $aliveStatusMapper) {
+    private ResetTokenMapper $tokenMapper;
+
+    public function __construct(ITimeFactory $time, MailService $mailService, TaskMapper $taskMapper, ContactMapper $contactMapper, JobMapper $jobMapper, AliveStatusMapper $aliveStatusMapper, ResetTokenMapper $tokenMapper) {
         parent::__construct($time);
         $this->mailService = $mailService;
         $this->taskMapper = $taskMapper;
         $this->contactMapper = $contactMapper;
         $this->jobMapper= $jobMapper;
         $this->aliveStatusMapper = $aliveStatusMapper;
+        $this->tokenMapper = $tokenMapper;
 
         // TODO run daily
         $this->setInterval(300);
@@ -65,7 +69,7 @@ class DeadManSwitchTask extends TimedJob {
         if ($daysDifference >= $aliveDays) {
             $confirmatorContacts = $this->contactMapper->getContactsOfGroup($aliveStatus->getContactsGroupId());
             foreach ($confirmatorContacts as $contact) {
-                $this->mailService->sendCheckInEmail($contact, $aliveStatus->getUserId());
+                $this->mailService->sendCheckInEmail($contact, $aliveStatus);
             }
             $this->aliveStatusMapper->updateAliveStatus($aliveStatus->getId(), AliveStatusMapper::STATUS_PENDING);
         }
@@ -80,6 +84,7 @@ class DeadManSwitchTask extends TimedJob {
 
         if($daysDifference >= $pendingDays) {
             $this->aliveStatusMapper->updateAliveStatus($aliveStatus->getId(), AliveStatusMapper::STATUS_DEAD);
+            $this->tokenMapper->deleteResetTokensOfAliveStatus($aliveStatus->getId());
         }
 
 
