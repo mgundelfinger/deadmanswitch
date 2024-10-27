@@ -5,12 +5,5 @@ Changelog
 
 ## Added
 
-- Add reset function
-
-## Fixed
-
-- Fix user_settings DB index for user_id
-
-## Removed
-
-- Remove obsolete routes from routes.php
+- Add l10n support
+- Add german translations
