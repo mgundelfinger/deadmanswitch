@@ -9,15 +9,15 @@
 
 	<div class="buttons-container">
 		<a type="button" class="btn btn-primary" href="/index.php/apps/deadmanswitch/contact-groups/create">
-			Add contact group
+			<?php p($l->t('Add Contact Group')) ?>
 		</a>
 	</div>
 
 	<table id="contact-groups-table" class="display">
 		<thead>
 		<tr>
-			<th>Name</th>
-			<th>Actions</th>
+			<th><?php p($l->t('Name')) ?></th>
+			<th><?php p($l->t('Actions')) ?></th>
 		</tr>
 		</thead>
 		<tbody>

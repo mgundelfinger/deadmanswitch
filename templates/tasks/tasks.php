@@ -9,19 +9,19 @@
 
 	<div class="buttons-container">
 		<a type="button" class="btn btn-primary" href="/index.php/apps/deadmanswitch/tasks/create">
-			Add task
+			<th><?php p($l->t('Add Task')) ?></th>
 		</a>
 	</div>
 
 	<table id="tasks-table" class="display">
 		<thead>
 		<tr>
-			<th>Name</th>
-			<th>Active</th>
-			<th>Contact group</th>
-			<th>Job group</th>
-			<th>Death days</th>
-			<th>Actions</th>
+			<th><?php p($l->t('Name')) ?></th>
+			<th><?php p($l->t('Active')) ?></th>
+			<th><?php p($l->t('Contact Group')) ?> </th>
+			<th><?php p($l->t('Job Group')) ?></th>
+			<th><?php p($l->t('Days after death')) ?></th>
+			<th><?php p($l->t('Actions')) ?></th>
 		</tr>
 		</thead>
 		<tbody>

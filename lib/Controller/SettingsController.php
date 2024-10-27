@@ -12,6 +12,7 @@ use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
+use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserSession;
 
@@ -28,6 +29,8 @@ class SettingsController extends BasicController {
 
 	private $userSettingsMapper;
 
+	private IL10N $l;
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
@@ -35,12 +38,14 @@ class SettingsController extends BasicController {
 		AliveStatusMapper $aliveStatusMapper,
 		ContactsGroupMapper $contactsGroupMapper,
 		UserSettingsMapper $userSettingsMapper,
+		IL10N $l,
 	) {
 		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->aliveStatusMapper = $aliveStatusMapper;
 		$this->contactsGroupMapper = $contactsGroupMapper;
 		$this->userSettingsMapper = $userSettingsMapper;
+		$this->l = $l;
 	}
 
 	/**
@@ -82,13 +87,13 @@ class SettingsController extends BasicController {
 		$color = (int) $this->request->getParam('color');
 
 		if(!$aliveDays) {
-			$errors['aliveDays'] = 'Alive days must be specified and > 0';
+			$errors['aliveDays'] = $this->l->t('Check-in interval must be specified and > 0');
 		}
 		if(!$pendingDays) {
-			$errors['pendingDays'] = 'Pending days must be specified and > 0';
+			$errors['pendingDays'] = $this->l->t('Confirmation time must be specified and > 0');
 		}
 		if(!$contactGroup) {
-			$errors['contactGroup'] = 'Contact group must be selected';
+			$errors['contactGroup'] = $this->l->t('Contact group must be selected');
 		}
 
 		if($errors) {

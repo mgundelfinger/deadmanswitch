@@ -8,11 +8,10 @@ use OCA\DeadManSwitch\Db\JobsGroupMapper;
 use OCA\DeadManSwitch\Db\UserSettingsMapper;
 use OCP\AppFramework\Http\RedirectResponse;
 use OCP\AppFramework\Http\Response;
-use OCP\AppFramework\Controller;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
-use OCA\DeadManSwitch\AppInfo\Application;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
+use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,16 +25,20 @@ class JobGroupsController extends BasicController {
 
 	private $jobsGroupMapper;
 
+	private IL10N $l;
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
 		IUserSession $currentUser,
 		JobsGroupMapper $jobsGroupMapper,
 		UserSettingsMapper $userSettingsMapper,
+		IL10N $l,
 	) {
 		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->jobsGroupMapper = $jobsGroupMapper;
+		$this->l = $l;
 	}
 
 	/**
@@ -68,8 +71,8 @@ class JobGroupsController extends BasicController {
 		foreach($jobsGroups as $jobsGroup) {
 			$data[] = [
 				'name' => $jobsGroup->getName(),
-				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/job-groups/delete?id='.$jobsGroup->getId().'">Delete</a>
-					<a href="/index.php/apps/deadmanswitch/job-groups/edit?id='.$jobsGroup->getId().'">Edit</a>'
+				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/job-groups/delete?id='.$jobsGroup->getId().'">' . $this->l->t("Delete") . '</a>
+					<a href="/index.php/apps/deadmanswitch/job-groups/edit?id='.$jobsGroup->getId().'">' . $this->l->t("Edit") . '</a>'
 			];
 		}
 

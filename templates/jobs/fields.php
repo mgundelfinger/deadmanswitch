@@ -12,21 +12,21 @@
 ?>
 
 <div class="form-group">
-	<label>Name</label>
+	<label><?php p($l->t('Name')) ?></label>
 	<input type="text" name="name" class="form-control" value="<?= $job->getName() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['name']) ? $errors['name'] : '' ?>
 	</small>
 </div>
 <div class="form-group">
-	<label>Subject</label>
+	<label><?php p($l->t('Email Subject')) ?></label>
 	<input name="emailSubject" class="form-control" value="<?= $job->getEmailSubject() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['emailSubject']) ? $errors['emailSubject'] : '' ?>
 	</small>
 </div>
 <div class="form-group">
-	<label>Body</label>
+	<label><?php p($l->t('Email Body')) ?></label>
 	<input name="emailBody" class="form-control" value="<?= $job->getEmailBody() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['emailBody']) ? $errors['emailBody'] : '' ?>
@@ -34,7 +34,7 @@
 </div>
 
 <div class="form-group">
-	<label>Job groups</label>
+	<label><?php p($l->t('Job Groups')) ?></label>
 
 	<select name="jobGroups[]" multiple class="form-control" style="min-height: 150px">
 		<?php foreach($groupsList as $id => $name): ?>
@@ -45,5 +45,5 @@
 	<small class="form-text text-muted error"></small>
 </div>
 
-<button type="submit" class="btn btn-primary">Submit</button>
+<button type="submit" class="btn btn-primary"><?php p($l->t('Submit')) ?></button>
 

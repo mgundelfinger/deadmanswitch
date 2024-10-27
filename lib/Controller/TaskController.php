@@ -13,6 +13,7 @@ use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
+use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -27,6 +28,8 @@ class TaskController extends BasicController {
 
 	private JobsGroupMapper $jobsGroupMapper;
 
+	private IL10N $l;
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
@@ -35,12 +38,14 @@ class TaskController extends BasicController {
 		ContactsGroupMapper $contactsGroupMapper,
 		JobsGroupMapper $jobsGroupMapper,
 		UserSettingsMapper $userSettingsMapper,
+		IL10N $l,
 	) {
 		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->taskMapper = $taskMapper;
 		$this->contactsGroupMapper = $contactsGroupMapper;
 		$this->jobsGroupMapper = $jobsGroupMapper;
+		$this->l = $l;
 	}
 
 	/**
@@ -77,8 +82,8 @@ class TaskController extends BasicController {
 				'contactGroup' => $task->getContactsGroupId(),
 				'jobGroup' => $task->getJobsGroupId(),
 				'deathDays' => $task->getDeathDays(),
-				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/tasks/delete?id='.$task->getId().'">Delete</a>
-					<a href="/index.php/apps/deadmanswitch/tasks/edit?id='.$task->getId().'">Edit</a>'
+				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/tasks/delete?id='.$task->getId().'">' . $this->l->t("Delete") . '</a>
+					<a href="/index.php/apps/deadmanswitch/tasks/edit?id='.$task->getId().'">' . $this->l->t("Edit") . '</a>'
 			];
 		}
 

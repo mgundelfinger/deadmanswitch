@@ -9,16 +9,16 @@
 
 	<div class="buttons-container">
 		<a type="button" class="btn btn-primary" href="/index.php/apps/deadmanswitch/jobs/create">
-			Add job
+			<?php p($l->t('Add Job')) ?>
 		</a>
 	</div>
 
 	<table id="jobs-table" class="display">
 		<thead>
 		<tr>
-			<th>Name</th>
-			<th>Email subject</th>
-			<th>Actions</th>
+			<th><?php p($l->t('Name')) ?></th>
+			<th><?php p($l->t('Email Subject')) ?></th>
+			<th><?php p($l->t('Actions')) ?></th>
 		</tr>
 		</thead>
 		<tbody>

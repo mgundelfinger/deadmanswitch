@@ -37,48 +37,48 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 		<li class="nav-item">
 			<a href="/index.php/apps/deadmanswitch/" class="nav-link text-white <?= empty($page) ? 'active' : '' ?>" aria-current="page">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-				Home
+				<?php p($l->t('Home')) ?>
 			</a>
 		</li>
 		<li>
 			<a href="/index.php/apps/deadmanswitch/contacts" class="nav-link text-white <?= $page == 'contacts' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-				Contacts
+				<?php p($l->t('Contacts')) ?>
 			</a>
 		</li>
 
 		<li>
 			<a href="/index.php/apps/deadmanswitch/contact-groups" class="nav-link text-white <?= $page == 'contact-groups' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-				Contact groups
+				<?php p($l->t('Contact Groups')) ?>
 			</a>
 		</li>
 
 		<li>
 			<a href="/index.php/apps/deadmanswitch/tasks" class="nav-link text-white <?= $page == 'tasks' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-				Tasks
+				<?php p($l->t('Tasks')) ?>
 			</a>
 		</li>
 
 		<li>
 			<a href="/index.php/apps/deadmanswitch/jobs" class="nav-link text-white <?= $page == 'jobs' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-				Jobs
+				<?php p($l->t('Jobs')) ?>
 			</a>
 		</li>
 
 		<li>
 			<a href="/index.php/apps/deadmanswitch/job-groups" class="nav-link text-white <?= $page == 'job-groups' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-				Job groups
+				<?php p($l->t('Job Groups')) ?>
 			</a>
 		</li>
 
 		<li>
 			<a href="/index.php/apps/deadmanswitch/settings" class="nav-link text-white <?= $page == 'settings' ? 'active' : '' ?>">
 				<svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-				Settings
+				<?php p($l->t('Settings')) ?>
 			</a>
 		</li>
 

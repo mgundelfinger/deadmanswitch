@@ -9,7 +9,7 @@
 
 	<div class="buttons-container">
 		<a type="button" class="btn btn-primary" href="/index.php/apps/deadmanswitch/contacts/create">
-			Add contact
+			<?php p($l->t('Add Contact')) ?>
 		</a>
 	</div>
 
@@ -17,10 +17,10 @@
 
 		<thead>
 		<tr>
-			<th>First name</th>
-			<th>Last name</th>
-			<th>Email</th>
-			<th>Actions</th>
+			<th><?php p($l->t('First Name')) ?></th>
+			<th><?php p($l->t('Last Name')) ?></th>
+			<th><?php p($l->t('Email')) ?></th>
+			<th><?php p($l->t('Actions')) ?></th>
 		</tr>
 		</thead>
 		<tbody>

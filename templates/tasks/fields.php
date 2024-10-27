@@ -26,7 +26,7 @@
 </style>
 
 <div class="form-group">
-	<label>Name</label>
+	<label><?php p($l->t('Name')) ?></label>
 	<input type="text" name="name" class="form-control" value="<?= $task->getName() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['name']) ? $errors['name'] : '' ?>
@@ -34,7 +34,7 @@
 </div>
 
 <div class="form-group">
-	<label>Active</label>
+	<label><?php p($l->t('Active')) ?></label>
 	<input type="hidden" name="active" class="form-control" value="0">
 	<input type="checkbox" name="active" class="form-control" value="1" <?= $task->getActive() ? 'checked' : '' ?>>
 	<small class="form-text text-muted error">
@@ -43,7 +43,7 @@
 </div>
 
 <div class="form-group">
-	<label>Contact group</label>
+	<label><?php p($l->t('Contact Group')) ?></label>
 	<select class="form-control" name="contactsGroupId">
 		<?php foreach($contactGroups as $id => $label): ?>
 		<option value="<?= $id ?>" <?= ($id == $task->getContactsGroupId()) ? 'selected' : '' ?>>
@@ -57,7 +57,7 @@
 </div>
 
 <div class="form-group">
-	<label>Job group</label>
+	<label><?php p($l->t('Job Group')) ?></label>
 	<select class="form-control" name="jobsGroupId">
 		<?php foreach($jobGroups as $id => $label): ?>
 			<option value="<?= $id ?>" <?= ($id == $task->getJobsGroupId()) ? 'selected' : '' ?>>
@@ -71,7 +71,7 @@
 </div>
 
 <div class="form-group">
-<label>Death days</label>
+<label><?php p($l->t('Days after death')) ?></label>
 	<input type="number" name="deathDays" class="form-control" value="<?= $task->getDeathDays() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['name']) ? $errors['name'] : '' ?>

@@ -11,6 +11,7 @@ use OCP\AppFramework\Http\Response;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\Attribute\FrontpageRoute;
+use OCP\IL10N;
 use OCP\IUser;
 use OCP\IUserSession;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -24,16 +25,20 @@ class ContactGroupsController extends BasicController {
 
 	private $contactsGroupMapper;
 
+	private IL10N $l;
+
 	public function __construct(
 		string $appName,
 		IRequest $request,
 		IUserSession $currentUser,
 		ContactsGroupMapper $contactsGroupMapper,
 		UserSettingsMapper $userSettingsMapper,
+		IL10N $l,
 	) {
 		parent::__construct($appName, $request, $currentUser, $userSettingsMapper);
 		$this->currentUser = $currentUser->getUser();
 		$this->contactsGroupMapper = $contactsGroupMapper;
+		$this->l = $l;
 	}
 
 	/**
@@ -68,8 +73,8 @@ class ContactGroupsController extends BasicController {
 		foreach($contactsGroups as $contactsGroup) {
 			$data[] = [
 				'name' => $contactsGroup->getName(),
-				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/contact-groups/delete?id='.$contactsGroup->getId().'">Delete</a>
-					<a href="/index.php/apps/deadmanswitch/contact-groups/edit?id='.$contactsGroup->getId().'">Edit</a>'
+				'actions' => '<a class="confirm-action" href="/index.php/apps/deadmanswitch/contact-groups/delete?id='.$contactsGroup->getId().'">' . $this->l->t("Delete") . '</a>
+					<a href="/index.php/apps/deadmanswitch/contact-groups/edit?id='.$contactsGroup->getId().'">' . $this->l->t("Edit") . '</a>'
 			];
 		}
 
