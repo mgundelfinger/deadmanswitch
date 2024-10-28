@@ -71,7 +71,7 @@
 </div>
 
 <div class="form-group">
-<label><?php p($l->t('Days after death')) ?></label>
+<label><?php p($l->t('Days until execution after death (days)')) ?></label>
 	<input type="number" name="deathDays" class="form-control" value="<?= $task->getDeathDays() ?>">
 	<small class="form-text text-muted error">
 		<?= !empty($errors['name']) ? $errors['name'] : '' ?>

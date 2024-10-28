@@ -16,7 +16,7 @@
 		<form method="post" action="/index.php/apps/deadmanswitch/settings/update">
 
 			<div class="form-group">
-				<label><?php p($l->t('Check-in interval')) ?></label>
+				<label><?php p($l->t('Check-in interval (days)')) ?></label>
 				<input type="number" name="aliveDays" class="form-control" value="<?= $aliveStatus->getAliveDays() ?>">
 				<small class="form-text text-muted error">
 					<?= !empty($errors['aliveDays']) ? $errors['aliveDays'] : '' ?>
@@ -24,7 +24,7 @@
 			</div>
 
 			<div class="form-group">
-				<label><?php p($l->t('Confirmation time')) ?></label>
+				<label><?php p($l->t('Confirmation time (days)')) ?></label>
 				<input type="number" name="pendingDays" class="form-control" value="<?= $aliveStatus->getPendingDays() ?>">
 				<small class="form-text text-muted error">
 					<?= !empty($errors['pendingDays']) ? $errors['pendingDays'] : '' ?>

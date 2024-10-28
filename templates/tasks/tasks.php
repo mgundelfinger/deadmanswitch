@@ -20,7 +20,7 @@
 			<th><?php p($l->t('Active')) ?></th>
 			<th><?php p($l->t('Contact Group')) ?> </th>
 			<th><?php p($l->t('Job Group')) ?></th>
-			<th><?php p($l->t('Days after death')) ?></th>
+			<th><?php p($l->t('Days until execution after death (days)')) ?></th>
 			<th><?php p($l->t('Actions')) ?></th>
 		</tr>
 		</thead>

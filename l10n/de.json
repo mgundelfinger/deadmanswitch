@@ -32,15 +32,15 @@
 		"Tasks" : "Aufgaben",
 		"Jobs" : "Jobs",
 		"Settings" : "Einstellungen",
-		"Check-in interval" : "Check-In Intervall",
-		"Confirmation time" : "Konfirmationszeitraum",
+		"Check-in interval (days)" : "Check-In Intervall (Tage)",
+		"Confirmation time (days)" : "Konfirmationszeitraum (Tage)",
 		"Contact Group" : "Kontaktgruppe",
 		"Text color" : "Textfarbe",
 		"Black" : "Schwarz",
 		"White" : "Weiß",
 		"Active" : "Aktiv",
 		"Job Group" : "Jobgruppe",
-		"Days after death" : "Tage nach dem Tod",
+		"Days until execution after death (days)" : "Tage bis zur Ausführung nach dem Tod",
 		"Add Task" : "Aufgabe hinzufügen"
     }
 }

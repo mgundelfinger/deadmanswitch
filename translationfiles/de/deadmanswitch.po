@@ -45,21 +45,21 @@ msgstr ""
 msgid "Contact group must be selected"
 msgstr ""
 
-#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:38
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:40
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/specialAppInfoFakeDummyForL10nScript.php:2
 msgid "Dead Man Switch"
 msgstr ""
 
-#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:38
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:40
 msgid "Check-in"
 msgstr ""
 
-#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:39
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:41
 #, php-format
 msgid "Click here to confirm that %1$s is still alive"
 msgstr ""
 
-#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:39
+#: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/lib/Service/MailService.php:41
 msgid "Confirm"
 msgstr ""
 
@@ -180,11 +180,11 @@ msgid "Settings"
 msgstr ""
 
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/settings/settings.php:19
-msgid "Check-in interval"
+msgid "Check-in interval (days)"
 msgstr ""
 
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/settings/settings.php:27
-msgid "Confirmation time"
+msgid "Confirmation time (days)"
 msgstr ""
 
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/settings/settings.php:35
@@ -217,7 +217,7 @@ msgstr ""
 
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/tasks/fields.php:74
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/tasks/tasks.php:23
-msgid "Days after death"
+msgid "Days until execution after death (days)"
 msgstr ""
 
 #: /home/marlon/develop/nextcloud-docker-dev/workspace/server/apps-extra/deadmanswitch/templates/tasks/tasks.php:12

@@ -3,7 +3,6 @@
 Changelog
 =
 
-## Added
+## Changed
 
-- Add l10n support
-- Add german translations
+- Changed some labels for clarity
