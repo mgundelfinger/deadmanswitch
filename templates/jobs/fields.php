@@ -27,7 +27,9 @@
 </div>
 <div class="form-group">
 	<label><?php p($l->t('Email Body')) ?></label>
-	<input name="emailBody" class="form-control" value="<?= $job->getEmailBody() ?>">
+
+	<textarea name="emailBody" class="form-control" rows="7"><?= $job->getEmailBody() ?></textarea>
+
 	<small class="form-text text-muted error">
 		<?= !empty($errors['emailBody']) ? $errors['emailBody'] : '' ?>
 	</small>

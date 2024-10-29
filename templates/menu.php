@@ -21,8 +21,15 @@ $version = !empty($_['app_version']) ? 'v. ' . $_['app_version'] : '';
 
 <?php if($userSettings->getColor() == '2'): ?>
 <style>
-	.container.custom-container label{
+	.container.custom-container label, .dataTable, .dt-container.form-inline.dt-bootstrap.dt-empty-footer{
 		color: #fff;
+	}
+	select:hover, input:hover, textarea:hover {
+		background-color: #fff;
+	}
+	select, input, textarea {
+		background-color: #fff !important;
+		color: #464a4c !important;
 	}
 </style>
 <?php endif; ?>
