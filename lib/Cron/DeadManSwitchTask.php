@@ -37,8 +37,8 @@ class DeadManSwitchTask extends TimedJob {
         $this->aliveStatusMapper = $aliveStatusMapper;
         $this->tokenMapper = $tokenMapper;
 
-        // TODO run daily
-        $this->setInterval(300);
+        // run daily
+        $this->setInterval(86400);
     }
 
     protected function run($arguments = []) {
